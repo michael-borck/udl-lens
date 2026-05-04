@@ -1,0 +1,376 @@
+{
+  "checkpoints": {
+    "r1": {
+      "code": "1.1",
+      "principle": "Representation",
+      "dimension": "representation",
+      "title": "Brief available in multiple accessible formats",
+      "description": "The assignment brief and instructions are available in more than one format so students can access them in the way that suits them best.",
+      "harmful": [
+        "Instructions provided as a scanned image PDF with no text layer",
+        "Brief only available during a single timetabled session",
+        "Dense walls of text with no headings or visual structure"
+      ],
+      "helpful": [
+        "Brief available as both PDF and HTML on the LMS",
+        "Clear headings, subheadings, and ample white space throughout",
+        "Key dates and requirements presented in a summary table"
+      ]
+    },
+    "r2": {
+      "code": "2.1",
+      "principle": "Representation",
+      "dimension": "representation",
+      "title": "Plain-language instructions",
+      "description": "Instructions use clear, accessible language and define any discipline-specific or assessment-specific terminology.",
+      "harmful": [
+        "Instructions assume implicit knowledge of marking conventions",
+        "Acronyms used without definition (e.g., 'APA', 'LO', 'A2030')",
+        "Passive, bureaucratic language that obscures the actual task"
+      ],
+      "helpful": [
+        "Each task step is written as a direct, active instruction",
+        "Technical or discipline terms are defined on first use",
+        "A plain-English summary of 'what you need to do' is included"
+      ]
+    },
+    "r3": {
+      "code": "3.2",
+      "principle": "Representation",
+      "dimension": "representation",
+      "title": "Explicit success criteria and rubric",
+      "description": "Students are given a transparent rubric or marking guide that makes success criteria concrete before they begin.",
+      "harmful": [
+        "Rubric is withheld until after submission",
+        "Criteria are vague (e.g., 'demonstrates understanding') without descriptors",
+        "Marking guide uses jargon not defined elsewhere in the brief"
+      ],
+      "helpful": [
+        "A detailed rubric with performance-level descriptors is included in the brief",
+        "Criteria directly map to stated learning outcomes",
+        "Examples of 'high distinction' and 'pass-level' work are provided"
+      ]
+    },
+    "r4": {
+      "code": "3.1",
+      "principle": "Representation",
+      "dimension": "representation",
+      "title": "Examples and exemplars provided",
+      "description": "Annotated examples of strong and adequate responses are provided so students understand the standard expected.",
+      "harmful": [
+        "No examples are provided — students must infer expectations",
+        "Only a single 'perfect' exemplar shown, not a range of standards",
+        "Exemplars from previous cohorts without contextual annotation"
+      ],
+      "helpful": [
+        "At least two annotated exemplars at different grade bands are available",
+        "Exemplars include tutor commentary explaining what works and why",
+        "Students are invited to discuss exemplars in a Q&A session"
+      ]
+    },
+    "e1": {
+      "code": "7.1",
+      "principle": "Engagement",
+      "dimension": "engagement",
+      "title": "Task connects to authentic real-world contexts",
+      "description": "The assessment is framed around genuine professional, community, or disciplinary problems rather than purely academic exercises.",
+      "harmful": [
+        "Task is purely hypothetical with no connection to professional practice",
+        "The 'client' or 'audience' for the work is only the marker",
+        "Assessment replicates tasks from textbooks without contextualisation"
+      ],
+      "helpful": [
+        "Task involves a real or simulated industry client, community partner, or dataset",
+        "Students produce an artefact that could exist beyond the classroom",
+        "Brief explicitly names the professional context that motivates the task"
+      ]
+    },
+    "e2": {
+      "code": "7.2",
+      "principle": "Engagement",
+      "dimension": "engagement",
+      "title": "Student choice in topic, framing, or audience",
+      "description": "Students have meaningful input into at least one aspect of the assessment — what they explore, how they frame it, or who they address.",
+      "harmful": [
+        "Every parameter is fixed: topic, format, length, and audience",
+        "Choice is offered only in superficial ways (e.g., font or colour)",
+        "Students who try to personalise the task are penalised"
+      ],
+      "helpful": [
+        "Students choose their own topic within a defined scope",
+        "Students can select the professional audience for their output",
+        "A negotiated brief option is available for students with specific interests"
+      ]
+    },
+    "e3": {
+      "code": "8.1",
+      "principle": "Engagement",
+      "dimension": "engagement",
+      "title": "Collaboration or peer interaction opportunities",
+      "description": "The assessment design includes structured opportunities for students to interact with peers as part of the learning process.",
+      "harmful": [
+        "All work is strictly individual with no peer engagement permitted",
+        "Group work is unstructured with no roles, milestones, or conflict resolution guidance",
+        "Peer review is optional and ungraded, so almost no students do it"
+      ],
+      "helpful": [
+        "A structured peer feedback stage is built into the submission timeline",
+        "Group assessments include individual accountability mechanisms",
+        "Collaborative artefacts include a reflection on individual contribution"
+      ]
+    },
+    "e4": {
+      "code": "8.2",
+      "principle": "Engagement",
+      "dimension": "engagement",
+      "title": "Clear feedback loops during the task",
+      "description": "Students receive substantive formative feedback before the final submission so they can adjust their approach.",
+      "harmful": [
+        "Feedback is only provided after final submission as a grade",
+        "Draft feedback is generic and does not engage with the student's work",
+        "Turnaround time on draft feedback is too slow to act on"
+      ],
+      "helpful": [
+        "A compulsory draft or milestone submission with tutor feedback is included",
+        "Students can book a consultation to discuss their approach before submitting",
+        "Automated tools (e.g., Turnitin Feedback Studio) provide preliminary guidance"
+      ]
+    },
+    "x1": {
+      "code": "5.1",
+      "principle": "Expression",
+      "dimension": "expression",
+      "title": "Multiple response formats accepted",
+      "description": "Students can demonstrate their knowledge through more than one medium or format.",
+      "harmful": [
+        "Only a written essay is accepted with no alternatives",
+        "Alternative formats are theoretically permitted but practically penalised in the rubric",
+        "Students must seek special permission to submit in a non-standard format"
+      ],
+      "helpful": [
+        "The brief explicitly lists 2–3 accepted formats (e.g., written report, video presentation, annotated artefact)",
+        "The rubric is format-agnostic — criteria measure knowledge and argument, not medium",
+        "Students who negotiate an alternative format receive equal support"
+      ]
+    },
+    "x2": {
+      "code": "4.1",
+      "principle": "Expression",
+      "dimension": "expression",
+      "title": "Technology and assistive tools explicitly permitted",
+      "description": "The brief explicitly states that students may use assistive technologies, transcription tools, or productivity software.",
+      "harmful": [
+        "The brief is silent on technology use, leaving students to assume restrictions",
+        "Assistive technologies are not mentioned or are implicitly excluded",
+        "Students with disability plans must separately negotiate technology access"
+      ],
+      "helpful": [
+        "The brief explicitly states which technologies are permitted (e.g., screen readers, speech-to-text, reference managers)",
+        "AI-assisted tools are addressed transparently with clear guidance on permitted use",
+        "Students are encouraged to contact the unit coordinator to discuss technology needs"
+      ]
+    },
+    "x3": {
+      "code": "5.2",
+      "principle": "Expression",
+      "dimension": "expression",
+      "title": "Language and communication flexibility",
+      "description": "Students are supported to demonstrate knowledge even when English is not their first language.",
+      "harmful": [
+        "Assessment penalises grammar and expression rather than knowledge and argument",
+        "No support for NESB students is mentioned in the brief",
+        "The rubric conflates language proficiency with disciplinary understanding"
+      ],
+      "helpful": [
+        "The rubric distinguishes between quality of argument and quality of expression",
+        "Brief directs students to Curtin's language support services",
+        "Grammar errors that do not impede meaning are not penalised"
+      ]
+    },
+    "x4": {
+      "code": "6.3",
+      "principle": "Expression",
+      "dimension": "expression",
+      "title": "Process artefacts valued alongside final product",
+      "description": "Students are invited or required to submit evidence of their thinking process, not just the final output.",
+      "harmful": [
+        "Only the final polished artefact is assessed",
+        "Process notes, drafts, or iterations have no assessed value",
+        "Students who struggle with the final product have no way to demonstrate understanding"
+      ],
+      "helpful": [
+        "A learning journal, annotated bibliography, or design rationale contributes to the grade",
+        "Submission includes a brief reflection on the student's development process",
+        "Iterative drafts are part of the assessed portfolio"
+      ]
+    },
+    "a1": {
+      "code": "1.3",
+      "principle": "Representation",
+      "dimension": "accessibility",
+      "title": "Digital brief meets basic accessibility standards",
+      "description": "The brief and all supporting materials are created with accessibility in mind — readable by screen readers and navigable without a mouse.",
+      "harmful": [
+        "Brief is a scanned image with no selectable text",
+        "Tables and diagrams have no alt text or captions",
+        "Colour is used as the only means of conveying information"
+      ],
+      "helpful": [
+        "PDF is tagged and readable by screen readers",
+        "All images and diagrams have descriptive alt text",
+        "Colour contrast meets WCAG AA minimum ratios"
+      ]
+    },
+    "a2": {
+      "code": "4.2",
+      "principle": "Expression",
+      "dimension": "accessibility",
+      "title": "Physical and temporal accommodations documented",
+      "description": "The brief acknowledges that students may need physical, temporal, or situational adjustments and explains how to request them.",
+      "harmful": [
+        "No mention of accommodations or adjustment processes",
+        "Students must independently discover the special consideration process",
+        "Time extensions are treated as exceptional rather than standard policy"
+      ],
+      "helpful": [
+        "Brief includes a sentence directing students to Curtin's special consideration process",
+        "Reasonable adjustments are framed as a normal part of the unit, not an exception",
+        "Unit coordinator contact details are provided for accommodation discussions"
+      ]
+    },
+    "a3": {
+      "code": "4.3",
+      "principle": "Expression",
+      "dimension": "accessibility",
+      "title": "Technology requirements clearly stated and accessible",
+      "description": "Any required technology is explicitly listed and alternatives are provided for students without access.",
+      "harmful": [
+        "Assumed access to specific software without confirming availability",
+        "Required tools are proprietary and not available to all students",
+        "No alternatives for students who cannot access the required technology"
+      ],
+      "helpful": [
+        "All required software is available free or via Curtin's student licence",
+        "Open-source or web-based alternatives are listed for each tool",
+        "Students without home access are directed to on-campus facilities"
+      ]
+    },
+    "f1": {
+      "code": "7.3",
+      "principle": "Engagement",
+      "dimension": "flexibility",
+      "title": "Flexible submission windows or extension policy",
+      "description": "The assessment includes a grace period or transparent extension policy so students can manage unexpected circumstances.",
+      "harmful": [
+        "Hard deadline with automatic zero and no extension process described",
+        "Extension requests require medical certificates for any reason",
+        "Late penalties are so severe that submission after the deadline is not worth attempting"
+      ],
+      "helpful": [
+        "A 24–48 hour grace period is built into the submission window",
+        "Extension policy and process are stated clearly in the brief",
+        "Late submissions are accepted with a reasonable, proportional penalty"
+      ]
+    },
+    "f2": {
+      "code": "6.2",
+      "principle": "Expression",
+      "dimension": "flexibility",
+      "title": "Staged or scaffolded submission milestones",
+      "description": "Large assessments are broken into staged checkpoints so students can get feedback and adjust without failing the whole task.",
+      "harmful": [
+        "Single high-stakes submission with no prior checkpoints",
+        "Students receive no structured guidance between the brief release and due date",
+        "All marks are contingent on a single final submission"
+      ],
+      "helpful": [
+        "A topic proposal or outline is due early in the teaching period",
+        "A draft is due mid-unit with structured feedback before the final submission",
+        "Milestones carry small marks that acknowledge progress and engagement"
+      ]
+    },
+    "f3": {
+      "code": "7.4",
+      "principle": "Engagement",
+      "dimension": "flexibility",
+      "title": "Topic or focus flexibility within the task",
+      "description": "Students can adapt the scope or angle of the task to align with their disciplinary interests or professional context.",
+      "harmful": [
+        "All students must address an identical case study or topic",
+        "Alternative topics are not permitted without formal renegotiation",
+        "The brief does not acknowledge that different cohorts may have different professional contexts"
+      ],
+      "helpful": [
+        "Students select from a curated list of topics or case studies",
+        "Students in different professional streams can frame the task within their context",
+        "A brief proposal stage allows students to pitch a personalised scope"
+      ]
+    },
+    "q1": {
+      "code": "9.1",
+      "principle": "Engagement",
+      "dimension": "equity",
+      "title": "Culturally inclusive and representative content",
+      "description": "The assessment brief and any embedded content reflect a range of cultural perspectives and do not centre a single dominant viewpoint.",
+      "harmful": [
+        "All case studies, examples, and references are from a Western/Anglo context",
+        "Assessment assumes shared cultural references (idioms, media, history)",
+        "Indigenous, non-Western, or global perspectives are absent from the task"
+      ],
+      "helpful": [
+        "Case studies and examples are drawn from diverse cultural and geographic contexts",
+        "Indigenous perspectives are included where relevant, in consultation with First Nations staff",
+        "Brief explicitly acknowledges that multiple cultural frameworks can inform the response"
+      ]
+    },
+    "q2": {
+      "code": "9.2",
+      "principle": "Engagement",
+      "dimension": "equity",
+      "title": "No assumed socioeconomic advantage",
+      "description": "The assessment does not implicitly require access to resources, equipment, or experiences that not all students have.",
+      "harmful": [
+        "Assessment assumes access to personal transport, equipment, or paid software",
+        "Field components require travel not covered by the unit",
+        "Assessment presupposes access to professional networks or industry contacts"
+      ],
+      "helpful": [
+        "All required resources are available on campus or through Curtin licences at no cost",
+        "Field components include on-campus alternatives for students who cannot travel",
+        "Students without professional networks are supported through Curtin's industry connections"
+      ]
+    },
+    "q3": {
+      "code": "9.3",
+      "principle": "Engagement",
+      "dimension": "equity",
+      "title": "Equitable conditions for all students",
+      "description": "The assessment conditions do not disadvantage students based on their circumstances (caring responsibilities, work commitments, disability, cultural obligations).",
+      "harmful": [
+        "Assessment scheduled during culturally significant dates with no alternative",
+        "Timed assessments do not account for students with processing differences",
+        "Conditions penalise students who cannot attend at a specific time"
+      ],
+      "helpful": [
+        "Significant cultural and religious dates are checked before scheduling timed assessments",
+        "Timed assessments offer a reasonable extended time option for students with access plans",
+        "Remote or asynchronous alternatives are available for students with caring responsibilities"
+      ]
+    }
+  },
+  "assessmentTypes": {
+    "written_report": ["r1", "r2", "r3", "r4", "e1", "e2", "x1", "x2", "x3", "a1", "f1", "f3", "q1", "q2"],
+    "portfolio": ["r2", "r3", "r4", "e2", "e3", "x1", "x2", "x3", "x4", "a1", "a3", "f1", "f2", "q1", "q2", "q3"],
+    "field_journal": ["r2", "r3", "e1", "e4", "x1", "x3", "x4", "a1", "f1", "f3", "q1", "q2"],
+    "invigilated_exam": ["r1", "r2", "r3", "a1", "a2", "a3", "q2", "q3"],
+    "interactive_oral": ["r2", "r3", "e1", "e2", "e3", "x1", "x2", "x3", "a1", "a2", "q1", "q2", "q3"]
+  },
+  "dimensionLabels": {
+    "representation": "Representation",
+    "engagement": "Engagement",
+    "expression": "Expression",
+    "accessibility": "Accessibility",
+    "flexibility": "Flexibility",
+    "equity": "Equity"
+  }
+}
