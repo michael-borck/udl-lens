@@ -4,7 +4,7 @@
 
 @layer base {
   body {
-    @apply bg-cream text-teal font-sans;
+    @apply bg-cream text-teal font-sans antialiased;
   }
 
   h1, h2, h3 {
@@ -13,8 +13,8 @@
 }
 
 @layer utilities {
-  .status-dot-pending  { @apply bg-sand border-2 border-teal/20; }
-  .status-dot-partial  { @apply bg-amber; }
-  .status-dot-met      { @apply bg-green-500; }
-  .status-dot-gap      { @apply bg-red-400; }
+  .status-dot-pending  { @apply w-2.5 h-2.5 rounded-full bg-sand border-2 border-teal/20; }
+  .status-dot-partial  { @apply w-2.5 h-2.5 rounded-full bg-amber; }
+  .status-dot-met      { @apply w-2.5 h-2.5 rounded-full bg-green-500; }
+  .status-dot-gap      { @apply w-2.5 h-2.5 rounded-full bg-red-400; }
 }
