@@ -45,7 +45,7 @@ export default function ResultsPage() {
   const { assessments, checkpoints, suggestions } = state
 
   useEffect(() => {
-    if (assessments.length === 0) router.replace('/')
+    if (assessments.length === 0) router.replace('/audit')
   }, [assessments, router])
 
   useEffect(() => {
@@ -70,7 +70,7 @@ export default function ResultsPage() {
 
   function handleReset() {
     dispatch({ type: 'RESET' })
-    router.push('/')
+    router.push('/audit')
   }
 
   if (assessments.length === 0) return null

@@ -21,7 +21,7 @@ export default function ReviewPage() {
 
   useEffect(() => {
     if (assessments.length === 0) {
-      router.replace('/')
+      router.replace('/audit')
     }
   }, [assessments, router])
 

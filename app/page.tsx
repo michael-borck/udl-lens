@@ -1,122 +1,45 @@
-'use client'
+import Link from 'next/link'
 
-import { useState } from 'react'
-import { useRouter } from 'next/navigation'
-import { useSession } from '@/context/SessionContext'
-import { AssessmentCard } from '@/components/AssessmentCard'
-import { AssessmentForm } from '@/components/AssessmentForm'
-import type { Assessment } from '@/lib/types'
-
-type FormMode = { mode: 'add' } | { mode: 'edit'; assessment: Assessment } | null
-
-export default function SetupPage() {
-  const router = useRouter()
-  const { state, dispatch } = useSession()
-  const [formMode, setFormMode] = useState<FormMode>(null)
-
-  function handleSave(data: Omit<Assessment, 'id'> & { id?: string }) {
-    if (data.id) {
-      dispatch({
-        type: 'SET_ASSESSMENTS',
-        assessments: state.assessments.map(a =>
-          a.id === data.id ? { ...data, id: data.id } : a
-        ),
-      })
-    } else {
-      dispatch({
-        type: 'SET_ASSESSMENTS',
-        assessments: [
-          ...state.assessments,
-          { ...data, id: crypto.randomUUID() },
-        ],
-      })
-    }
-    setFormMode(null)
-  }
-
-  function handleRemove(id: string) {
-    dispatch({
-      type: 'SET_ASSESSMENTS',
-      assessments: state.assessments.filter(a => a.id !== id),
-    })
-  }
-
-  function handleProceed() {
-    router.push('/review')
-  }
-
+export default function LandingPage() {
   return (
-    <main className="min-h-screen bg-cream">
-      <header className="border-b border-sand bg-teal text-white px-8 py-5">
-        <h1 className="font-display text-2xl">UDL Lens</h1>
-        <p className="text-sm text-white/70 mt-0.5">Assessment 2030 · UDL Guidelines 3.0 Audit</p>
+    <main className="min-h-screen bg-cream flex flex-col">
+      <header className="px-8 py-6 flex items-center justify-between">
+        <span className="font-display text-2xl text-teal">UDL Lens</span>
+        <Link href="/about" className="text-sm text-teal/60 hover:text-teal transition-colors">
+          About
+        </Link>
       </header>
 
-      <div className="max-w-2xl mx-auto px-6 py-12">
-        {/* Step indicator */}
-        <div className="flex items-center gap-2 mb-8 text-sm">
-          <span className="rounded-full bg-teal text-white w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
-          <span className="font-medium text-teal">Select Assessments</span>
-          <span className="text-teal/30 mx-1">›</span>
-          <span className="text-teal/40">Review Checkpoints</span>
-          <span className="text-teal/30 mx-1">›</span>
-          <span className="text-teal/40">Your Results</span>
-        </div>
-
-        <h2 className="font-display text-3xl text-teal mb-2">What assessments are in your unit?</h2>
-        <p className="text-teal/60 mb-8">
-          Add each assessment separately. For each one, you can upload the assignment brief and Claude will pre-fill the UDL checkpoint ratings for you to verify.
+      <div className="flex-1 flex flex-col items-center justify-center px-6 text-center">
+        <p className="text-sm font-medium text-terracotta uppercase tracking-widest mb-4">
+          Assessment 2030 · Curtin University
+        </p>
+        <h1 className="font-display text-5xl text-teal leading-tight mb-6 max-w-2xl">
+          How well do your assessments support all learners?
+        </h1>
+        <p className="text-teal/60 text-lg max-w-xl mb-10">
+          UDL Lens helps you audit your unit assessments against the Universal Design for Learning
+          Guidelines 3.0 — with AI-assisted ratings and a downloadable report.
         </p>
 
-        {/* Assessment list */}
-        <div className="space-y-3 mb-6">
-          {state.assessments.map(a => (
-            <AssessmentCard
-              key={a.id}
-              assessment={a}
-              onEdit={() => setFormMode({ mode: 'edit', assessment: a })}
-              onRemove={() => handleRemove(a.id)}
-            />
-          ))}
-        </div>
+        <Link
+          href="/audit"
+          className="rounded-lg bg-terracotta text-white px-10 py-4 text-lg font-medium hover:bg-terracotta-dark transition-colors"
+        >
+          Start audit →
+        </Link>
 
-        {/* Add form or button */}
-        {formMode ? (
-          <div className="rounded-xl border border-teal/20 bg-white p-6 mb-6">
-            <h3 className="font-display text-lg text-teal mb-4">
-              {formMode.mode === 'edit' ? 'Edit assessment' : 'Add assessment'}
-            </h3>
-            <AssessmentForm
-              initial={formMode.mode === 'edit' ? formMode.assessment : undefined}
-              onSave={handleSave}
-              onCancel={() => setFormMode(null)}
-            />
-          </div>
-        ) : (
-          <button
-            onClick={() => setFormMode({ mode: 'add' })}
-            className="w-full rounded-xl border-2 border-dashed border-teal/20 text-teal/60 hover:border-teal/40 hover:text-teal py-4 text-sm transition-colors"
-          >
-            + Add assessment
-          </button>
-        )}
-
-        {/* Proceed */}
-        {state.assessments.length > 0 && !formMode && (
-          <div className="mt-8 pt-8 border-t border-sand">
-            <p className="text-sm text-teal/60 mb-4">
-              {state.assessments.length} assessment{state.assessments.length !== 1 ? 's' : ''} added.
-              Claude will pre-fill UDL ratings for each one &mdash; you&apos;ll verify and adjust them in the next step.
-            </p>
-            <button
-              onClick={handleProceed}
-              className="rounded-lg bg-terracotta text-white px-8 py-3 font-medium hover:bg-terracotta-dark transition-colors"
-            >
-              Review UDL checkpoints →
-            </button>
-          </div>
-        )}
+        <p className="mt-6 text-sm text-teal/40">
+          No login required. Your data never leaves your session.
+        </p>
       </div>
+
+      <footer className="px-8 py-6 flex items-center justify-between text-xs text-teal/30">
+        <span>UDL Guidelines 3.0 · CAST</span>
+        <Link href="/about" className="hover:text-teal/60 transition-colors">
+          How it works
+        </Link>
+      </footer>
     </main>
   )
 }
