@@ -1,6 +1,7 @@
 import udlData from '@/data/udl-checkpoints.json'
 import type { CheckpointDef, UdlData, Assessment } from '@/lib/types'
 
+// Double-cast: TS infers literal types from JSON imports; UdlData uses string-keyed maps.
 const data = udlData as unknown as UdlData
 
 export function getCheckpointDef(id: string): CheckpointDef | undefined {

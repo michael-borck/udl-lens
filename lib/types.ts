@@ -1,5 +1,6 @@
 export type Rating = 'not_yet' | 'partial' | 'met'
 export type Lane = 'lane1' | 'lane2'
+export type AssessmentType = 'written_report' | 'portfolio' | 'field_journal' | 'invigilated_exam' | 'interactive_oral'
 export type Dimension =
   | 'representation'
   | 'engagement'
@@ -11,7 +12,7 @@ export type Dimension =
 export interface Assessment {
   id: string
   name: string
-  type: string
+  type: AssessmentType
   lane: Lane
   description: string
 }
@@ -55,7 +56,7 @@ export type SessionAction =
 
 export interface UdlData {
   checkpoints: Record<string, CheckpointDef>
-  assessmentTypes: Record<string, string[]>
+  assessmentTypes: Record<AssessmentType, string[]>
 }
 
 export interface DimensionScore {
