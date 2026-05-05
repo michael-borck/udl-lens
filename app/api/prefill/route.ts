@@ -35,6 +35,8 @@ Dimension: ${def.dimension}
 Harmful practices: ${def.harmful.join('; ')}
 Helpful practices: ${def.helpful.join('; ')}`
       })
+      // Checkpoints not found in the data are omitted from context; Claude won't return results for them.
+      // In practice, callers always pass IDs from getCheckpointIdsForAssessments(), so this is defensive only.
       .filter(Boolean)
       .join('\n\n')
 
@@ -90,7 +92,9 @@ Important:
 
     let items: PrefillItem[]
     try {
-      const jsonText = textBlock.text.trim().replace(/^```json\n?/, '').replace(/\n?```$/, '')
+      const jsonText = textBlock.text.trim()
+        .replace(/^```(?:json)?\n?/, '')
+        .replace(/\n?```$/, '')
       items = JSON.parse(jsonText) as PrefillItem[]
     } catch {
       throw new Error('Failed to parse Claude response as JSON')
