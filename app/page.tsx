@@ -106,7 +106,7 @@ export default function SetupPage() {
           <div className="mt-8 pt-8 border-t border-sand">
             <p className="text-sm text-teal/60 mb-4">
               {state.assessments.length} assessment{state.assessments.length !== 1 ? 's' : ''} added.
-              Claude will pre-fill UDL ratings for each one — you'll verify and adjust them in the next step.
+              Claude will pre-fill UDL ratings for each one &mdash; you&apos;ll verify and adjust them in the next step.
             </p>
             <button
               onClick={handleProceed}

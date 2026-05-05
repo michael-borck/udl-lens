@@ -22,8 +22,7 @@ interface PdfDownloadButtonProps {
   suggestions: Suggestions | null
 }
 
-// @ts-expect-error — module added in Task 12
-const ResetModal = dynamic<ResetModalProps>(() => import('@/components/ResetModal').then(m => m.ResetModal), { ssr: false }) // eslint-disable-line
+const ResetModal = dynamic<ResetModalProps>(() => import('@/components/ResetModal').then(m => m.ResetModal), { ssr: false })
 
 const PdfDownloadButton = dynamic<PdfDownloadButtonProps>(
   () => import('@/components/PdfReport').then((m: { PdfDownloadButton: ComponentType<PdfDownloadButtonProps> }) => m.PdfDownloadButton),

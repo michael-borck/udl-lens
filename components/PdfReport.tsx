@@ -144,7 +144,7 @@ function UdlReport({ checkpoints, assessments, dimensionScores, overallScore, gr
   )
 }
 
-export interface PdfDownloadButtonProps extends ReportProps {}
+export type PdfDownloadButtonProps = ReportProps
 
 export function PdfDownloadButton(props: PdfDownloadButtonProps) {
   return (
