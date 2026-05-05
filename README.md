@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# UDL Lens
 
-## Getting Started
+A web tool for Curtin University academics to audit unit assessments against the [UDL Guidelines 3.0](https://udlguidelines.cast.org/), framed around the Assessment 2030 (A2030) initiative.
 
-First, run the development server:
+Built as a prototype for an iSoLT grant collaboration with Luke (Teaching Support, Curtin University).
+
+## What it does
+
+1. **Add assessments** — describe your unit's assessments (Written Report, Portfolio, Interactive Oral, etc.) with optional brief upload (PDF or DOCX)
+2. **Review checkpoints** — Claude pre-fills a UDL rating for each checkpoint based on your brief; you verify or override each rating
+3. **See results** — radar chart across 6 UDL dimensions, quick wins, longer-term improvements, and a downloadable PDF report
+
+No login. No database. Session state only.
+
+## Stack
+
+- [Next.js 14](https://nextjs.org/) (App Router)
+- TypeScript
+- Tailwind CSS
+- [Recharts](https://recharts.org/) — radar/spider chart
+- [@react-pdf/renderer](https://react-pdf.org/) — client-side PDF generation
+- [Claude API](https://www.anthropic.com/api) (`claude-sonnet-4-6`) — server-side only
+
+## Getting started
 
 ```bash
+npm install
+cp .env.example .env.local   # add your ANTHROPIC_API_KEY
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Environment variables
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+| Variable | Required | Description |
+|---|---|---|
+| `ANTHROPIC_API_KEY` | Yes | Anthropic API key — get one at console.anthropic.com |
 
-## Learn More
+## Deployment
 
-To learn more about Next.js, take a look at the following resources:
+Any Node.js host (VPS, Railway, Render, etc.):
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm run build
+npm start
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+No database, no migrations, no user accounts.
 
-## Deploy on Vercel
+## License
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+MIT — see [LICENSE](LICENSE).
