@@ -47,15 +47,23 @@ npm run build
 npm start
 ```
 
-**Docker:**
+**Docker (pre-built image from GHCR):**
 
 ```bash
-# Build and run
-docker compose up --build
+# Pull latest image
+docker pull ghcr.io/michael-borck/udl-lens:latest
 
-# Or build the image directly
-docker build -t udl-lens .
-docker run -p 3000:3000 --env-file .env.local udl-lens
+# Create .env.local with your API key
+echo "ANTHROPIC_API_KEY=sk-ant-your-key-here" > .env.local
+
+# Run
+docker run -p 3000:3000 --env-file .env.local ghcr.io/michael-borck/udl-lens:latest
+```
+
+**Docker (build locally):**
+
+```bash
+docker compose up --build
 ```
 
 No database, no migrations, no user accounts.
