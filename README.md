@@ -47,22 +47,24 @@ npm run build
 npm start
 ```
 
-**Docker:**
+**Docker (VPS or any host):**
 
 ```bash
-# 1. Grab the compose file
+# 1. Grab the two files you need
 curl -O https://raw.githubusercontent.com/michael-borck/udl-lens/main/docker-compose.yml
+curl -O https://raw.githubusercontent.com/michael-borck/udl-lens/main/.env.example
 
 # 2. Add your API key
-echo "ANTHROPIC_API_KEY=sk-ant-your-key-here" > .env.local
+mv .env.example .env.local
+nano .env.local   # set ANTHROPIC_API_KEY=sk-ant-...
 
 # 3. Run (pulls image automatically)
-docker compose up
+docker compose up -d
 ```
 
-Open [http://localhost:3000](http://localhost:3000).
+Open [http://your-server:3000](http://localhost:3000).
 
-To update to the latest image: `docker compose pull && docker compose up`
+To update to the latest image: `docker compose pull && docker compose up -d`
 
 No database, no migrations, no user accounts.
 
