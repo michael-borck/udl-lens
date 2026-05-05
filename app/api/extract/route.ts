@@ -3,6 +3,7 @@ import Anthropic from '@anthropic-ai/sdk'
 import mammoth from 'mammoth'
 
 const client = new Anthropic()
+const MODEL = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
 
 export async function POST(req: Request) {
   try {
@@ -45,7 +46,7 @@ export async function POST(req: Request) {
         ] as any,
       }
       const response = await client.messages.create({
-        model: 'claude-sonnet-4-6',
+        model: MODEL,
         max_tokens: 1024,
         messages: [message],
       })

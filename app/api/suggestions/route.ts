@@ -4,6 +4,7 @@ import type { CheckpointResult, Assessment, Suggestions } from '@/lib/types'
 import { getCheckpointDef } from '@/lib/udl'
 
 const client = new Anthropic()
+const MODEL = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
 
 interface SuggestionsRequest {
   checkpoints: CheckpointResult[]
@@ -64,7 +65,7 @@ Be direct and specific. Reference the actual assessment names and checkpoints. N
     while (attempts < 2) {
       try {
         const response = await client.messages.create({
-          model: 'claude-sonnet-4-6',
+          model: MODEL,
           max_tokens: 1024,
           messages: [{ role: 'user', content: prompt }],
         })

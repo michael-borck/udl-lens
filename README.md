@@ -36,14 +36,26 @@ Open [http://localhost:3000](http://localhost:3000).
 | Variable | Required | Description |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Yes | Anthropic API key — get one at console.anthropic.com |
+| `ANTHROPIC_MODEL` | No | Model to use (default: `claude-sonnet-4-6`) |
 
 ## Deployment
 
-Any Node.js host (VPS, Railway, Render, etc.):
+**Node.js** (any VPS, Railway, Render, etc.):
 
 ```bash
 npm run build
 npm start
+```
+
+**Docker:**
+
+```bash
+# Build and run
+docker compose up --build
+
+# Or build the image directly
+docker build -t udl-lens .
+docker run -p 3000:3000 --env-file .env.local udl-lens
 ```
 
 No database, no migrations, no user accounts.

@@ -4,6 +4,7 @@ import type { Assessment, CheckpointResult, Rating } from '@/lib/types'
 import { getCheckpointDef } from '@/lib/udl'
 
 const client = new Anthropic()
+const MODEL = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
 
 interface PrefillRequest {
   assessments: Assessment[]
@@ -80,7 +81,7 @@ Important:
 - Return ONLY the JSON array, no other text.`
 
     const response = await client.messages.create({
-      model: 'claude-sonnet-4-6',
+      model: MODEL,
       max_tokens: 4096,
       messages: [{ role: 'user', content: prompt }],
     })
