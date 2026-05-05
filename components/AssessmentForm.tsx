@@ -12,7 +12,7 @@ interface Props {
 
 export function AssessmentForm({ initial, onSave, onCancel }: Props) {
   const [name, setName] = useState(initial?.name ?? '')
-  const [type, setType] = useState(initial?.type ?? 'written_report')
+  const [type, setType] = useState<AssessmentType>(initial?.type ?? 'written_report')
   const [lane, setLane] = useState<'lane1' | 'lane2'>(initial?.lane ?? 'lane2')
   const [description, setDescription] = useState(initial?.description ?? '')
   const [uploading, setUploading] = useState(false)
@@ -21,8 +21,8 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
 
   const selectedTypeOption = ASSESSMENT_TYPE_OPTIONS.find(o => o.value === type)
 
-  function handleTypeChange(value: string) {
-    setType(value as AssessmentType)
+  function handleTypeChange(value: AssessmentType) {
+    setType(value)
     const opt = ASSESSMENT_TYPE_OPTIONS.find(o => o.value === value)
     if (opt) setLane(opt.lane)
   }
@@ -70,7 +70,7 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
         <label className="block text-sm font-medium text-teal mb-1">Assessment type</label>
         <select
           value={type}
-          onChange={e => handleTypeChange(e.target.value)}
+          onChange={e => handleTypeChange(e.target.value as AssessmentType)}
           className="w-full rounded-lg border border-sand px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/40 bg-white"
         >
           {ASSESSMENT_TYPE_OPTIONS.map(opt => (
