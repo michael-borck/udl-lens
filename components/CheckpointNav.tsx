@@ -25,7 +25,9 @@ export function CheckpointNav({ checkpoints, activeIndex, onSelect, filterAssess
     <nav className="space-y-1">
       {visible.map((result) => {
         const def = getCheckpointDef(result.checkpointId)
-        const globalIdx = checkpoints.indexOf(result)
+        const globalIdx = checkpoints.findIndex(
+          c => c.checkpointId === result.checkpointId && c.assessmentId === result.assessmentId
+        )
         const isActive = globalIdx === activeIndex
         return (
           <button

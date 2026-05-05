@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useCallback } from 'react'
+import { useEffect, useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from '@/context/SessionContext'
 import { getCheckpointIdsForAssessments, getCheckpointDef } from '@/lib/udl'
@@ -25,7 +25,11 @@ export default function ReviewPage() {
     }
   }, [assessments, router])
 
+  const prefilling = useRef(false)
+
   const runPrefill = useCallback(async () => {
+    if (prefilling.current) return
+    prefilling.current = true
     if (checkpoints.length > 0) return
     const checkpointIds = getCheckpointIdsForAssessments(assessments)
     if (checkpointIds.length === 0) return
@@ -60,6 +64,7 @@ export default function ReviewPage() {
       dispatch({ type: 'SET_CHECKPOINTS', checkpoints: blank })
     } finally {
       setLoading(false)
+      prefilling.current = false
     }
   }, [assessments, checkpoints.length, dispatch])
 
@@ -79,7 +84,7 @@ export default function ReviewPage() {
       assessmentId: active.assessmentId,
       userRating: rating,
     })
-    if (activeIndex < checkpoints.length - 1) {
+    if (activeIndex < checkpoints.length - 1 && active.userRating === null) {
       setTimeout(() => setActiveIndex(i => i + 1), 250)
     }
   }
