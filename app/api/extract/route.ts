@@ -17,10 +17,12 @@ export async function POST(req: Request) {
 
     let extractedText = ''
 
-    if (file.name.endsWith('.docx')) {
+    const fileName = file.name.toLowerCase()
+
+    if (fileName.endsWith('.docx')) {
       const result = await mammoth.extractRawText({ buffer })
       extractedText = result.value
-    } else if (file.name.endsWith('.pdf')) {
+    } else if (fileName.endsWith('.pdf')) {
       // Send PDF natively to Claude as a document block
       const base64 = buffer.toString('base64')
       type MessageParam = Parameters<typeof client.messages.create>[0]['messages'][0]
