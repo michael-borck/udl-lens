@@ -30,7 +30,10 @@ export default function ReviewPage() {
   const runPrefill = useCallback(async () => {
     if (prefilling.current) return
     prefilling.current = true
-    if (checkpoints.length > 0) return
+    if (checkpoints.length > 0) {
+      prefilling.current = false
+      return
+    }
     const checkpointIds = getCheckpointIdsForAssessments(assessments)
     if (checkpointIds.length === 0) return
     setLoading(true)

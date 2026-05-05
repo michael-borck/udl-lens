@@ -103,7 +103,7 @@ Important:
     const checkpointResults: CheckpointResult[] = items.map(item => ({
       checkpointId: item.checkpointId,
       assessmentId: item.assessmentId,
-      aiRating: item.rating,
+      aiRating: (['not_yet', 'partial', 'met'] as const).includes(item.rating) ? item.rating : 'not_yet',
       aiReasoning: item.reasoning,
       userRating: null,
       overridden: false,

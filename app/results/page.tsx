@@ -1,8 +1,9 @@
 'use client'
 
-import { useEffect, useState, type ComponentType } from 'react'
+import { useEffect, useState, useRef, type ComponentType } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
+import { ResetModal } from '@/components/ResetModal'
 import { useSession } from '@/context/SessionContext'
 import { computeDimensionScores, computeOverallScore, getGradeLabel } from '@/lib/scoring'
 import { ResultsRadarChart } from '@/components/ResultsRadarChart'
@@ -12,7 +13,6 @@ import { SuggestionsList } from '@/components/SuggestionsList'
 import type { Suggestions, CheckpointResult, Assessment, DimensionScore } from '@/lib/types'
 
 // ── Placeholder types for components added in Tasks 11 and 12 ──────────────
-interface ResetModalProps { onConfirm: () => void; onCancel: () => void }
 interface PdfDownloadButtonProps {
   checkpoints: CheckpointResult[]
   assessments: Assessment[]
@@ -21,8 +21,6 @@ interface PdfDownloadButtonProps {
   gradeLabel: string
   suggestions: Suggestions | null
 }
-
-const ResetModal = dynamic<ResetModalProps>(() => import('@/components/ResetModal').then(m => m.ResetModal), { ssr: false })
 
 const PdfDownloadButton = dynamic<PdfDownloadButtonProps>(
   () => import('@/components/PdfReport').then((m: { PdfDownloadButton: ComponentType<PdfDownloadButtonProps> }) => m.PdfDownloadButton),
@@ -42,6 +40,7 @@ export default function ResultsPage() {
   const [showResetModal, setShowResetModal] = useState(false)
   const [loadingSuggestions, setLoadingSuggestions] = useState(false)
   const [suggestionsError, setSuggestionsError] = useState(false)
+  const fetchingSuggestions = useRef(false)
 
   const { assessments, checkpoints, suggestions } = state
 
@@ -51,6 +50,8 @@ export default function ResultsPage() {
 
   useEffect(() => {
     if (suggestions || checkpoints.length === 0) return
+    if (fetchingSuggestions.current) return
+    fetchingSuggestions.current = true
     setLoadingSuggestions(true)
     setSuggestionsError(false)
     fetch('/api/suggestions', {
@@ -61,7 +62,10 @@ export default function ResultsPage() {
       .then(r => r.ok ? r.json() : Promise.reject())
       .then((data: Suggestions) => dispatch({ type: 'SET_SUGGESTIONS', suggestions: data }))
       .catch(() => setSuggestionsError(true))
-      .finally(() => setLoadingSuggestions(false))
+      .finally(() => {
+        setLoadingSuggestions(false)
+        fetchingSuggestions.current = false
+      })
   }, [suggestions, checkpoints, assessments, dispatch])
 
   function handleReset() {
