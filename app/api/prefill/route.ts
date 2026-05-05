@@ -4,7 +4,7 @@ import type { Assessment, CheckpointResult, Rating } from '@/lib/types'
 import { getCheckpointDef } from '@/lib/udl'
 
 const client = new Anthropic()
-const MODEL = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
+const MODEL = process.env.PREFILL_MODEL ?? process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
 
 interface PrefillRequest {
   assessments: Assessment[]

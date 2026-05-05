@@ -36,7 +36,12 @@ Open [http://localhost:3000](http://localhost:3000).
 | Variable | Required | Description |
 |---|---|---|
 | `ANTHROPIC_API_KEY` | Yes | Anthropic API key — get one at console.anthropic.com |
-| `ANTHROPIC_MODEL` | No | Model to use (default: `claude-sonnet-4-6`) |
+| `ANTHROPIC_MODEL` | No | Default model for all routes (default: `claude-sonnet-4-6`) |
+| `EXTRACT_MODEL` | No | Model for brief extraction — Haiku is fine and cheaper |
+| `PREFILL_MODEL` | No | Model for checkpoint pre-fill — test Haiku vs Sonnet |
+| `SUGGESTIONS_MODEL` | No | Model for suggestions — Sonnet recommended |
+
+Per-route vars take precedence over `ANTHROPIC_MODEL`. Omit them to use the default.
 
 ## Deployment
 

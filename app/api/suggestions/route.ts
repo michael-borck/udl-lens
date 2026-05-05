@@ -4,7 +4,7 @@ import type { CheckpointResult, Assessment, Suggestions } from '@/lib/types'
 import { getCheckpointDef } from '@/lib/udl'
 
 const client = new Anthropic()
-const MODEL = process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
+const MODEL = process.env.SUGGESTIONS_MODEL ?? process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
 
 interface SuggestionsRequest {
   checkpoints: CheckpointResult[]
