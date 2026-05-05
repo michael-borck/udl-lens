@@ -1,6 +1,6 @@
 services:
   udl-lens:
-    build: .
+    image: ghcr.io/michael-borck/udl-lens:latest
     ports:
       - "3000:3000"
     env_file:
