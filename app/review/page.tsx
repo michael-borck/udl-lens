@@ -13,7 +13,9 @@ export default function ReviewPage() {
   const router = useRouter()
   const { state, dispatch } = useSession()
   const [activeIndex, setActiveIndex] = useState(0)
-  const [filterAssessmentId, setFilterAssessmentId] = useState<string | null>(null)
+  const [filterAssessmentId, setFilterAssessmentId] = useState<string | null>(
+    () => state.assessments[0]?.id ?? null
+  )
   const [loading, setLoading] = useState(false)
   const [prefillError, setPrefillError] = useState<string | null>(null)
 
@@ -197,27 +199,21 @@ export default function ReviewPage() {
             </div>
 
             {/* Assessment filter tabs */}
-            <div className="flex gap-1 px-3 pt-3 pb-2 overflow-x-auto">
-              <button
-                onClick={() => setFilterAssessmentId(null)}
-                className={`rounded-full px-3 py-1 text-xs whitespace-nowrap transition-colors ${
-                  !filterAssessmentId ? 'bg-teal text-white' : 'text-teal/60 hover:bg-sand'
-                }`}
-              >
-                All
-              </button>
-              {assessments.map(a => (
-                <button
-                  key={a.id}
-                  onClick={() => setFilterAssessmentId(a.id === filterAssessmentId ? null : a.id)}
-                  className={`rounded-full px-3 py-1 text-xs whitespace-nowrap transition-colors ${
-                    filterAssessmentId === a.id ? 'bg-teal text-white' : 'text-teal/60 hover:bg-sand'
-                  }`}
-                >
-                  {a.name}
-                </button>
-              ))}
-            </div>
+            {assessments.length > 1 && (
+              <div className="flex gap-1 px-3 pt-3 pb-2 overflow-x-auto">
+                {assessments.map(a => (
+                  <button
+                    key={a.id}
+                    onClick={() => setFilterAssessmentId(a.id)}
+                    className={`rounded-full px-3 py-1 text-xs whitespace-nowrap transition-colors ${
+                      filterAssessmentId === a.id ? 'bg-teal text-white' : 'text-teal/60 hover:bg-sand'
+                    }`}
+                  >
+                    {a.name}
+                  </button>
+                ))}
+              </div>
+            )}
             <div className="flex-1 overflow-y-auto p-3">
               <CheckpointNav
                 checkpoints={checkpoints}
