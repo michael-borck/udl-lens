@@ -1,18 +1,13 @@
 'use client'
 
-import { useState, useRef } from 'react'
-import type { Assessment, AssessmentType } from '@/lib/types'
+import { useState } from 'react'
+import type { Assessment, AssessmentType, AssessmentDocument } from '@/lib/types'
 import { ASSESSMENT_TYPE_OPTIONS } from '@/lib/udl'
-import { AssessmentPickerModal } from '@/components/AssessmentPickerModal'
-
-interface ExtractedAssessment {
-  title: string
-  description: string
-}
+import { TypedDocumentSlots } from '@/components/TypedDocumentSlots'
 
 interface Props {
   initial?: Partial<Assessment>
-  onSave: (assessment: Omit<Assessment, 'id' | 'documents' | 'responses'> & { id?: string }) => void
+  onSave: (assessment: Omit<Assessment, 'id'> & { id?: string }) => void
   onCancel: () => void
 }
 
@@ -21,10 +16,7 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
   const [type, setType] = useState<AssessmentType>(initial?.type ?? 'interactive_oral')
   const [lane, setLane] = useState<'lane1' | 'lane2'>(initial?.lane ?? 'lane1')
   const [description, setDescription] = useState(initial?.description ?? '')
-  const [uploading, setUploading] = useState(false)
-  const [uploadError, setUploadError] = useState<string | null>(null)
-  const [pickerAssessments, setPickerAssessments] = useState<ExtractedAssessment[] | null>(null)
-  const fileInputRef = useRef<HTMLInputElement>(null)
+  const [documents, setDocuments] = useState<AssessmentDocument[]>(initial?.documents ?? [])
 
   const selectedTypeOption = ASSESSMENT_TYPE_OPTIONS.find(o => o.value === type)
 
@@ -34,168 +26,102 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
     if (opt) setLane(opt.lane)
   }
 
-  function applyExtracted(a: ExtractedAssessment) {
-    if (!name.trim()) setName(a.title)
-    setDescription(a.description)
-  }
-
-  async function handleFileUpload(e: React.ChangeEvent<HTMLInputElement>) {
-    const file = e.target.files?.[0]
-    if (!file) return
-    setUploading(true)
-    setUploadError(null)
-    try {
-      const fd = new FormData()
-      fd.append('file', file)
-      const res = await fetch('/api/extract', { method: 'POST', body: fd })
-      if (!res.ok) throw new Error('Upload failed')
-      const data = await res.json() as { assessments: ExtractedAssessment[] }
-      if (data.assessments.length === 1) {
-        applyExtracted(data.assessments[0])
-      } else if (data.assessments.length > 1) {
-        setPickerAssessments(data.assessments)
-      }
-    } catch {
-      setUploadError('Could not extract text from file. Please type a description instead.')
-    } finally {
-      setUploading(false)
-      // Reset input so same file can be uploaded again for other assessments
-      if (fileInputRef.current) fileInputRef.current.value = ''
-    }
-  }
-
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim()) return
-    onSave({ id: initial?.id, name: name.trim(), type, lane, description })
+    onSave({ id: initial?.id, name: name.trim(), type, lane, description, documents, responses: initial?.responses ?? {} })
   }
 
   return (
-    <>
-      {pickerAssessments && (
-        <AssessmentPickerModal
-          assessments={pickerAssessments}
-          onSelect={a => { applyExtracted(a); setPickerAssessments(null) }}
-          onClose={() => setPickerAssessments(null)}
+    <form onSubmit={handleSubmit} className="space-y-4">
+      <div>
+        <label className="block text-sm font-medium text-teal mb-1">Assessment name</label>
+        <input
+          type="text"
+          value={name}
+          onChange={e => setName(e.target.value)}
+          placeholder="e.g. Research Report, Final Exam"
+          required
+          className="w-full rounded-lg border border-sand px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/40 bg-white"
         />
-      )}
+      </div>
 
-      <form onSubmit={handleSubmit} className="space-y-4">
-        <div>
-          <label className="block text-sm font-medium text-teal mb-1">Assessment name</label>
-          <input
-            type="text"
-            value={name}
-            onChange={e => setName(e.target.value)}
-            placeholder="e.g. Research Report, Final Exam"
-            required
-            className="w-full rounded-lg border border-sand px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/40 bg-white"
-          />
-        </div>
+      <div>
+        <label className="block text-sm font-medium text-teal mb-1">Assessment type</label>
+        <select
+          value={type}
+          onChange={e => handleTypeChange(e.target.value as AssessmentType)}
+          className="w-full rounded-lg border border-sand px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/40 bg-white"
+        >
+          {ASSESSMENT_TYPE_OPTIONS.map(opt => (
+            <option key={opt.value} value={opt.value}>{opt.label}</option>
+          ))}
+        </select>
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-teal mb-1">Assessment type</label>
-          <select
-            value={type}
-            onChange={e => handleTypeChange(e.target.value as AssessmentType)}
-            className="w-full rounded-lg border border-sand px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/40 bg-white"
-          >
-            {ASSESSMENT_TYPE_OPTIONS.map(opt => (
-              <option key={opt.value} value={opt.value}>{opt.label}</option>
-            ))}
-          </select>
+      <div>
+        <label className="block text-sm font-medium text-teal mb-1">A2030 Lane</label>
+        <div className="flex gap-3">
+          {(['lane1', 'lane2'] as const).map(l => (
+            <label key={l} className="flex items-center gap-2 cursor-pointer">
+              <input
+                type="radio"
+                name="lane"
+                value={l}
+                checked={lane === l}
+                onChange={() => setLane(l)}
+                className="accent-teal"
+              />
+              <span className="text-sm text-teal">
+                {l === 'lane1' ? 'Lane 1 — Secure' : 'Lane 2 — Non-secure'}
+              </span>
+            </label>
+          ))}
         </div>
+        {selectedTypeOption && (
+          <p className="text-xs text-teal/50 mt-1">
+            Default for {selectedTypeOption.label}: {selectedTypeOption.lane === 'lane1' ? 'Lane 1' : 'Lane 2'}
+          </p>
+        )}
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-teal mb-1">A2030 Lane</label>
-          <div className="flex gap-3">
-            {(['lane1', 'lane2'] as const).map(l => (
-              <label key={l} className="flex items-center gap-2 cursor-pointer">
-                <input
-                  type="radio"
-                  name="lane"
-                  value={l}
-                  checked={lane === l}
-                  onChange={() => setLane(l)}
-                  className="accent-teal"
-                />
-                <span className="text-sm text-teal">
-                  {l === 'lane1' ? 'Lane 1 — Secure' : 'Lane 2 — Non-secure'}
-                </span>
-              </label>
-            ))}
-          </div>
-          {selectedTypeOption && (
-            <p className="text-xs text-teal/50 mt-1">
-              Default for {selectedTypeOption.label}: {selectedTypeOption.lane === 'lane1' ? 'Lane 1' : 'Lane 2'}
-            </p>
-          )}
-        </div>
+      <div>
+        <label className="block text-sm font-medium text-teal mb-2">
+          Documents
+          <span className="ml-1 text-teal/50 font-normal">(optional — helps the AI)</span>
+        </label>
+        <TypedDocumentSlots documents={documents} onChange={setDocuments} />
+      </div>
 
-        <div>
-          <label className="block text-sm font-medium text-teal mb-1">
-            Assessment description
-            <span className="ml-1 text-teal/50 font-normal">(optional — helps AI give better ratings)</span>
-          </label>
-          <textarea
-            value={description}
-            onChange={e => setDescription(e.target.value)}
-            placeholder="Describe the assessment task, requirements, and marking criteria..."
-            rows={4}
-            className="w-full rounded-lg border border-sand px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/40 bg-white resize-none"
-          />
-          <div className="mt-3">
-            <button
-              type="button"
-              onClick={() => fileInputRef.current?.click()}
-              disabled={uploading}
-              className="w-full rounded-lg border-2 border-dashed border-teal/30 hover:border-teal/60 hover:bg-teal/5 px-4 py-3 text-sm font-medium text-teal disabled:opacity-60 disabled:cursor-not-allowed transition-all flex items-center justify-center gap-2"
-            >
-              {uploading ? (
-                <>
-                  <span className="w-4 h-4 border-2 border-teal/30 border-t-teal rounded-full animate-spin" aria-hidden="true" />
-                  <span>Extracting…</span>
-                </>
-              ) : (
-                <>
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" />
-                    <polyline points="17 8 12 3 7 8" />
-                    <line x1="12" y1="3" x2="12" y2="15" />
-                  </svg>
-                  <span>Upload brief or unit outline <span className="text-teal/50 font-normal">— PDF, DOCX, TXT, or MD</span></span>
-                </>
-              )}
-            </button>
-            <input
-              ref={fileInputRef}
-              type="file"
-              accept=".pdf,.docx,.txt,.md"
-              onChange={handleFileUpload}
-              className="hidden"
-            />
-          </div>
-          {uploadError && (
-            <p className="mt-1 text-sm text-terracotta">{uploadError}</p>
-          )}
-        </div>
+      <div>
+        <label className="block text-sm font-medium text-teal mb-1">
+          Description (optional)
+          <span className="ml-1 text-teal/50 font-normal">— extra context not captured by uploads</span>
+        </label>
+        <textarea
+          value={description}
+          onChange={e => setDescription(e.target.value)}
+          placeholder="Anything else the AI should know about how this assessment is delivered…"
+          rows={3}
+          className="w-full rounded-lg border border-sand px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/40 bg-white resize-none"
+        />
+      </div>
 
-        <div className="flex gap-3 pt-2">
-          <button
-            type="submit"
-            className="rounded-lg bg-teal text-white px-5 py-2 text-sm font-medium hover:bg-teal-light transition-colors"
-          >
-            {initial?.id ? 'Save changes' : 'Add assessment'}
-          </button>
-          <button
-            type="button"
-            onClick={onCancel}
-            className="rounded-lg border border-sand text-teal px-5 py-2 text-sm hover:bg-sand transition-colors"
-          >
-            Cancel
-          </button>
-        </div>
-      </form>
-    </>
+      <div className="flex gap-3 pt-2">
+        <button
+          type="submit"
+          className="rounded-lg bg-teal text-white px-5 py-2 text-sm font-medium hover:bg-teal-light transition-colors"
+        >
+          {initial?.id ? 'Save changes' : 'Add assessment'}
+        </button>
+        <button
+          type="button"
+          onClick={onCancel}
+          className="rounded-lg border border-sand text-teal px-5 py-2 text-sm hover:bg-sand transition-colors"
+        >
+          Cancel
+        </button>
+      </div>
+    </form>
   )
 }

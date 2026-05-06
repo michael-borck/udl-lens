@@ -15,7 +15,7 @@ export default function SetupPage() {
   const { state, dispatch } = useSession()
   const [formMode, setFormMode] = useState<FormMode>(null)
 
-  function handleSave(data: Omit<Assessment, 'id' | 'documents' | 'responses'> & { id?: string }) {
+  function handleSave(data: Omit<Assessment, 'id'> & { id?: string }) {
     if (data.id) {
       const existingId = data.id
       dispatch({
@@ -28,8 +28,8 @@ export default function SetupPage() {
                 type: data.type,
                 lane: data.lane,
                 description: data.description,
-                documents: a.documents ?? [],
-                responses: a.responses ?? {},
+                documents: data.documents,
+                responses: data.responses,
               }
             : a
         ),
@@ -41,8 +41,8 @@ export default function SetupPage() {
         type: data.type,
         lane: data.lane,
         description: data.description,
-        documents: [],
-        responses: {},
+        documents: data.documents,
+        responses: data.responses,
       }
       dispatch({
         type: 'SET_ASSESSMENTS',
