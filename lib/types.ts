@@ -43,9 +43,15 @@ export interface CheckpointResult {
   acceptedAI: boolean
 }
 
+export interface Suggestion {
+  text: string         // The suggestion itself, written as an actionable statement.
+  why: string          // One short sentence on why this would help.
+  udlCodes: string[]   // Related UDL 3.0 consideration codes, e.g. ['8.3', '7.3'].
+}
+
 export interface Suggestions {
-  quickWins: string[]
-  longerTerm: string[]
+  quickWins: Suggestion[]
+  longerTerm: Suggestion[]
 }
 
 export interface SessionState {
