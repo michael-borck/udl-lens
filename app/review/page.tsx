@@ -36,28 +36,31 @@ export default function ReviewPage() {
       prefilling.current = false
       return
     }
-    const checkpointIds = getCheckpointIdsForAssessments(assessments)
-    if (checkpointIds.length === 0) return
     setLoading(true)
     setPrefillError(null)
-    try {
-      const res = await fetch('/api/prefill', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ assessments, checkpointIds }),
-      })
-      if (!res.ok) throw new Error('Prefill request failed')
-      const data = await res.json() as CheckpointResult[]
-      dispatch({ type: 'SET_CHECKPOINTS', checkpoints: data })
-    } catch {
-      setPrefillError('AI pre-fill is temporarily unavailable. You can still rate checkpoints manually.')
-      const blank: CheckpointResult[] = []
-      for (const a of assessments) {
-        const ids = getCheckpointIdsForAssessments([a])
-        for (const id of ids) {
-          blank.push({
+
+    // Batch one API call per assessment — keeps responses small and isolates failures
+    const allResults: CheckpointResult[] = []
+    const failedAssessments: string[] = []
+
+    for (const assessment of assessments) {
+      const checkpointIds = getCheckpointIdsForAssessments([assessment])
+      if (checkpointIds.length === 0) continue
+      try {
+        const res = await fetch('/api/prefill', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ assessments: [assessment], checkpointIds }),
+        })
+        if (!res.ok) throw new Error('Prefill request failed')
+        const data = await res.json() as CheckpointResult[]
+        allResults.push(...data)
+      } catch {
+        failedAssessments.push(assessment.name)
+        for (const id of checkpointIds) {
+          allResults.push({
             checkpointId: id,
-            assessmentId: a.id,
+            assessmentId: assessment.id,
             aiRating: 'not_yet',
             aiReasoning: 'AI pre-fill unavailable.',
             userRating: null,
@@ -65,12 +68,26 @@ export default function ReviewPage() {
           })
         }
       }
-      dispatch({ type: 'SET_CHECKPOINTS', checkpoints: blank })
-    } finally {
-      setLoading(false)
-      prefilling.current = false
     }
+
+    dispatch({ type: 'SET_CHECKPOINTS', checkpoints: allResults })
+    if (failedAssessments.length > 0) {
+      setPrefillError(
+        failedAssessments.length === assessments.length
+          ? 'AI pre-fill is temporarily unavailable. You can retry or rate checkpoints manually.'
+          : `AI pre-fill failed for: ${failedAssessments.join(', ')}. You can retry or rate those checkpoints manually.`
+      )
+    }
+
+    setLoading(false)
+    prefilling.current = false
   }, [assessments, checkpoints.length, dispatch])
+
+  function handleRetryPrefill() {
+    setPrefillError(null)
+    prefilling.current = false
+    dispatch({ type: 'SET_CHECKPOINTS', checkpoints: [] })
+  }
 
   useEffect(() => {
     runPrefill()
@@ -155,8 +172,14 @@ export default function ReviewPage() {
       </header>
 
       {prefillError && (
-        <div className="bg-amber/20 border-b border-amber px-6 py-3 text-sm text-teal">
-          {prefillError}
+        <div className="bg-amber/20 border-b border-amber px-6 py-3 text-sm text-teal flex items-center justify-between gap-4">
+          <span>{prefillError}</span>
+          <button
+            onClick={handleRetryPrefill}
+            className="shrink-0 rounded-lg border border-teal/30 px-3 py-1 text-xs hover:bg-teal/10 transition-colors"
+          >
+            Retry AI suggestions
+          </button>
         </div>
       )}
 
