@@ -38,11 +38,33 @@ export async function POST(req: Request) {
     if (allMet) {
       return NextResponse.json({
         quickWins: [
-          { text: 'Add a plain-English summary of what the assessment requires at the top of the brief.', why: 'Reduces cognitive load and supports students new to academic English.', udlCodes: ['2.1', '1.2'] },
-          { text: 'Document your approach to assessment delivery for your teaching portfolio.', why: 'Captures the UDL-aligned practices you already use as evidence for review.', udlCodes: [] },
+          {
+            text: 'All checkpoints are rated Met - outstanding UDL alignment across your unit.',
+            why: 'Your design already supports the full breadth of audited UDL principles.',
+            udlCodes: [],
+          },
+          {
+            text: 'Consider sharing your assessment design as an exemplar with colleagues.',
+            why: 'Strong UDL practice spreads when others can see what good looks like in context.',
+            udlCodes: [],
+          },
+          {
+            text: 'Document your approach for your teaching portfolio as evidence of UDL practice.',
+            why: 'Captures your inclusive design choices for review, promotion, or accreditation.',
+            udlCodes: [],
+          },
         ],
         longerTerm: [
-          { text: "Audit your unit's assessments together to see how they balance the three UDL principles across the semester.", why: 'UDL is read across the whole unit; gaps in one assessment can be addressed by another.', udlCodes: [] },
+          {
+            text: 'Explore UDL Guidelines 3.0 checkpoints beyond the ones audited here to deepen your practice.',
+            why: 'The audited checkpoints are a curated subset; the full framework offers more dimensions to explore.',
+            udlCodes: [],
+          },
+          {
+            text: 'Consider mentoring colleagues in UDL-aligned assessment design.',
+            why: 'Your demonstrated practice is a teaching resource for the wider unit team.',
+            udlCodes: [],
+          },
         ],
       } satisfies Suggestions)
     }
