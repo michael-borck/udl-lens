@@ -42,12 +42,35 @@ Helpful practices: ${def.helpful.join('; ')}`
       .join('\n\n')
 
     const assessmentContext = assessments
-      .map(a => `Assessment ID: ${a.id}
+      .map(a => {
+        const docs = a.documents.length === 0
+          ? '(no documents uploaded)'
+          : a.documents
+              .map(d => {
+                if (!d.extractedText) {
+                  return `--- ${d.type.toUpperCase()} (${d.filename}) ---\n(PDF binary; summary applied during upload)`
+                }
+                return `--- ${d.type.toUpperCase()} (${d.filename}) ---\n${d.extractedText}`
+              })
+              .join('\n\n')
+        const responseEntries = Object.entries(a.responses)
+        const responses = responseEntries.length === 0
+          ? '(no self-report answers provided)'
+          : responseEntries
+              .map(([id, ans]) => `  ${id}: ${ans}`)
+              .join('\n')
+        const extraNotes = a.description ? `Extra notes: ${a.description}\n` : ''
+        return `Assessment ID: ${a.id}
 Name: ${a.name}
 Type: ${a.type}
 Lane: ${a.lane}
-Description: ${a.description || '(no description provided — use assessment type as context)'}`)
-      .join('\n\n')
+${extraNotes}Documents:
+${docs}
+
+Teacher's self-report (per checkpoint ID):
+${responses}`
+      })
+      .join('\n\n========\n\n')
 
     const prompt = `You are a UDL (Universal Design for Learning) expert helping a university educator audit their assessments.
 
@@ -56,6 +79,8 @@ ${assessmentContext}
 
 UDL CHECKPOINTS TO RATE:
 ${checkpointContext}
+
+The teacher has uploaded documents (typed as Brief, Rubric, or Exemplar) and answered short self-report questions about classroom delivery. The self-report key matches the checkpoint ID. Weight the self-report heavily for checkpoints whose practice lives in delivery rather than in documents (collaboration, biases in language, joy and play). For checkpoints clearly evidenced by the documents (e.g. multiple tools, methods of response), corroborate the self-report with the document text.
 
 For each combination of assessment and checkpoint, rate how well the assessment addresses that checkpoint.
 
