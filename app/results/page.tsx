@@ -8,7 +8,6 @@ import { useSession } from '@/context/SessionContext'
 import { computePrincipleScores, computeOverallScore, getGradeLabel } from '@/lib/scoring'
 import { ResultsRadarChart } from '@/components/ResultsRadarChart'
 import { DimensionBars } from '@/components/DimensionBars'
-import { CheckpointTable } from '@/components/CheckpointTable'
 import { SuggestionsList } from '@/components/SuggestionsList'
 import type { Suggestions, CheckpointResult, Assessment, PrincipleScore } from '@/lib/types'
 
@@ -165,12 +164,6 @@ export default function ResultsPage() {
           ) : suggestions ? (
             <SuggestionsList suggestions={suggestions} />
           ) : null}
-        </div>
-
-        {/* Checkpoint table */}
-        <div>
-          <h2 className="font-display text-2xl text-teal mb-4">All Checkpoints</h2>
-          <CheckpointTable checkpoints={checkpoints} assessments={assessments} />
         </div>
 
         {/* Download */}
