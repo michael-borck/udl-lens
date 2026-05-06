@@ -90,6 +90,7 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
       {SLOTS.map(slot => {
         const doc = getDoc(slot.type)
         const isUploading = uploadingType === slot.type
+        const isBusy = uploadingType !== null || pickerState !== null
         return (
           <div key={slot.type} className="rounded-lg border border-sand bg-white">
             <div className="flex items-center justify-between gap-3 px-3 py-2">
@@ -112,8 +113,8 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
                 <button
                   type="button"
                   onClick={() => fileInputs.current[slot.type]?.click()}
-                  disabled={isUploading}
-                  className="rounded-md border border-teal/30 hover:border-teal/60 hover:bg-teal/5 px-3 py-1 text-xs font-medium text-teal disabled:opacity-60 transition-colors flex items-center gap-1.5"
+                  disabled={isBusy}
+                  className="rounded-md border border-teal/30 hover:border-teal/60 hover:bg-teal/5 px-3 py-1 text-xs font-medium text-teal disabled:opacity-60 disabled:cursor-not-allowed transition-colors flex items-center gap-1.5"
                 >
                   {isUploading ? (
                     <>

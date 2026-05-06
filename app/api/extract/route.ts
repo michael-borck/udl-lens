@@ -32,12 +32,21 @@ Return JSON only, no other text:
 }`
 }
 
+function isCandidate(c: unknown): c is Candidate {
+  if (!c || typeof c !== 'object') return false
+  const obj = c as Record<string, unknown>
+  return typeof obj.title === 'string' && typeof obj.content === 'string'
+}
+
 function parseCandidates(raw: string): Candidate[] {
   const json = raw.trim()
     .replace(/^```(?:json)?\n?/, '')
     .replace(/\n?```$/, '')
-  const parsed = JSON.parse(json) as { candidates: Candidate[] }
-  return parsed.candidates ?? []
+  const parsed = JSON.parse(json) as unknown
+  if (!parsed || typeof parsed !== 'object') return []
+  const list = (parsed as Record<string, unknown>).candidates
+  if (!Array.isArray(list)) return []
+  return list.filter(isCandidate)
 }
 
 async function extractWithAI(text: string, documentType: string | null): Promise<Candidate[]> {
