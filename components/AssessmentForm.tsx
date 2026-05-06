@@ -4,6 +4,7 @@ import { useState } from 'react'
 import type { Assessment, AssessmentType, AssessmentDocument } from '@/lib/types'
 import { ASSESSMENT_TYPE_OPTIONS } from '@/lib/udl'
 import { TypedDocumentSlots } from '@/components/TypedDocumentSlots'
+import { QuestionnaireForm } from '@/components/QuestionnaireForm'
 
 interface Props {
   initial?: Partial<Assessment>
@@ -17,6 +18,7 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
   const [lane, setLane] = useState<'lane1' | 'lane2'>(initial?.lane ?? 'lane1')
   const [description, setDescription] = useState(initial?.description ?? '')
   const [documents, setDocuments] = useState<AssessmentDocument[]>(initial?.documents ?? [])
+  const [responses, setResponses] = useState<Record<string, string>>(initial?.responses ?? {})
 
   const selectedTypeOption = ASSESSMENT_TYPE_OPTIONS.find(o => o.value === type)
 
@@ -24,12 +26,13 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
     setType(value)
     const opt = ASSESSMENT_TYPE_OPTIONS.find(o => o.value === value)
     if (opt) setLane(opt.lane)
+    setResponses({})
   }
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim()) return
-    onSave({ id: initial?.id, name: name.trim(), type, lane, description, documents, responses: initial?.responses ?? {} })
+    onSave({ id: initial?.id, name: name.trim(), type, lane, description, documents, responses })
   }
 
   return (
@@ -104,6 +107,18 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
           placeholder="Anything else the AI should know about how this assessment is delivered…"
           rows={3}
           className="w-full rounded-lg border border-sand px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/40 bg-white resize-none"
+        />
+      </div>
+
+      <div>
+        <label className="block text-sm font-medium text-teal mb-1">
+          Quick self-report
+          <span className="ml-1 text-teal/50 font-normal">— some UDL practices live in delivery, not the brief</span>
+        </label>
+        <QuestionnaireForm
+          assessmentType={type}
+          responses={responses}
+          onChange={setResponses}
         />
       </div>
 
