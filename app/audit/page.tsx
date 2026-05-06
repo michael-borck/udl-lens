@@ -79,9 +79,15 @@ export default function SetupPage() {
         </div>
 
         <h2 className="font-display text-3xl text-teal mb-2">What assessments are in your unit?</h2>
-        <p className="text-teal/60 mb-8">
+        <p className="text-teal/60 mb-6">
           Add each assessment separately. For each one, you can upload the assignment brief and the AI will pre-fill the UDL checkpoint ratings for you to verify.
         </p>
+
+        {/* Whole-of-unit nudge */}
+        <div className="rounded-xl bg-amber/10 border border-amber/40 p-4 mb-8 text-sm text-teal/80 leading-relaxed">
+          <strong className="text-teal font-semibold">UDL is read across the whole unit.</strong>{' '}
+          Add every assessment in your unit for the truest audit. Different assessment types serve different UDL principles, so the picture sharpens as you add more.
+        </div>
 
         {/* Assessment list */}
         <div className="space-y-3 mb-6">
@@ -95,16 +101,17 @@ export default function SetupPage() {
           ))}
         </div>
 
-        {/* Add form or button */}
-        {formMode ? (
+        {/* Form is shown inline when list is empty (skip the "Add assessment" empty-state click)
+            or when the user has explicitly opened it via the + button below. */}
+        {(formMode || state.assessments.length === 0) ? (
           <div className="rounded-xl border border-teal/20 bg-white p-6 mb-6">
             <h3 className="font-display text-lg text-teal mb-4">
-              {formMode.mode === 'edit' ? 'Edit assessment' : 'Add assessment'}
+              {formMode?.mode === 'edit' ? 'Edit assessment' : 'Add assessment'}
             </h3>
             <AssessmentForm
-              initial={formMode.mode === 'edit' ? formMode.assessment : undefined}
+              initial={formMode?.mode === 'edit' ? formMode.assessment : undefined}
               onSave={handleSave}
-              onCancel={() => setFormMode(null)}
+              onCancel={state.assessments.length > 0 ? () => setFormMode(null) : undefined}
             />
           </div>
         ) : (
@@ -112,7 +119,7 @@ export default function SetupPage() {
             onClick={() => setFormMode({ mode: 'add' })}
             className="w-full rounded-xl border-2 border-dashed border-teal/20 text-teal/60 hover:border-teal/40 hover:text-teal py-4 text-sm transition-colors"
           >
-            + Add assessment
+            + Add another assessment
           </button>
         )}
 

@@ -9,7 +9,7 @@ import { QuestionnaireForm } from '@/components/QuestionnaireForm'
 interface Props {
   initial?: Partial<Assessment>
   onSave: (assessment: Omit<Assessment, 'id'> & { id?: string }) => void
-  onCancel: () => void
+  onCancel?: () => void
 }
 
 export function AssessmentForm({ initial, onSave, onCancel }: Props) {
@@ -129,13 +129,15 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
         >
           {initial?.id ? 'Save changes' : 'Add assessment'}
         </button>
-        <button
-          type="button"
-          onClick={onCancel}
-          className="rounded-lg border border-sand text-teal px-5 py-2 text-sm hover:bg-sand transition-colors"
-        >
-          Cancel
-        </button>
+        {onCancel && (
+          <button
+            type="button"
+            onClick={onCancel}
+            className="rounded-lg border border-sand text-teal px-5 py-2 text-sm hover:bg-sand transition-colors"
+          >
+            Cancel
+          </button>
+        )}
       </div>
     </form>
   )
