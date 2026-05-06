@@ -85,7 +85,7 @@ The teacher has uploaded documents (typed as Brief, Rubric, or Exemplar) and ans
 For each combination of assessment and checkpoint, rate how well the assessment addresses that checkpoint.
 
 Ratings:
-- "not_yet": The assessment shows no evidence of this UDL principle based on the description
+- "not_yet": The assessment shows no evidence of this UDL principle based on the available evidence
 - "partial": The assessment partially addresses this principle
 - "met": The assessment clearly demonstrates this principle
 
