@@ -235,12 +235,12 @@ export default function ReviewPage() {
                   assessment={activeAssessment}
                   onRate={handleRate}
                 />
-                {/* Navigation: Previous / Accept AI / Next */}
-                <div className="flex items-center justify-between mt-6">
+                {/* Navigation: Previous / Confirm suggestion / Next */}
+                <div className="flex items-center justify-between mt-6 gap-2">
                   <button
                     onClick={() => setActiveIndex(i => Math.max(0, i - 1))}
                     disabled={activeIndex === 0}
-                    className="text-sm text-teal/60 hover:text-teal disabled:opacity-30 transition-colors"
+                    className="rounded-lg border border-sand px-4 py-1.5 text-sm text-teal/60 hover:text-teal hover:border-teal/30 disabled:opacity-30 transition-colors"
                   >
                     ← Previous
                   </button>
@@ -248,12 +248,12 @@ export default function ReviewPage() {
                     onClick={handleAcceptAI}
                     className="rounded-lg border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-1.5 text-sm font-medium transition-colors"
                   >
-                    ✓ Accept AI
+                    ✓ Confirm suggestion
                   </button>
                   <button
                     onClick={() => setActiveIndex(i => Math.min(checkpoints.length - 1, i + 1))}
                     disabled={activeIndex === checkpoints.length - 1}
-                    className="text-sm text-teal/60 hover:text-teal disabled:opacity-30 transition-colors"
+                    className="rounded-lg border border-sand px-4 py-1.5 text-sm text-teal/60 hover:text-teal hover:border-teal/30 disabled:opacity-30 transition-colors"
                   >
                     Next →
                   </button>
