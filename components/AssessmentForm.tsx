@@ -12,7 +12,7 @@ interface ExtractedAssessment {
 
 interface Props {
   initial?: Partial<Assessment>
-  onSave: (assessment: Omit<Assessment, 'id'> & { id?: string }) => void
+  onSave: (assessment: Omit<Assessment, 'id' | 'documents' | 'responses'> & { id?: string }) => void
   onCancel: () => void
 }
 

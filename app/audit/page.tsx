@@ -15,21 +15,38 @@ export default function SetupPage() {
   const { state, dispatch } = useSession()
   const [formMode, setFormMode] = useState<FormMode>(null)
 
-  function handleSave(data: Omit<Assessment, 'id'> & { id?: string }) {
+  function handleSave(data: Omit<Assessment, 'id' | 'documents' | 'responses'> & { id?: string }) {
     if (data.id) {
+      const existingId = data.id
       dispatch({
         type: 'SET_ASSESSMENTS',
         assessments: state.assessments.map(a =>
-          a.id === data.id ? { ...data, id: data.id } : a
+          a.id === existingId
+            ? {
+                id: existingId,
+                name: data.name,
+                type: data.type,
+                lane: data.lane,
+                description: data.description,
+                documents: a.documents ?? [],
+                responses: a.responses ?? {},
+              }
+            : a
         ),
       })
     } else {
+      const newAssessment: Assessment = {
+        id: crypto.randomUUID(),
+        name: data.name,
+        type: data.type,
+        lane: data.lane,
+        description: data.description,
+        documents: [],
+        responses: {},
+      }
       dispatch({
         type: 'SET_ASSESSMENTS',
-        assessments: [
-          ...state.assessments,
-          { ...data, id: crypto.randomUUID() },
-        ],
+        assessments: [...state.assessments, newAssessment],
       })
     }
     setFormMode(null)

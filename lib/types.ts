@@ -3,12 +3,22 @@ export type Lane = 'lane1' | 'lane2'
 export type AssessmentType = 'interactive_oral' | 'field_journal'
 export type Principle = 'Engagement' | 'Representation' | 'Action & Expression'
 
+export type DocumentType = 'brief' | 'rubric' | 'exemplar'
+
+export interface AssessmentDocument {
+  type: DocumentType
+  filename: string
+  extractedText: string
+}
+
 export interface Assessment {
   id: string
   name: string
   type: AssessmentType
   lane: Lane
   description: string
+  documents: AssessmentDocument[]
+  responses: Record<string, string>
 }
 
 export interface CheckpointDef {
@@ -17,6 +27,7 @@ export interface CheckpointDef {
   guideline: string
   title: string
   description?: string
+  question?: string
   harmful: string[]
   helpful: string[]
 }
