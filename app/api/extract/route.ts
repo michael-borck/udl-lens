@@ -79,15 +79,25 @@ export async function POST(req: Request) {
     const buffer = Buffer.from(arrayBuffer)
     const fileName = file.name.toLowerCase()
 
+    const documentTypeRaw = formData.get('documentType')
+    const documentType: string | null =
+      documentTypeRaw === null ? null : String(documentTypeRaw)
+
     let assessments: ExtractedAssessment[]
+    let extractedText = ''
 
     if (fileName.endsWith('.pdf')) {
+      // PDFs are sent to Claude as a binary document; there is no plain-text
+      // source the assessment detection runs against. Leave extractedText
+      // empty so the client can fall back to assessments[0].description.
       assessments = await extractPdfWithAI(buffer.toString('base64'))
     } else if (fileName.endsWith('.docx')) {
       const result = await mammoth.extractRawText({ buffer })
-      assessments = await extractWithAI(result.value)
+      extractedText = result.value
+      assessments = await extractWithAI(extractedText)
     } else if (fileName.endsWith('.txt') || fileName.endsWith('.md')) {
-      assessments = await extractWithAI(buffer.toString('utf-8'))
+      extractedText = buffer.toString('utf-8')
+      assessments = await extractWithAI(extractedText)
     } else {
       return NextResponse.json(
         { error: 'Unsupported file type. Please upload PDF, DOCX, TXT, or MD.' },
@@ -99,7 +109,7 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Could not extract assessment details from file.' }, { status: 422 })
     }
 
-    return NextResponse.json({ assessments })
+    return NextResponse.json({ extractedText, assessments, documentType })
   } catch (err) {
     console.error('/api/extract error:', err)
     return NextResponse.json({ error: 'Extraction failed' }, { status: 500 })
