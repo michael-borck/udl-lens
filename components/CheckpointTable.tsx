@@ -40,7 +40,7 @@ export function CheckpointTable({ checkpoints, assessments }: Props) {
                 <td className="px-4 py-3 text-teal font-medium">
                   {def.code} {def.title}
                 </td>
-                <td className="px-4 py-3 text-teal/60">{assessment?.name ?? '—'}</td>
+                <td className="px-4 py-3 text-teal/60">{assessment?.name ?? '-'}</td>
                 <td className="px-4 py-3">
                   <span className="rounded px-2 py-0.5 text-xs bg-teal/10 text-teal">{def.principle}</span>
                 </td>

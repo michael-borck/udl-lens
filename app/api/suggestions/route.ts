@@ -21,7 +21,7 @@ export async function POST(req: Request) {
     if (allMet) {
       return NextResponse.json({
         quickWins: [
-          'All checkpoints are rated Met — outstanding UDL alignment across your unit.',
+          'All checkpoints are rated Met - outstanding UDL alignment across your unit.',
           'Consider sharing your assessment design as an exemplar with colleagues.',
           'Document your approach for your teaching portfolio as evidence of UDL practice.',
         ],
@@ -38,7 +38,7 @@ export async function POST(req: Request) {
         const def = getCheckpointDef(c.checkpointId)
         const assessment = assessments.find(a => a.id === c.assessmentId)
         const rating = c.userRating ?? c.aiRating
-        return `[${rating === 'not_yet' ? 'GAP' : 'PARTIAL'}] Assessment "${assessment?.name}" — UDL ${def?.code} ${def?.title} (${def?.principle})`
+        return `[${rating === 'not_yet' ? 'GAP' : 'PARTIAL'}] Assessment "${assessment?.name}" - UDL ${def?.code} ${def?.title} (${def?.principle})`
       })
       .join('\n')
 
@@ -49,7 +49,7 @@ The following UDL checkpoints have not been fully met in this unit's assessments
 ${gapContext}
 
 Generate:
-1. QUICK WINS: 2–4 specific, immediately actionable suggestions. These should be changes the unit coordinator could make before the next study period — concrete edits to briefs, rubrics, or policies. Be specific and practical.
+1. QUICK WINS: 2–4 specific, immediately actionable suggestions. These should be changes the unit coordinator could make before the next study period - concrete edits to briefs, rubrics, or policies. Be specific and practical.
 2. LONGER TERM: 2–3 deeper structural suggestions that would require more planning or curriculum redesign. Frame these as aspirational next steps.
 
 Return JSON in this exact format:

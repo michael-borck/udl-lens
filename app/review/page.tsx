@@ -39,7 +39,7 @@ export default function ReviewPage() {
     setLoading(true)
     setPrefillError(null)
 
-    // Batch one API call per assessment — keeps responses small and isolates failures
+    // Batch one API call per assessment - keeps responses small and isolates failures
     const allResults: CheckpointResult[] = []
     const failedAssessments: string[] = []
 

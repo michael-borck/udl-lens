@@ -10,14 +10,14 @@ interface Props {
 
 function StatusIcon({ result }: { result: CheckpointResult }) {
   if (result.userRating === null) {
-    // Pending — grey dot
+    // Pending - grey dot
     return <span className="w-2.5 h-2.5 rounded-full shrink-0 bg-teal/20" />
   }
   if (result.acceptedAI) {
-    // Deferred to AI — teal checkmark
+    // Deferred to AI - teal checkmark
     return <span className="text-sm leading-none shrink-0 text-teal font-bold">✓</span>
   }
-  // Human agency — terracotta checkmark
+  // Human agency - terracotta checkmark
   return <span className="text-sm leading-none shrink-0 text-terracotta font-bold">✓</span>
 }
 

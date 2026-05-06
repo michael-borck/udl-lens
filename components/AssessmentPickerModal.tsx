@@ -20,7 +20,7 @@ export function AssessmentPickerModal({ assessments, onSelect, onClose }: Props)
           <div>
             <h2 className="font-display text-xl text-teal">Multiple assessments found</h2>
             <p className="text-sm text-teal/60 mt-0.5">
-              Select the one you&apos;re adding now — you can upload this file again for the others.
+              Select the one you&apos;re adding now - you can upload this file again for the others.
             </p>
           </div>
           <button

@@ -19,7 +19,7 @@ export default function LandingPage() {
         </h1>
         <p className="text-teal/60 text-lg max-w-xl mb-10">
           UDL Lens helps you audit your unit assessments against the Universal Design for Learning
-          Guidelines 3.0 — with AI-assisted ratings and a downloadable report.
+          Guidelines 3.0 - with AI-assisted ratings and a downloadable report.
         </p>
 
         <Link
@@ -33,7 +33,7 @@ export default function LandingPage() {
           No login required. Your data never leaves your session.
         </p>
 
-        {/* How it works — three-step preview */}
+        {/* How it works - three-step preview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-14 max-w-3xl w-full text-left">
           {[
             {

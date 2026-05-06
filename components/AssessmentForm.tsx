@@ -76,7 +76,7 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
                 className="accent-teal"
               />
               <span className="text-sm text-teal">
-                {l === 'lane1' ? 'Lane 1 — Secure' : 'Lane 2 — Non-secure'}
+                {l === 'lane1' ? 'Lane 1 - Secure' : 'Lane 2 - Non-secure'}
               </span>
             </label>
           ))}
@@ -91,7 +91,7 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
       <div>
         <label className="block text-sm font-medium text-teal mb-2">
           Documents
-          <span className="ml-1 text-teal/50 font-normal">(optional — helps the AI)</span>
+          <span className="ml-1 text-teal/50 font-normal">(optional - helps the AI)</span>
         </label>
         <TypedDocumentSlots documents={documents} onChange={setDocuments} />
       </div>
@@ -99,7 +99,7 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
       <div>
         <label className="block text-sm font-medium text-teal mb-1">
           Description (optional)
-          <span className="ml-1 text-teal/50 font-normal">— extra context not captured by uploads</span>
+          <span className="ml-1 text-teal/50 font-normal">- extra context not captured by uploads</span>
         </label>
         <textarea
           value={description}
@@ -113,7 +113,7 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
       <div>
         <label className="block text-sm font-medium text-teal mb-1">
           Quick self-report
-          <span className="ml-1 text-teal/50 font-normal">— some UDL practices live in delivery, not the brief</span>
+          <span className="ml-1 text-teal/50 font-normal">- some UDL practices live in delivery, not the brief</span>
         </label>
         <QuestionnaireForm
           assessmentType={type}

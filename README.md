@@ -6,9 +6,9 @@ Built as a prototype for an iSoLT grant collaboration with Luke (Teaching Suppor
 
 ## What it does
 
-1. **Add assessments** — describe your unit's assessments (Written Report, Portfolio, Interactive Oral, etc.) with optional brief upload (PDF or DOCX)
-2. **Review checkpoints** — AI pre-fills a UDL rating for each checkpoint based on your brief; you verify or override each rating
-3. **See results** — radar chart across 6 UDL dimensions, quick wins, longer-term improvements, and a downloadable PDF report
+1. **Add assessments** - describe your unit's assessments (Written Report, Portfolio, Interactive Oral, etc.) with optional brief upload (PDF or DOCX)
+2. **Review checkpoints** - AI pre-fills a UDL rating for each checkpoint based on your brief; you verify or override each rating
+3. **See results** - radar chart across 6 UDL dimensions, quick wins, longer-term improvements, and a downloadable PDF report
 
 No login. No database. Session state only.
 
@@ -17,9 +17,9 @@ No login. No database. Session state only.
 - [Next.js 14](https://nextjs.org/) (App Router)
 - TypeScript
 - Tailwind CSS
-- [Recharts](https://recharts.org/) — radar/spider chart
-- [@react-pdf/renderer](https://react-pdf.org/) — client-side PDF generation
-- [Claude API](https://www.anthropic.com/api) (`claude-sonnet-4-6`) — server-side only
+- [Recharts](https://recharts.org/) - radar/spider chart
+- [@react-pdf/renderer](https://react-pdf.org/) - client-side PDF generation
+- [Claude API](https://www.anthropic.com/api) (`claude-sonnet-4-6`) - server-side only
 
 ## Getting started
 
@@ -35,11 +35,11 @@ Open [http://localhost:3000](http://localhost:3000).
 
 | Variable | Required | Description |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | Yes | Anthropic API key — get one at console.anthropic.com |
+| `ANTHROPIC_API_KEY` | Yes | Anthropic API key - get one at console.anthropic.com |
 | `ANTHROPIC_MODEL` | No | Default model for all routes (default: `claude-sonnet-4-6`) |
-| `EXTRACT_MODEL` | No | Model for brief extraction — Haiku is fine and cheaper |
-| `PREFILL_MODEL` | No | Model for checkpoint pre-fill — test Haiku vs Sonnet |
-| `SUGGESTIONS_MODEL` | No | Model for suggestions — Sonnet recommended |
+| `EXTRACT_MODEL` | No | Model for brief extraction - Haiku is fine and cheaper |
+| `PREFILL_MODEL` | No | Model for checkpoint pre-fill - test Haiku vs Sonnet |
+| `SUGGESTIONS_MODEL` | No | Model for suggestions - Sonnet recommended |
 
 Per-route vars take precedence over `ANTHROPIC_MODEL`. Omit them to use the default.
 
@@ -75,4 +75,4 @@ No database, no migrations, no user accounts.
 
 ## License
 
-MIT — see [LICENSE](LICENSE).
+MIT - see [LICENSE](LICENSE).

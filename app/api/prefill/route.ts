@@ -31,7 +31,7 @@ export async function POST(req: Request) {
       .map(id => {
         const def = getCheckpointDef(id)
         if (!def) return null
-        return `Checkpoint ${id} (UDL 3.0 ${def.code} — ${def.title}):
+        return `Checkpoint ${id} (UDL 3.0 ${def.code} - ${def.title}):
 Principle: ${def.principle} · Guideline: ${def.guideline}
 Harmful practices: ${def.harmful.join('; ')}
 Helpful practices: ${def.helpful.join('; ')}`
@@ -101,7 +101,7 @@ For each assessment, rate EVERY checkpoint listed. Return a JSON array with this
 
 Important:
 - Base ratings on the documents, self-report answers, and any extra notes. If none of these are present, use the assessment type as context.
-- Be realistic — most assessments will have a mix of "not_yet" and "partial" with a few "met".
+- Be realistic - most assessments will have a mix of "not_yet" and "partial" with a few "met".
 - Keep reasoning to one sentence.
 - Return ONLY the JSON array, no other text.`
 

@@ -8,7 +8,7 @@ interface Props {
 }
 
 export function AssessmentCard({ assessment, onEdit, onRemove }: Props) {
-  const laneLabel = assessment.lane === 'lane1' ? 'Lane 1 — Secure' : 'Lane 2 — Non-secure'
+  const laneLabel = assessment.lane === 'lane1' ? 'Lane 1 - Secure' : 'Lane 2 - Non-secure'
   return (
     <div className="rounded-xl border border-sand bg-white p-5 flex items-start justify-between gap-4">
       <div className="flex-1 min-w-0">

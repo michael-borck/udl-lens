@@ -13,7 +13,7 @@ export default function AboutPage() {
           <h3 className="font-display text-xl text-teal mb-3">What is UDL?</h3>
           <p className="text-teal/70 leading-relaxed mb-3">
             Universal Design for Learning (UDL) is a framework for designing teaching and assessment
-            so that all students can access, engage with, and demonstrate their learning — regardless
+            so that all students can access, engage with, and demonstrate their learning - regardless
             of their background, abilities, or learning preferences.
           </p>
           <p className="text-teal/70 leading-relaxed">
@@ -45,7 +45,7 @@ export default function AboutPage() {
               <div>
                 <p className="font-medium text-teal mb-1">Add your assessments</p>
                 <p className="text-teal/60 text-sm leading-relaxed">
-                  Describe each assessment in your unit — name, type, and A2030 lane. You can
+                  Describe each assessment in your unit - name, type, and A2030 lane. You can
                   optionally upload up to three documents (brief, rubric, exemplar) and answer
                   a short self-report about classroom delivery. Several UDL 3.0 practices live
                   in how you teach rather than in any document, so the self-report fills that
@@ -61,7 +61,7 @@ export default function AboutPage() {
                   An AI reads your brief and pre-fills a UDL rating (Not yet / Partially / Met)
                   for each relevant checkpoint, with a brief explanation. You verify each rating and
                   can override it. The goal is to reduce blank-slate fatigue while keeping you in
-                  control — and ensuring you engage with what each checkpoint actually means.
+                  control - and ensuring you engage with what each checkpoint actually means.
                 </p>
               </div>
             </li>
@@ -83,7 +83,7 @@ export default function AboutPage() {
           <h3 className="font-display text-xl text-teal mb-3">Privacy</h3>
           <p className="text-teal/70 leading-relaxed">
             Nothing is stored. Your assessment data and uploaded briefs exist only in your browser
-            session and are sent to the AI solely to generate ratings — they are not retained. There
+            session and are sent to the AI solely to generate ratings - they are not retained. There
             are no user accounts, no cookies, and no analytics.
           </p>
         </section>

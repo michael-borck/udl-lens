@@ -48,7 +48,7 @@ interface ReportProps {
 function UdlReport({ checkpoints, assessments, principleScores, overallScore, gradeLabel, suggestions }: ReportProps) {
   const unitName = assessments.map(a => a.name).join(', ')
   return (
-    <Document title="UDL Lens Report" author="UDL Lens — Curtin University">
+    <Document title="UDL Lens Report" author="UDL Lens - Curtin University">
       <Page size="A4" style={styles.page}>
         {/* Header */}
         <View style={styles.header}>
@@ -129,7 +129,7 @@ function UdlReport({ checkpoints, assessments, principleScores, overallScore, gr
             return (
               <View key={`${c.checkpointId}-${c.assessmentId}`} style={styles.tableRow}>
                 <Text style={[styles.tableCell, { flex: 2 }]}>{def.code} {def.title}</Text>
-                <Text style={[styles.tableCell, { flex: 1.5, color: '#6B8899' }]}>{assessment?.name ?? '—'}</Text>
+                <Text style={[styles.tableCell, { flex: 1.5, color: '#6B8899' }]}>{assessment?.name ?? '-'}</Text>
                 <Text style={[styles.tableCell, { flex: 0.8 }]}>{RATING_LABEL[rating]}</Text>
               </View>
             )
@@ -157,7 +157,7 @@ export function PdfDownloadButton(props: PdfDownloadButtonProps) {
           disabled={loading}
           className="rounded-lg bg-teal text-white px-5 py-2 text-sm font-medium hover:bg-teal-light transition-colors disabled:opacity-60"
         >
-          {loading ? 'Preparing PDF…' : error ? 'PDF unavailable — try again' : 'Download PDF report'}
+          {loading ? 'Preparing PDF…' : error ? 'PDF unavailable - try again' : 'Download PDF report'}
         </button>
       )}
     </PDFDownloadLink>

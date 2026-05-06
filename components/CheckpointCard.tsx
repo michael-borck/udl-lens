@@ -12,7 +12,7 @@ interface Props {
 
 const RATING_OPTIONS: { value: Rating; label: string; help: string; color: string }[] = [
   { value: 'not_yet', label: 'Not yet', help: 'Absent or unclear from the brief', color: 'border-red-300 text-red-700 bg-red-50 hover:bg-red-100' },
-  { value: 'partial', label: 'Partially', help: 'Addressed in part — room to strengthen', color: 'border-amber text-teal bg-amber/10 hover:bg-amber/20' },
+  { value: 'partial', label: 'Partially', help: 'Addressed in part - room to strengthen', color: 'border-amber text-teal bg-amber/10 hover:bg-amber/20' },
   { value: 'met', label: 'Met', help: 'Clearly supported by the assessment', color: 'border-green-400 text-green-800 bg-green-50 hover:bg-green-100' },
 ]
 
@@ -49,7 +49,7 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
           <span className="inline-block text-xs font-medium bg-teal/10 text-teal rounded px-2 py-0.5 mb-1.5">
             {def.principle} · {def.guideline}
           </span>
-          <h2 className="font-display text-lg text-teal leading-snug">{def.code} — {def.title}</h2>
+          <h2 className="font-display text-lg text-teal leading-snug">{def.code} - {def.title}</h2>
           <p className="text-xs text-teal/60 mt-0.5">Assessment: <strong>{assessment.name}</strong></p>
         </div>
         {/* Rated badge */}
@@ -82,7 +82,7 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
         </p>
       </div>
 
-      {/* Examples (collapsed) — generic patterns, NOT findings about the user's upload */}
+      {/* Examples (collapsed) - generic patterns, NOT findings about the user's upload */}
       <details className="group rounded-lg border border-sand bg-cream/40">
         <summary className="cursor-pointer list-none px-3 py-2 text-xs font-medium text-teal/70 flex items-center justify-between hover:bg-cream/70 rounded-lg transition-colors">
           <span>Examples of patterns to watch for <span className="text-teal/40">· not findings about your upload</span></span>
