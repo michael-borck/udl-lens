@@ -1,5 +1,7 @@
 'use client'
 
+import { useEffect, useRef } from 'react'
+
 export interface Candidate {
   title: string
   content: string
@@ -13,15 +15,36 @@ interface Props {
 }
 
 export function AssessmentPickerModal({ candidates, onSelect, onClose, title = 'Multiple items found' }: Props) {
+  const closeButtonRef = useRef<HTMLButtonElement>(null)
+
+  useEffect(() => {
+    closeButtonRef.current?.focus()
+    function onKey(e: KeyboardEvent) {
+      if (e.key === 'Escape') onClose()
+    }
+    window.addEventListener('keydown', onKey)
+    return () => window.removeEventListener('keydown', onKey)
+  }, [onClose])
+
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
-      <div className="bg-white rounded-2xl border border-sand max-w-lg w-full max-h-[80vh] flex flex-col">
+    <div
+      className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4"
+      onClick={onClose}
+    >
+      <div
+        role="dialog"
+        aria-modal="true"
+        aria-labelledby="picker-title"
+        className="bg-white rounded-2xl border border-sand max-w-lg w-full max-h-[80vh] flex flex-col"
+        onClick={e => e.stopPropagation()}
+      >
         <div className="px-5 py-4 border-b border-sand flex items-center justify-between">
-          <h2 className="font-display text-xl text-teal">{title}</h2>
+          <h2 id="picker-title" className="font-display text-xl text-teal">{title}</h2>
           <button
+            ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className="text-teal/50 hover:text-teal text-xl leading-none"
+            className="text-teal/50 hover:text-teal text-xl leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/60 rounded"
             aria-label="Close picker"
           >
             ×
@@ -33,7 +56,7 @@ export function AssessmentPickerModal({ candidates, onSelect, onClose, title = '
               key={i}
               type="button"
               onClick={() => onSelect(c)}
-              className="w-full text-left rounded-lg border border-sand hover:border-teal/40 hover:bg-teal/5 px-4 py-3 transition-colors"
+              className="w-full text-left rounded-lg border border-sand hover:border-teal/40 hover:bg-teal/5 px-4 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/60"
             >
               <p className="font-medium text-teal">{c.title}</p>
               <p className="text-xs text-teal/60 mt-1">

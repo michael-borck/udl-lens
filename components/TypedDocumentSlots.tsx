@@ -60,7 +60,7 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
         if (type === 'brief' && fallback) {
           finishUpload(type, file.name, fallback)
         } else {
-          setUploadError(`Could not find a ${type} in that document. Try uploading a different file.`)
+          setUploadError(`Could not find ${type === 'exemplar' ? 'an' : 'a'} ${type} in that document. Try uploading a different file.`)
         }
         return
       }
