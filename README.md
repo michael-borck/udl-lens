@@ -7,7 +7,7 @@ Built as a prototype for an iSoLT grant collaboration with Luke (Teaching Suppor
 ## What it does
 
 1. **Add assessments** — describe your unit's assessments (Written Report, Portfolio, Interactive Oral, etc.) with optional brief upload (PDF or DOCX)
-2. **Review checkpoints** — Claude pre-fills a UDL rating for each checkpoint based on your brief; you verify or override each rating
+2. **Review checkpoints** — AI pre-fills a UDL rating for each checkpoint based on your brief; you verify or override each rating
 3. **See results** — radar chart across 6 UDL dimensions, quick wins, longer-term improvements, and a downloadable PDF report
 
 No login. No database. Session state only.

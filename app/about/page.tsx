@@ -55,7 +55,7 @@ export default function AboutPage() {
               <div>
                 <p className="font-medium text-teal mb-1">Review AI-assisted checkpoint ratings</p>
                 <p className="text-teal/60 text-sm leading-relaxed">
-                  Claude reads your brief and pre-fills a UDL rating (Not yet / Partially / Met)
+                  An AI reads your brief and pre-fills a UDL rating (Not yet / Partially / Met)
                   for each relevant checkpoint, with a brief explanation. You verify each rating and
                   can override it. The goal is to reduce blank-slate fatigue while keeping you in
                   control — and ensuring you engage with what each checkpoint actually means.

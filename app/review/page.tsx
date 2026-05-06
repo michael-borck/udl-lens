@@ -133,7 +133,7 @@ export default function ReviewPage() {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="w-8 h-8 border-4 border-teal/20 border-t-teal rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-sm text-teal/60">Claude is pre-filling checkpoint ratings…</p>
+            <p className="text-sm text-teal/60">AI is pre-filling checkpoint ratings…</p>
           </div>
         </div>
       ) : (

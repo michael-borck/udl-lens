@@ -141,7 +141,7 @@ export default function ResultsPage() {
           {loadingSuggestions ? (
             <div className="flex items-center gap-3 text-teal/60">
               <div className="w-5 h-5 border-2 border-teal/20 border-t-teal rounded-full animate-spin" />
-              <span className="text-sm">Claude is generating recommendations…</span>
+              <span className="text-sm">AI is generating recommendations…</span>
             </div>
           ) : suggestionsError ? (
             <p className="text-sm text-terracotta">

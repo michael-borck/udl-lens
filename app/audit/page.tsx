@@ -63,7 +63,7 @@ export default function SetupPage() {
 
         <h2 className="font-display text-3xl text-teal mb-2">What assessments are in your unit?</h2>
         <p className="text-teal/60 mb-8">
-          Add each assessment separately. For each one, you can upload the assignment brief and Claude will pre-fill the UDL checkpoint ratings for you to verify.
+          Add each assessment separately. For each one, you can upload the assignment brief and the AI will pre-fill the UDL checkpoint ratings for you to verify.
         </p>
 
         {/* Assessment list */}
@@ -104,7 +104,7 @@ export default function SetupPage() {
           <div className="mt-8 pt-8 border-t border-sand">
             <p className="text-sm text-teal/60 mb-4">
               {state.assessments.length} assessment{state.assessments.length !== 1 ? 's' : ''} added.
-              Claude will pre-fill UDL ratings for each one &mdash; you&apos;ll verify and adjust them in the next step.
+              The AI will pre-fill UDL ratings for each one &mdash; you&apos;ll verify and adjust them in the next step.
             </p>
             <button
               onClick={handleProceed}
