@@ -1,45 +1,44 @@
 'use client'
 
-interface ExtractedAssessment {
+export interface Candidate {
   title: string
-  description: string
+  content: string
 }
 
 interface Props {
-  assessments: ExtractedAssessment[]
-  onSelect: (assessment: ExtractedAssessment) => void
+  candidates: Candidate[]
+  onSelect: (candidate: Candidate) => void
   onClose: () => void
+  title?: string
 }
 
-export function AssessmentPickerModal({ assessments, onSelect, onClose }: Props) {
+export function AssessmentPickerModal({ candidates, onSelect, onClose, title = 'Multiple items found' }: Props) {
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-      <div className="absolute inset-0 bg-teal/40 backdrop-blur-sm" onClick={onClose} />
-      <div className="relative bg-white rounded-2xl shadow-xl max-w-lg w-full p-6 max-h-[80vh] flex flex-col">
-        <div className="flex items-start justify-between mb-4">
-          <div>
-            <h2 className="font-display text-xl text-teal">Multiple assessments found</h2>
-            <p className="text-sm text-teal/60 mt-0.5">
-              Select the one you&apos;re adding now - you can upload this file again for the others.
-            </p>
-          </div>
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
+      <div className="bg-white rounded-2xl border border-sand max-w-lg w-full max-h-[80vh] flex flex-col">
+        <div className="px-5 py-4 border-b border-sand flex items-center justify-between">
+          <h2 className="font-display text-xl text-teal">{title}</h2>
           <button
+            type="button"
             onClick={onClose}
-            className="text-teal/40 hover:text-teal transition-colors ml-4 shrink-0"
+            className="text-teal/50 hover:text-teal text-xl leading-none"
+            aria-label="Close picker"
           >
-            ✕
+            ×
           </button>
         </div>
-
-        <div className="overflow-y-auto space-y-2">
-          {assessments.map((a, i) => (
+        <div className="flex-1 overflow-y-auto p-3 space-y-2">
+          {candidates.map((c, i) => (
             <button
               key={i}
-              onClick={() => onSelect(a)}
-              className="w-full text-left rounded-xl border border-sand hover:border-teal/30 hover:bg-teal/5 p-4 transition-colors"
+              type="button"
+              onClick={() => onSelect(c)}
+              className="w-full text-left rounded-lg border border-sand hover:border-teal/40 hover:bg-teal/5 px-4 py-3 transition-colors"
             >
-              <p className="font-medium text-teal text-sm">{a.title}</p>
-              <p className="text-xs text-teal/50 mt-1 line-clamp-2">{a.description}</p>
+              <p className="font-medium text-teal">{c.title}</p>
+              <p className="text-xs text-teal/60 mt-1">
+                {c.content.length > 200 ? `${c.content.slice(0, 200)}…` : c.content}
+              </p>
             </button>
           ))}
         </div>

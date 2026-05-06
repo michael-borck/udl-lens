@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import type { AssessmentDocument, DocumentType } from '@/lib/types'
+import { AssessmentPickerModal, type Candidate } from '@/components/AssessmentPickerModal'
 
 interface SlotConfig {
   type: DocumentType
@@ -24,12 +25,20 @@ interface Props {
 export function TypedDocumentSlots({ documents, onChange }: Props) {
   const [uploadingType, setUploadingType] = useState<DocumentType | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
+  const [pickerState, setPickerState] = useState<{ type: DocumentType; candidates: Candidate[] } | null>(null)
+  const pendingFilename = useRef<Record<DocumentType, string>>({ brief: '', rubric: '', exemplar: '' })
   const fileInputs = useRef<Record<DocumentType, HTMLInputElement | null>>({
     brief: null, rubric: null, exemplar: null,
   })
 
   function getDoc(type: DocumentType): AssessmentDocument | undefined {
     return documents.find(d => d.type === type)
+  }
+
+  function finishUpload(type: DocumentType, filename: string, content: string) {
+    const next = documents.filter(d => d.type !== type)
+    next.push({ type, filename, extractedText: content })
+    onChange(next)
   }
 
   async function handleFileUpload(type: DocumentType, e: React.ChangeEvent<HTMLInputElement>) {
@@ -43,11 +52,26 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
       fd.append('documentType', type)
       const res = await fetch('/api/extract', { method: 'POST', body: fd })
       if (!res.ok) throw new Error('Upload failed')
-      const data = await res.json() as { extractedText?: string; assessments?: { title: string; description: string }[] }
-      const extractedText = data.extractedText ?? data.assessments?.[0]?.description ?? ''
-      const next = documents.filter(d => d.type !== type)
-      next.push({ type, filename: file.name, extractedText })
-      onChange(next)
+      const data = await res.json() as { extractedText?: string; candidates?: Candidate[] }
+      const candidates = data.candidates ?? []
+      const fallback = data.extractedText ?? ''
+
+      if (candidates.length === 0) {
+        if (type === 'brief' && fallback) {
+          finishUpload(type, file.name, fallback)
+        } else {
+          setUploadError(`Could not find a ${type} in that document. Try uploading a different file.`)
+        }
+        return
+      }
+
+      if (candidates.length === 1) {
+        finishUpload(type, file.name, candidates[0].content)
+        return
+      }
+
+      pendingFilename.current[type] = file.name
+      setPickerState({ type, candidates })
     } catch {
       setUploadError(`Could not extract text from the ${type}. You can still continue without it.`)
     } finally {
@@ -112,6 +136,21 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
           </div>
         )
       })}
+      {pickerState && (
+        <AssessmentPickerModal
+          candidates={pickerState.candidates}
+          title={
+            pickerState.type === 'brief' ? 'Pick which assessment this is' :
+            pickerState.type === 'rubric' ? 'Pick which rubric to use' :
+            'Pick which exemplar to use'
+          }
+          onSelect={c => {
+            finishUpload(pickerState.type, pendingFilename.current[pickerState.type], c.content)
+            setPickerState(null)
+          }}
+          onClose={() => setPickerState(null)}
+        />
+      )}
       {uploadError && <p className="text-sm text-terracotta">{uploadError}</p>}
     </div>
   )
