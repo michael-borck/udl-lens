@@ -33,7 +33,9 @@ export interface CheckpointResult {
   aiRating: Rating
   aiReasoning: string
   userRating: Rating | null
-  overridden: boolean
+  // true = user deferred to AI (Confirm suggestion / Accept all remaining)
+  // false = user clicked a rating button themselves
+  acceptedAI: boolean
 }
 
 export interface Suggestions {
@@ -50,7 +52,7 @@ export interface SessionState {
 export type SessionAction =
   | { type: 'SET_ASSESSMENTS'; assessments: Assessment[] }
   | { type: 'SET_CHECKPOINTS'; checkpoints: CheckpointResult[] }
-  | { type: 'UPDATE_CHECKPOINT'; checkpointId: string; assessmentId: string; userRating: Rating }
+  | { type: 'UPDATE_CHECKPOINT'; checkpointId: string; assessmentId: string; userRating: Rating; acceptedAI: boolean }
   | { type: 'SET_SUGGESTIONS'; suggestions: Suggestions }
   | { type: 'RESET' }
 

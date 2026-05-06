@@ -48,11 +48,11 @@ export function CheckpointTable({ checkpoints, assessments }: Props) {
                   <span className={`rounded px-2 py-0.5 text-xs font-medium ${RATING_BADGE[rating]}`}>
                     {RATING_LABEL[rating]}
                   </span>
-                  {!c.userRating && (
-                    <span className="ml-1 text-xs text-teal/40 italic">AI</span>
+                  {c.userRating && c.acceptedAI && (
+                    <span className="ml-1 text-xs text-teal/50 italic">AI</span>
                   )}
-                  {c.overridden && (
-                    <span className="ml-1 text-xs text-terracotta italic">edited</span>
+                  {c.userRating && !c.acceptedAI && (
+                    <span className="ml-1 text-xs text-terracotta italic">yours</span>
                   )}
                 </td>
               </tr>

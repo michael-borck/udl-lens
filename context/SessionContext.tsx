@@ -20,11 +20,7 @@ function sessionReducer(state: SessionState, action: SessionAction): SessionStat
         ...state,
         checkpoints: state.checkpoints.map(c =>
           c.checkpointId === action.checkpointId && c.assessmentId === action.assessmentId
-            ? {
-                ...c,
-                userRating: action.userRating,
-                overridden: action.userRating !== c.aiRating,
-              }
+            ? { ...c, userRating: action.userRating, acceptedAI: action.acceptedAI }
             : c
         ),
       }

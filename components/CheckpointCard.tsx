@@ -36,9 +36,10 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
   }, [result.userRating])
 
   const rated = result.userRating !== null
-  // Blue = user confirmed AI suggestion; green = user made their own call
-  const tickColor = result.overridden ? 'text-green-600' : 'text-blue-500'
-  const tickLabel = result.overridden ? 'Your rating' : 'AI confirmed'
+  // Terracotta = human agency (clicked a rating button directly)
+  // Teal = deferred to AI (Confirm suggestion or Accept all remaining)
+  const tickColor = result.acceptedAI ? 'text-teal' : 'text-terracotta'
+  const tickLabel = result.acceptedAI ? 'AI accepted' : 'Your rating'
 
   return (
     <div className="bg-white rounded-2xl border border-sand p-6 space-y-5">
@@ -91,7 +92,7 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
       {/* AI pre-fill */}
       <div className="rounded-lg bg-teal/5 border border-teal/10 p-4">
         <p className="text-xs font-semibold text-teal/70 uppercase tracking-wide mb-1">
-          AI suggestion {result.overridden && <span className="text-terracotta">(you changed this)</span>}
+          AI suggestion {!result.acceptedAI && result.userRating !== null && <span className="text-terracotta">(you set this)</span>}
         </p>
         <p className="text-sm text-teal">
           <span className={`inline-block rounded px-2 py-0.5 text-xs font-bold mr-2 ${
@@ -125,8 +126,8 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
         {/* Confirmation flash */}
         <p className={`text-xs text-center mt-2 transition-opacity duration-300 ${
           flash ? 'opacity-100' : 'opacity-0'
-        } ${result.overridden ? 'text-green-600' : 'text-blue-500'}`}>
-          ✓ {result.overridden ? 'Your rating saved' : 'AI suggestion confirmed'}
+        } ${result.acceptedAI ? 'text-teal' : 'text-terracotta'}`}>
+          ✓ {result.acceptedAI ? 'AI suggestion confirmed' : 'Your rating saved'}
         </p>
       </div>
     </div>

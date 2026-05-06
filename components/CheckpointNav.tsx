@@ -13,12 +13,12 @@ function StatusIcon({ result }: { result: CheckpointResult }) {
     // Pending — grey dot
     return <span className="w-2.5 h-2.5 rounded-full shrink-0 bg-teal/20" />
   }
-  if (result.overridden) {
-    // User made their own call — green checkmark
-    return <span className="text-sm leading-none shrink-0 text-green-600 font-bold">✓</span>
+  if (result.acceptedAI) {
+    // Deferred to AI — teal checkmark
+    return <span className="text-sm leading-none shrink-0 text-teal font-bold">✓</span>
   }
-  // User confirmed AI suggestion — blue checkmark
-  return <span className="text-sm leading-none shrink-0 text-blue-500 font-bold">✓</span>
+  // Human agency — terracotta checkmark
+  return <span className="text-sm leading-none shrink-0 text-terracotta font-bold">✓</span>
 }
 
 export function CheckpointNav({ checkpoints, activeIndex, onSelect, filterAssessmentId }: Props) {

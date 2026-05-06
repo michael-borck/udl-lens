@@ -59,7 +59,7 @@ export default function ReviewPage() {
             aiRating: 'not_yet',
             aiReasoning: 'AI pre-fill unavailable.',
             userRating: null,
-            overridden: false,
+            acceptedAI: false,
           })
         }
       }
@@ -86,6 +86,7 @@ export default function ReviewPage() {
       checkpointId: active.checkpointId,
       assessmentId: active.assessmentId,
       userRating: rating,
+      acceptedAI: false,
     })
     if (activeIndex < checkpoints.length - 1 && active.userRating === null) {
       setTimeout(() => setActiveIndex(i => i + 1), 400)
@@ -100,6 +101,7 @@ export default function ReviewPage() {
       checkpointId: active.checkpointId,
       assessmentId: active.assessmentId,
       userRating: active.aiRating,
+      acceptedAI: true,
     })
     if (activeIndex < checkpoints.length - 1) {
       setTimeout(() => setActiveIndex(i => i + 1), 400)
@@ -114,6 +116,7 @@ export default function ReviewPage() {
         checkpointId: c.checkpointId,
         assessmentId: c.assessmentId,
         userRating: c.aiRating,
+        acceptedAI: true,
       })
     }
   }
@@ -176,10 +179,10 @@ export default function ReviewPage() {
               {/* Legend */}
               <div className="flex gap-3 text-xs text-teal/50 pt-1">
                 <span className="flex items-center gap-1">
-                  <span className="text-blue-500 font-bold">✓</span> AI confirmed
+                  <span className="text-terracotta font-bold">✓</span> Your rating
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="text-green-600 font-bold">✓</span> Your rating
+                  <span className="text-teal font-bold">✓</span> AI accepted
                 </span>
               </div>
               {/* Accept all remaining */}
