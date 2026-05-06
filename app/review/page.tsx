@@ -150,21 +150,21 @@ export default function ReviewPage() {
 
   return (
     <main className="min-h-screen bg-cream">
-      <header className="border-b border-sand bg-white px-6 py-4 flex items-center justify-between">
-        <div>
-          <h1 className="font-display text-xl text-teal">UDL Lens</h1>
-          <div className="flex items-center gap-2 mt-1 text-sm">
-            <span className="text-teal/40">Select Assessments</span>
+      <header className="border-b border-sand bg-white px-6 py-2.5 flex items-center justify-between">
+        <div className="flex items-baseline gap-4">
+          <h1 className="font-display text-lg text-teal">UDL Lens</h1>
+          <div className="flex items-center gap-1.5 text-xs">
+            <span className="text-teal/40">Select</span>
             <span className="text-teal/30">›</span>
-            <span className="font-medium text-teal">Review Checkpoints</span>
+            <span className="font-medium text-teal">Review</span>
             <span className="text-teal/30">›</span>
-            <span className="text-teal/40">Your Results</span>
+            <span className="text-teal/40">Results</span>
           </div>
         </div>
         {allComplete && (
           <button
             onClick={() => router.push('/results')}
-            className="rounded-lg bg-terracotta text-white px-6 py-2 text-sm font-medium hover:bg-terracotta-dark transition-colors"
+            className="rounded-lg bg-terracotta text-white px-5 py-1.5 text-sm font-medium hover:bg-terracotta-dark transition-colors"
           >
             See results →
           </button>
@@ -191,7 +191,7 @@ export default function ReviewPage() {
           </div>
         </div>
       ) : (
-        <div className="flex h-[calc(100vh-73px)]">
+        <div className="flex h-[calc(100vh-49px)]">
           {/* Left nav */}
           <aside className="w-72 border-r border-sand bg-white flex flex-col overflow-hidden shrink-0">
             <div className="p-4 border-b border-sand space-y-2">
@@ -248,7 +248,7 @@ export default function ReviewPage() {
           </aside>
 
           {/* Main content */}
-          <div className="flex-1 overflow-y-auto p-8">
+          <div className="flex-1 overflow-y-auto p-6">
             {activeCheckpoint && activeDef && activeAssessment ? (
               <div className="max-w-2xl mx-auto">
                 <CheckpointCard
@@ -258,7 +258,7 @@ export default function ReviewPage() {
                   onRate={handleRate}
                 />
                 {/* Navigation: Previous / Confirm suggestion / Next */}
-                <div className="flex items-center justify-between mt-6 gap-2">
+                <div className="flex items-center justify-between mt-4 gap-2">
                   <button
                     onClick={() => setActiveIndex(i => Math.max(0, i - 1))}
                     disabled={activeIndex === 0}

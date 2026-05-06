@@ -8,7 +8,7 @@ import {
   StyleSheet,
   PDFDownloadLink,
 } from '@react-pdf/renderer'
-import type { CheckpointResult, Assessment, DimensionScore, Suggestions } from '@/lib/types'
+import type { CheckpointResult, Assessment, PrincipleScore, Suggestions } from '@/lib/types'
 import { getCheckpointDef } from '@/lib/udl'
 
 const styles = StyleSheet.create({
@@ -39,13 +39,13 @@ const RATING_LABEL: Record<string, string> = { met: 'Met', partial: 'Partial', n
 interface ReportProps {
   checkpoints: CheckpointResult[]
   assessments: Assessment[]
-  dimensionScores: DimensionScore[]
+  principleScores: PrincipleScore[]
   overallScore: number
   gradeLabel: string
   suggestions: Suggestions | null
 }
 
-function UdlReport({ checkpoints, assessments, dimensionScores, overallScore, gradeLabel, suggestions }: ReportProps) {
+function UdlReport({ checkpoints, assessments, principleScores, overallScore, gradeLabel, suggestions }: ReportProps) {
   const unitName = assessments.map(a => a.name).join(', ')
   return (
     <Document title="UDL Lens Report" author="UDL Lens — Curtin University">
@@ -68,11 +68,11 @@ function UdlReport({ checkpoints, assessments, dimensionScores, overallScore, gr
           </View>
         </View>
 
-        {/* Dimension scores */}
+        {/* Principle scores */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>UDL Dimension Scores</Text>
-          {dimensionScores.map(s => (
-            <View key={s.dimension} style={{ marginBottom: 8 }}>
+          <Text style={styles.sectionTitle}>UDL Principle Scores</Text>
+          {principleScores.map(s => (
+            <View key={s.principle} style={{ marginBottom: 8 }}>
               <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 2 }}>
                 <Text style={{ fontSize: 10, color: '#1B3A4B' }}>{s.label}</Text>
                 <Text style={{ fontSize: 10, color: '#6B8899' }}>{s.percentage}%</Text>

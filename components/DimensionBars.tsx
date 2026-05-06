@@ -1,14 +1,14 @@
-import type { DimensionScore } from '@/lib/types'
+import type { PrincipleScore } from '@/lib/types'
 
 interface Props {
-  scores: DimensionScore[]
+  scores: PrincipleScore[]
 }
 
 export function DimensionBars({ scores }: Props) {
   return (
     <div className="space-y-3">
       {scores.map(s => (
-        <div key={s.dimension}>
+        <div key={s.principle}>
           <div className="flex justify-between items-baseline mb-1">
             <span className="text-sm font-medium text-teal">{s.label}</span>
             <span className="text-xs text-teal/50 tabular-nums">{s.percentage}%</span>

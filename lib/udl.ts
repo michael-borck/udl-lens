@@ -29,19 +29,13 @@ export function getCheckpointDefsForAssessments(assessments: Assessment[]): Chec
 
 export function getAssessmentTypeLabel(type: string): string {
   const labels: Record<string, string> = {
-    written_report: 'Written Report',
-    portfolio: 'Portfolio',
-    field_journal: 'Field Journal',
-    invigilated_exam: 'Invigilated Exam',
-    interactive_oral: 'Interactive Oral',
+    interactive_oral: 'Interactive Oral (Collaborative)',
+    field_journal: 'Field Journal with Media Analysis',
   }
   return labels[type] ?? type
 }
 
 export const ASSESSMENT_TYPE_OPTIONS = [
-  { value: 'written_report', label: 'Written Report', lane: 'lane2' as const },
-  { value: 'portfolio', label: 'Portfolio', lane: 'lane2' as const },
-  { value: 'field_journal', label: 'Field Journal', lane: 'lane2' as const },
-  { value: 'invigilated_exam', label: 'Invigilated Exam', lane: 'lane1' as const },
-  { value: 'interactive_oral', label: 'Interactive Oral', lane: 'lane1' as const },
+  { value: 'interactive_oral', label: 'Interactive Oral (Collaborative)', lane: 'lane1' as const },
+  { value: 'field_journal', label: 'Field Journal with Media Analysis', lane: 'lane2' as const },
 ]

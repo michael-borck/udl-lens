@@ -1,14 +1,7 @@
-import type { CheckpointResult, DimensionScore, Dimension } from '@/lib/types'
+import type { CheckpointResult, PrincipleScore, Principle } from '@/lib/types'
 import { getCheckpointDef } from '@/lib/udl'
 
-const DIMENSION_LABELS: Record<Dimension, string> = {
-  representation: 'Representation',
-  engagement: 'Engagement',
-  expression: 'Expression',
-  accessibility: 'Accessibility',
-  flexibility: 'Flexibility',
-  equity: 'Equity',
-}
+const PRINCIPLES: Principle[] = ['Engagement', 'Representation', 'Action & Expression']
 
 function ratingValue(rating: CheckpointResult['userRating'] | CheckpointResult['aiRating']): number {
   if (rating === 'met') return 1
@@ -16,22 +9,21 @@ function ratingValue(rating: CheckpointResult['userRating'] | CheckpointResult['
   return 0
 }
 
-export function computeDimensionScores(checkpoints: CheckpointResult[]): DimensionScore[] {
-  const dimensions = Object.keys(DIMENSION_LABELS) as Dimension[]
-  return dimensions.map(dimension => {
+export function computePrincipleScores(checkpoints: CheckpointResult[]): PrincipleScore[] {
+  return PRINCIPLES.map(principle => {
     const relevant = checkpoints.filter(c => {
       const def = getCheckpointDef(c.checkpointId)
-      return def?.dimension === dimension
+      return def?.principle === principle
     })
     if (relevant.length === 0) {
-      return { dimension, label: DIMENSION_LABELS[dimension], score: 0, total: 0, percentage: 0 }
+      return { principle, label: principle, score: 0, total: 0, percentage: 0 }
     }
     const score = relevant.reduce((sum, c) => {
       const rating = c.userRating ?? c.aiRating
       return sum + ratingValue(rating)
     }, 0)
     const percentage = Math.round((score / relevant.length) * 100)
-    return { dimension, label: DIMENSION_LABELS[dimension], score, total: relevant.length, percentage }
+    return { principle, label: principle, score, total: relevant.length, percentage }
   })
 }
 

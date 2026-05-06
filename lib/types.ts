@@ -1,13 +1,7 @@
 export type Rating = 'not_yet' | 'partial' | 'met'
 export type Lane = 'lane1' | 'lane2'
-export type AssessmentType = 'written_report' | 'portfolio' | 'field_journal' | 'invigilated_exam' | 'interactive_oral'
-export type Dimension =
-  | 'representation'
-  | 'engagement'
-  | 'expression'
-  | 'accessibility'
-  | 'flexibility'
-  | 'equity'
+export type AssessmentType = 'interactive_oral' | 'field_journal'
+export type Principle = 'Engagement' | 'Representation' | 'Action & Expression'
 
 export interface Assessment {
   id: string
@@ -19,10 +13,10 @@ export interface Assessment {
 
 export interface CheckpointDef {
   code: string
-  principle: 'Representation' | 'Engagement' | 'Expression'
-  dimension: Dimension
+  principle: Principle
+  guideline: string
   title: string
-  description: string
+  description?: string
   harmful: string[]
   helpful: string[]
 }
@@ -61,8 +55,8 @@ export interface UdlData {
   assessmentTypes: Record<AssessmentType, string[]>
 }
 
-export interface DimensionScore {
-  dimension: Dimension
+export interface PrincipleScore {
+  principle: Principle
   label: string
   score: number
   total: number

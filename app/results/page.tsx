@@ -5,18 +5,18 @@ import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { ResetModal } from '@/components/ResetModal'
 import { useSession } from '@/context/SessionContext'
-import { computeDimensionScores, computeOverallScore, getGradeLabel } from '@/lib/scoring'
+import { computePrincipleScores, computeOverallScore, getGradeLabel } from '@/lib/scoring'
 import { ResultsRadarChart } from '@/components/ResultsRadarChart'
 import { DimensionBars } from '@/components/DimensionBars'
 import { CheckpointTable } from '@/components/CheckpointTable'
 import { SuggestionsList } from '@/components/SuggestionsList'
-import type { Suggestions, CheckpointResult, Assessment, DimensionScore } from '@/lib/types'
+import type { Suggestions, CheckpointResult, Assessment, PrincipleScore } from '@/lib/types'
 
 // ── Placeholder types for components added in Tasks 11 and 12 ──────────────
 interface PdfDownloadButtonProps {
   checkpoints: CheckpointResult[]
   assessments: Assessment[]
-  dimensionScores: DimensionScore[]
+  principleScores: PrincipleScore[]
   overallScore: number
   gradeLabel: string
   suggestions: Suggestions | null
@@ -75,22 +75,22 @@ export default function ResultsPage() {
 
   if (assessments.length === 0) return null
 
-  const dimensionScores = computeDimensionScores(checkpoints)
+  const principleScores = computePrincipleScores(checkpoints)
   const overallScore = computeOverallScore(checkpoints)
   const gradeLabel = getGradeLabel(overallScore)
   const unitName = assessments.map(a => a.name).join(', ')
 
   return (
     <main className="min-h-screen bg-cream">
-      <header className="border-b border-sand bg-white px-6 py-4 flex items-center justify-between">
-        <div>
-          <h1 className="font-display text-xl text-teal">UDL Lens</h1>
-          <div className="flex items-center gap-2 mt-1 text-sm">
-            <span className="text-teal/40">Select Assessments</span>
+      <header className="border-b border-sand bg-white px-6 py-2.5 flex items-center justify-between">
+        <div className="flex items-baseline gap-4">
+          <h1 className="font-display text-lg text-teal">UDL Lens</h1>
+          <div className="flex items-center gap-1.5 text-xs">
+            <span className="text-teal/40">Select</span>
             <span className="text-teal/30">›</span>
-            <span className="text-teal/40">Review Checkpoints</span>
+            <span className="text-teal/40">Review</span>
             <span className="text-teal/30">›</span>
-            <span className="font-medium text-teal">Your Results</span>
+            <span className="font-medium text-teal">Results</span>
           </div>
         </div>
         <div className="flex gap-3">
@@ -123,15 +123,30 @@ export default function ResultsPage() {
           </div>
         </div>
 
-        {/* Radar + dimension bars */}
+        {/* Whole-of-unit hint */}
+        {(() => {
+          const hasZero = principleScores.some(s => s.percentage === 0)
+          const singleAssessment = assessments.length === 1
+          if (!hasZero && !singleAssessment) return null
+          return (
+            <div className="rounded-xl bg-amber/10 border border-amber/40 p-4 text-sm text-teal/80 leading-relaxed">
+              <strong className="text-teal font-semibold">UDL is read across the whole unit.</strong>{' '}
+              {singleAssessment
+                ? "A single assessment usually can't address every principle on its own. Add your unit's other assessments for a fuller picture."
+                : "Principles showing 0% may reflect the focus of these assessment types rather than a unit-level gap. Adding more assessments from your unit can sharpen the picture."}
+            </div>
+          )
+        })()}
+
+        {/* Radar + principle bars */}
         <div className="grid grid-cols-2 gap-8">
           <div className="bg-white rounded-2xl border border-sand p-6">
-            <h3 className="font-display text-xl text-teal mb-4">UDL Dimensions</h3>
-            <ResultsRadarChart scores={dimensionScores} />
+            <h3 className="font-display text-xl text-teal mb-4">UDL Principles</h3>
+            <ResultsRadarChart scores={principleScores} />
           </div>
           <div className="bg-white rounded-2xl border border-sand p-6">
             <h3 className="font-display text-xl text-teal mb-4">Breakdown</h3>
-            <DimensionBars scores={dimensionScores} />
+            <DimensionBars scores={principleScores} />
           </div>
         </div>
 
@@ -163,7 +178,7 @@ export default function ResultsPage() {
           <PdfDownloadButton
             checkpoints={checkpoints}
             assessments={assessments}
-            dimensionScores={dimensionScores}
+            principleScores={principleScores}
             overallScore={overallScore}
             gradeLabel={gradeLabel}
             suggestions={suggestions}

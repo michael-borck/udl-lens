@@ -31,8 +31,8 @@ export async function POST(req: Request) {
       .map(id => {
         const def = getCheckpointDef(id)
         if (!def) return null
-        return `Checkpoint ${id} (${def.code} — ${def.title}):
-Dimension: ${def.dimension}
+        return `Checkpoint ${id} (UDL 3.0 ${def.code} — ${def.title}):
+Principle: ${def.principle} · Guideline: ${def.guideline}
 Harmful practices: ${def.harmful.join('; ')}
 Helpful practices: ${def.helpful.join('; ')}`
       })

@@ -30,10 +30,10 @@ export default function AboutPage() {
           <p className="text-teal/70 leading-relaxed">
             Assessment 2030 (A2030) is Curtin University&apos;s initiative to redesign assessment
             practice for a changing world. It introduces a two-lane structure: <strong className="text-teal">Lane 1
-            (Secure)</strong> assessments like invigilated exams and interactive orals, and <strong className="text-teal">Lane 2
-            (Non-secure)</strong> assessments like portfolios, field journals, and written reports.
-            UDL Lens uses this structure to focus the audit on the checkpoints most relevant to each
-            assessment type.
+            (Secure)</strong> assessments like interactive orals, and <strong className="text-teal">Lane 2
+            (Non-secure)</strong> assessments like field journals with media analysis. The current
+            prototype focuses on these two assessment types, with UDL 3.0 checkpoints curated by
+            Curtin Teaching Support for each.
           </p>
         </section>
 
@@ -67,7 +67,7 @@ export default function AboutPage() {
               <div>
                 <p className="font-medium text-teal mb-1">Get your results</p>
                 <p className="text-teal/60 text-sm leading-relaxed">
-                  See a radar chart across six UDL dimensions, a breakdown by checkpoint, and
+                  See a radar chart across the three UDL principles, a breakdown by checkpoint, and
                   concrete quick wins and longer-term suggestions. Download a PDF report suitable
                   for a teaching support conversation or professional development evidence.
                 </p>

@@ -38,7 +38,7 @@ export async function POST(req: Request) {
         const def = getCheckpointDef(c.checkpointId)
         const assessment = assessments.find(a => a.id === c.assessmentId)
         const rating = c.userRating ?? c.aiRating
-        return `[${rating === 'not_yet' ? 'GAP' : 'PARTIAL'}] Assessment "${assessment?.name}" — ${def?.code} ${def?.title} (${def?.dimension})`
+        return `[${rating === 'not_yet' ? 'GAP' : 'PARTIAL'}] Assessment "${assessment?.name}" — UDL ${def?.code} ${def?.title} (${def?.principle})`
       })
       .join('\n')
 
