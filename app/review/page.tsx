@@ -49,7 +49,6 @@ export default function ReviewPage() {
       dispatch({ type: 'SET_CHECKPOINTS', checkpoints: data })
     } catch {
       setPrefillError('AI pre-fill is temporarily unavailable. You can still rate checkpoints manually.')
-      // Create blank checkpoints so user can proceed
       const blank: CheckpointResult[] = []
       for (const a of assessments) {
         const ids = getCheckpointIdsForAssessments([a])
@@ -76,6 +75,7 @@ export default function ReviewPage() {
   }, [runPrefill])
 
   const completedCount = checkpoints.filter(c => c.userRating !== null).length
+  const remainingCount = checkpoints.length - completedCount
   const allComplete = completedCount === checkpoints.length && checkpoints.length > 0
 
   function handleRate(rating: Rating) {
@@ -88,7 +88,33 @@ export default function ReviewPage() {
       userRating: rating,
     })
     if (activeIndex < checkpoints.length - 1 && active.userRating === null) {
-      setTimeout(() => setActiveIndex(i => i + 1), 250)
+      setTimeout(() => setActiveIndex(i => i + 1), 400)
+    }
+  }
+
+  function handleAcceptAI() {
+    const active = checkpoints[activeIndex]
+    if (!active) return
+    dispatch({
+      type: 'UPDATE_CHECKPOINT',
+      checkpointId: active.checkpointId,
+      assessmentId: active.assessmentId,
+      userRating: active.aiRating,
+    })
+    if (activeIndex < checkpoints.length - 1) {
+      setTimeout(() => setActiveIndex(i => i + 1), 400)
+    }
+  }
+
+  function handleAcceptAllRemaining() {
+    const unreviewed = checkpoints.filter(c => c.userRating === null)
+    for (const c of unreviewed) {
+      dispatch({
+        type: 'UPDATE_CHECKPOINT',
+        checkpointId: c.checkpointId,
+        assessmentId: c.assessmentId,
+        userRating: c.aiRating,
+      })
     }
   }
 
@@ -140,9 +166,33 @@ export default function ReviewPage() {
         <div className="flex h-[calc(100vh-73px)]">
           {/* Left nav */}
           <aside className="w-72 border-r border-sand bg-white flex flex-col overflow-hidden shrink-0">
-            <div className="p-4 border-b border-sand">
+            <div className="p-4 border-b border-sand space-y-2">
               <ProgressBar completed={completedCount} total={checkpoints.length} />
+              {!allComplete && (
+                <p className="text-xs text-teal/50">
+                  Rate all checkpoints to view your results
+                </p>
+              )}
+              {/* Legend */}
+              <div className="flex gap-3 text-xs text-teal/50 pt-1">
+                <span className="flex items-center gap-1">
+                  <span className="text-blue-500 font-bold">✓</span> AI confirmed
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="text-green-600 font-bold">✓</span> Your rating
+                </span>
+              </div>
+              {/* Accept all remaining */}
+              {remainingCount > 0 && (
+                <button
+                  onClick={handleAcceptAllRemaining}
+                  className="w-full text-xs text-teal/60 hover:text-teal border border-teal/20 hover:border-teal/40 rounded-lg py-1.5 transition-colors"
+                >
+                  Accept AI for {remainingCount} remaining
+                </button>
+              )}
             </div>
+
             {/* Assessment filter tabs */}
             <div className="flex gap-1 px-3 pt-3 pb-2 overflow-x-auto">
               <button
@@ -185,8 +235,8 @@ export default function ReviewPage() {
                   assessment={activeAssessment}
                   onRate={handleRate}
                 />
-                {/* Prev/Next navigation */}
-                <div className="flex justify-between mt-6">
+                {/* Navigation: Previous / Accept AI / Next */}
+                <div className="flex items-center justify-between mt-6">
                   <button
                     onClick={() => setActiveIndex(i => Math.max(0, i - 1))}
                     disabled={activeIndex === 0}
@@ -194,9 +244,12 @@ export default function ReviewPage() {
                   >
                     ← Previous
                   </button>
-                  <span className="text-xs text-teal/40">
-                    {activeIndex + 1} of {checkpoints.length}
-                  </span>
+                  <button
+                    onClick={handleAcceptAI}
+                    className="rounded-lg border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-1.5 text-sm font-medium transition-colors"
+                  >
+                    ✓ Accept AI
+                  </button>
                   <button
                     onClick={() => setActiveIndex(i => Math.min(checkpoints.length - 1, i + 1))}
                     disabled={activeIndex === checkpoints.length - 1}

@@ -1,3 +1,6 @@
+'use client'
+
+import { useState, useEffect } from 'react'
 import type { CheckpointResult, CheckpointDef, Rating, Assessment } from '@/lib/types'
 
 interface Props {
@@ -21,6 +24,22 @@ const SELECTED: Record<Rating, string> = {
 
 export function CheckpointCard({ result, def, assessment, onRate }: Props) {
   const effectiveRating = result.userRating ?? null
+  const [flash, setFlash] = useState(false)
+
+  // Brief confirmation flash when a rating is set
+  useEffect(() => {
+    if (result.userRating !== null) {
+      setFlash(true)
+      const t = setTimeout(() => setFlash(false), 1200)
+      return () => clearTimeout(t)
+    }
+  }, [result.userRating])
+
+  const rated = result.userRating !== null
+  // Blue = user confirmed AI suggestion; green = user made their own call
+  const tickColor = result.overridden ? 'text-green-600' : 'text-blue-500'
+  const tickLabel = result.overridden ? 'Your rating' : 'AI confirmed'
+
   return (
     <div className="bg-white rounded-2xl border border-sand p-6 space-y-5">
       {/* Header */}
@@ -32,6 +51,13 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
           <h2 className="font-display text-xl text-teal">{def.code} — {def.title}</h2>
           <p className="text-sm text-teal/60 mt-1">Assessment: <strong>{assessment.name}</strong></p>
         </div>
+        {/* Rated badge */}
+        {rated && (
+          <div className={`flex flex-col items-center shrink-0 mt-1 ${tickColor}`}>
+            <span className="text-2xl leading-none">✓</span>
+            <span className="text-xs font-medium mt-0.5 whitespace-nowrap">{tickLabel}</span>
+          </div>
+        )}
       </div>
 
       <p className="text-sm text-teal/80 leading-relaxed">{def.description}</p>
@@ -65,7 +91,7 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
       {/* AI pre-fill */}
       <div className="rounded-lg bg-teal/5 border border-teal/10 p-4">
         <p className="text-xs font-semibold text-teal/70 uppercase tracking-wide mb-1">
-          AI pre-fill {result.overridden && <span className="text-terracotta">(overridden by you)</span>}
+          AI suggestion {result.overridden && <span className="text-terracotta">(you changed this)</span>}
         </p>
         <p className="text-sm text-teal">
           <span className={`inline-block rounded px-2 py-0.5 text-xs font-bold mr-2 ${
@@ -81,7 +107,8 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
 
       {/* Rating buttons */}
       <div>
-        <p className="text-sm font-medium text-teal mb-3">Your rating:</p>
+        <p className="text-sm font-semibold text-teal mb-0.5">Select your rating</p>
+        <p className="text-xs text-teal/50 mb-3">Confirm the AI suggestion or choose a different level</p>
         <div className="flex gap-3">
           {RATING_OPTIONS.map(opt => (
             <button
@@ -95,6 +122,12 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
             </button>
           ))}
         </div>
+        {/* Confirmation flash */}
+        <p className={`text-xs text-center mt-2 transition-opacity duration-300 ${
+          flash ? 'opacity-100' : 'opacity-0'
+        } ${result.overridden ? 'text-green-600' : 'text-blue-500'}`}>
+          ✓ {result.overridden ? 'Your rating saved' : 'AI suggestion confirmed'}
+        </p>
       </div>
     </div>
   )

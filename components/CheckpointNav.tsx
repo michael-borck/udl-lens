@@ -8,12 +8,17 @@ interface Props {
   filterAssessmentId: string | null
 }
 
-function statusClass(result: CheckpointResult): string {
-  const rating = result.userRating ?? null
-  if (rating === null) return 'status-dot-pending'
-  if (rating === 'met') return 'status-dot-met'
-  if (rating === 'partial') return 'status-dot-partial'
-  return 'status-dot-gap'
+function StatusIcon({ result }: { result: CheckpointResult }) {
+  if (result.userRating === null) {
+    // Pending — grey dot
+    return <span className="w-2.5 h-2.5 rounded-full shrink-0 bg-teal/20" />
+  }
+  if (result.overridden) {
+    // User made their own call — green checkmark
+    return <span className="text-sm leading-none shrink-0 text-green-600 font-bold">✓</span>
+  }
+  // User confirmed AI suggestion — blue checkmark
+  return <span className="text-sm leading-none shrink-0 text-blue-500 font-bold">✓</span>
 }
 
 export function CheckpointNav({ checkpoints, activeIndex, onSelect, filterAssessmentId }: Props) {
@@ -37,7 +42,7 @@ export function CheckpointNav({ checkpoints, activeIndex, onSelect, filterAssess
               isActive ? 'bg-teal text-white' : 'text-teal/70 hover:bg-sand'
             }`}
           >
-            <span className={`w-2.5 h-2.5 rounded-full shrink-0 ${statusClass(result)}`} />
+            <StatusIcon result={result} />
             <span className="truncate">{def?.code} {def?.title}</span>
           </button>
         )
