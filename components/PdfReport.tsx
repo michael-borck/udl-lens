@@ -91,25 +91,53 @@ function UdlReport({ checkpoints, assessments, principleScores, overallScore, gr
         {/* Suggestions */}
         {suggestions && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Recommendations</Text>
-            <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', color: '#1B3A4B', marginBottom: 6 }}>Quick Wins</Text>
-            {suggestions.quickWins.map((win, i) => (
+            <Text style={styles.sectionTitle}>Quick wins</Text>
+            {suggestions.quickWins.map((s, i) => (
               <View key={i} style={styles.suggestionItem}>
                 <Text style={styles.bullet}>{i + 1}.</Text>
-                <Text style={styles.suggestionText}>{win}</Text>
+                <View style={{ flex: 1 }}>
+                  <Text style={styles.suggestionText}>{s.text}</Text>
+                  {s.why && (
+                    <Text style={{ fontSize: 9, color: '#5A7589', marginTop: 2, lineHeight: 1.4 }}>
+                      Why: {s.why}
+                    </Text>
+                  )}
+                  {s.udlCodes.length > 0 && (
+                    <Text style={{ fontSize: 8, color: '#1B3A4B', marginTop: 2 }}>
+                      UDL {s.udlCodes.join(', ')}
+                    </Text>
+                  )}
+                </View>
               </View>
             ))}
+
             {suggestions.longerTerm.length > 0 && (
               <>
-                <Text style={{ fontSize: 11, fontFamily: 'Helvetica-Bold', color: '#1B3A4B', marginTop: 10, marginBottom: 6 }}>Longer-term Improvements</Text>
-                {suggestions.longerTerm.map((item, i) => (
+                <Text style={[styles.sectionTitle, { marginTop: 16 }]}>Longer-term improvements</Text>
+                {suggestions.longerTerm.map((s, i) => (
                   <View key={i} style={styles.suggestionItem}>
                     <Text style={styles.bullet}>{i + 1}.</Text>
-                    <Text style={styles.suggestionText}>{item}</Text>
+                    <View style={{ flex: 1 }}>
+                      <Text style={styles.suggestionText}>{s.text}</Text>
+                      {s.why && (
+                        <Text style={{ fontSize: 9, color: '#5A7589', marginTop: 2, lineHeight: 1.4 }}>
+                          Why: {s.why}
+                        </Text>
+                      )}
+                      {s.udlCodes.length > 0 && (
+                        <Text style={{ fontSize: 8, color: '#1B3A4B', marginTop: 2 }}>
+                          UDL {s.udlCodes.join(', ')}
+                        </Text>
+                      )}
+                    </View>
                   </View>
                 ))}
               </>
             )}
+
+            <Text style={{ fontSize: 8, color: '#6B8899', marginTop: 12 }}>
+              Codes refer to UDL Guidelines 3.0 considerations - https://udlguidelines.cast.org/
+            </Text>
           </View>
         )}
 
