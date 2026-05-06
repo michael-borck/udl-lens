@@ -114,10 +114,6 @@ export async function POST(req: Request) {
       )
     }
 
-    if (!candidates?.length) {
-      return NextResponse.json({ error: 'Could not extract assessment details from file.' }, { status: 422 })
-    }
-
     return NextResponse.json({ extractedText, documentType, candidates })
   } catch (err) {
     console.error('/api/extract error:', err)
