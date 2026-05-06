@@ -45,8 +45,11 @@ export default function AboutPage() {
               <div>
                 <p className="font-medium text-teal mb-1">Add your assessments</p>
                 <p className="text-teal/60 text-sm leading-relaxed">
-                  Describe each assessment in your unit — name, type, and A2030 lane. Optionally
-                  upload the assignment brief (PDF or DOCX) so the AI has full context.
+                  Describe each assessment in your unit — name, type, and A2030 lane. You can
+                  optionally upload up to three documents (brief, rubric, exemplar) and answer
+                  a short self-report about classroom delivery. Several UDL 3.0 practices live
+                  in how you teach rather than in any document, so the self-report fills that
+                  gap and helps the AI give a more honest pre-fill.
                 </p>
               </div>
             </li>
