@@ -1,5 +1,5 @@
 import udlData from '@/data/udl-checkpoints.json'
-import type { CheckpointDef, UdlData, Assessment } from '@/lib/types'
+import type { CheckpointDef, UdlData, Assessment, AssessmentType } from '@/lib/types'
 
 // Double-cast: TS infers literal types from JSON imports; UdlData uses string-keyed maps.
 const data = udlData as unknown as UdlData
@@ -39,3 +39,14 @@ export const ASSESSMENT_TYPE_OPTIONS = [
   { value: 'interactive_oral', label: 'Interactive Oral (Collaborative)', lane: 'lane1' as const },
   { value: 'field_journal', label: 'Field Journal with Media Analysis', lane: 'lane2' as const },
 ]
+
+export function getQuestionsForAssessmentType(type: AssessmentType): { checkpointId: string; question: string }[] {
+  const ids = data.assessmentTypes[type] ?? []
+  return ids
+    .map(id => {
+      const def = data.checkpoints[id]
+      if (!def?.question) return null
+      return { checkpointId: id, question: def.question }
+    })
+    .filter((q): q is { checkpointId: string; question: string } => q !== null)
+}
