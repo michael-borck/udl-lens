@@ -190,9 +190,16 @@ export default function ResultsPage() {
               <span className="text-sm">AI is generating recommendations…</span>
             </div>
           ) : suggestionsError && !suggestions ? (
-            <p className="text-sm text-terracotta">
-              Suggestions are temporarily unavailable. The checkpoint data above is still accurate.
-            </p>
+            <>
+              <p className="text-sm text-terracotta mb-3">
+                AI suggestions are temporarily unavailable. The checkpoint data above is still accurate. You can retry, or add your own suggestions below.
+              </p>
+              <SuggestionsList
+                suggestions={{ quickWins: [], longerTerm: [] }}
+                onRegenerate={handleRegenerate}
+                regenerating={loadingSuggestions}
+              />
+            </>
           ) : suggestions ? (
             <>
               {suggestionsError && (

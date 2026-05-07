@@ -73,7 +73,7 @@ export function SuggestionsList({ suggestions, onRegenerate, regenerating }: Pro
           </div>
           {showConfirm && (
             <div className="rounded-lg bg-amber/10 border border-amber/40 p-3 text-xs text-teal/80 space-y-2">
-              <p>Regenerating replaces all current suggestions, including any you have marked as done or dismissed.</p>
+              <p>Regenerating replaces the AI suggestions (including any you&apos;ve marked done or dismissed). Your own added suggestions are kept.</p>
               <div className="flex gap-2">
                 <button
                   type="button"
