@@ -14,6 +14,10 @@ export function SuggestionsList({ suggestions, onRegenerate, regenerating }: Pro
   const { dispatch } = useSession()
   const [focus, setFocus] = useState('')
   const [showConfirm, setShowConfirm] = useState(false)
+  const [addOpen, setAddOpen] = useState(false)
+  const [addBucket, setAddBucket] = useState<'quickWins' | 'longerTerm'>('quickWins')
+  const [addText, setAddText] = useState('')
+  const [addWhy, setAddWhy] = useState('')
 
   function toggleDismissed(id: string, current: boolean) {
     dispatch({ type: 'UPDATE_SUGGESTION', id, patch: { dismissed: !current } })
@@ -21,6 +25,22 @@ export function SuggestionsList({ suggestions, onRegenerate, regenerating }: Pro
 
   function toggleDone(id: string, current: boolean) {
     dispatch({ type: 'UPDATE_SUGGESTION', id, patch: { done: !current } })
+  }
+
+  function handleAddOwn() {
+    const text = addText.trim()
+    if (!text) return
+    const suggestion: Suggestion = {
+      id: crypto.randomUUID(),
+      text,
+      why: addWhy.trim(),
+      udlCodes: [],
+      userAuthored: true,
+    }
+    dispatch({ type: 'ADD_SUGGESTION', bucket: addBucket, suggestion })
+    setAddText('')
+    setAddWhy('')
+    setAddOpen(false)
   }
 
   return (
@@ -93,6 +113,76 @@ export function SuggestionsList({ suggestions, onRegenerate, regenerating }: Pro
           onToggleDone={toggleDone}
         />
       )}
+      <div className="rounded-xl border border-dashed border-teal/30 p-4">
+        {addOpen ? (
+          <div className="space-y-3">
+            <p className="text-sm font-medium text-teal">Add your own suggestion</p>
+            <div>
+              <label className="block text-xs text-teal/60 mb-1">Add to:</label>
+              <div className="flex gap-3 text-sm">
+                {(['quickWins', 'longerTerm'] as const).map(b => (
+                  <label key={b} className="flex items-center gap-1.5 cursor-pointer">
+                    <input
+                      type="radio"
+                      name="add-bucket"
+                      value={b}
+                      checked={addBucket === b}
+                      onChange={() => setAddBucket(b)}
+                      className="accent-teal"
+                    />
+                    <span className="text-teal">{b === 'quickWins' ? 'Quick wins' : 'Longer-term'}</span>
+                  </label>
+                ))}
+              </div>
+            </div>
+            <div>
+              <label className="block text-xs text-teal/60 mb-1">Action:</label>
+              <input
+                type="text"
+                value={addText}
+                onChange={e => setAddText(e.target.value)}
+                placeholder="What you'll do (e.g. add a 24-hour grace period)"
+                className="w-full rounded-md border border-sand px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-teal/40"
+              />
+            </div>
+            <div>
+              <label className="block text-xs text-teal/60 mb-1">Why (optional):</label>
+              <input
+                type="text"
+                value={addWhy}
+                onChange={e => setAddWhy(e.target.value)}
+                placeholder="What it improves for students"
+                className="w-full rounded-md border border-sand px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-teal/40"
+              />
+            </div>
+            <div className="flex gap-2">
+              <button
+                type="button"
+                onClick={handleAddOwn}
+                disabled={!addText.trim()}
+                className="rounded-md bg-teal text-white px-3 py-1.5 text-xs font-medium hover:bg-teal-light transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              >
+                Add
+              </button>
+              <button
+                type="button"
+                onClick={() => { setAddOpen(false); setAddText(''); setAddWhy('') }}
+                className="rounded-md border border-sand text-teal px-3 py-1.5 text-xs hover:bg-sand transition-colors"
+              >
+                Cancel
+              </button>
+            </div>
+          </div>
+        ) : (
+          <button
+            type="button"
+            onClick={() => setAddOpen(true)}
+            className="w-full text-sm text-teal/60 hover:text-teal transition-colors"
+          >
+            + Add your own suggestion
+          </button>
+        )}
+      </div>
       <p className="text-xs text-teal/50">
         Codes refer to UDL Guidelines 3.0 considerations.{' '}
         <a
