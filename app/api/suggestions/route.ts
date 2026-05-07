@@ -12,7 +12,12 @@ interface SuggestionsRequest {
   focus?: string
 }
 
-function isSuggestion(s: unknown): s is Suggestion {
+// Narrows to the shape the LLM is allowed to return - id is added by the
+// server so it's intentionally excluded here. Curation flags (dismissed,
+// done, userAuthored) are never accepted from the LLM.
+type RawSuggestion = { text: string; why: string; udlCodes: string[] }
+
+function isRawSuggestion(s: unknown): s is RawSuggestion {
   if (!s || typeof s !== 'object') return false
   const obj = s as Record<string, unknown>
   return typeof obj.text === 'string'
@@ -24,8 +29,15 @@ function isSuggestion(s: unknown): s is Suggestion {
 function sanitizeSuggestions(parsed: unknown): Suggestions {
   if (!parsed || typeof parsed !== 'object') return { quickWins: [], longerTerm: [] }
   const obj = parsed as Record<string, unknown>
+  // Explicit field pick prevents the LLM from injecting curation flags
+  // (e.g. dismissed: true) by hallucinating them in its JSON output.
   const withIds = (raw: unknown[]): Suggestion[] =>
-    raw.filter(isSuggestion).map(s => ({ ...s, id: crypto.randomUUID() }))
+    raw.filter(isRawSuggestion).map(s => ({
+      id: crypto.randomUUID(),
+      text: s.text,
+      why: s.why,
+      udlCodes: s.udlCodes,
+    }))
   const quickWins = Array.isArray(obj.quickWins) ? withIds(obj.quickWins) : []
   const longerTerm = Array.isArray(obj.longerTerm) ? withIds(obj.longerTerm) : []
   return { quickWins, longerTerm }
