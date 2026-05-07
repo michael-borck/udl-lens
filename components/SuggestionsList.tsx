@@ -1,14 +1,19 @@
+import { useState } from 'react'
 import type { Suggestions, Suggestion } from '@/lib/types'
 import { useSession } from '@/context/SessionContext'
 
 interface Props {
   suggestions: Suggestions
+  onRegenerate?: (focus: string) => Promise<void>
+  regenerating?: boolean
 }
 
 const CAST_URL = 'https://udlguidelines.cast.org/'
 
-export function SuggestionsList({ suggestions }: Props) {
+export function SuggestionsList({ suggestions, onRegenerate, regenerating }: Props) {
   const { dispatch } = useSession()
+  const [focus, setFocus] = useState('')
+  const [showConfirm, setShowConfirm] = useState(false)
 
   function toggleDismissed(id: string, current: boolean) {
     dispatch({ type: 'UPDATE_SUGGESTION', id, patch: { dismissed: !current } })
@@ -20,6 +25,58 @@ export function SuggestionsList({ suggestions }: Props) {
 
   return (
     <div className="space-y-6">
+      {onRegenerate && (
+        <div className="rounded-xl border border-sand bg-cream/40 p-4 space-y-3">
+          <div className="flex items-center justify-between gap-3">
+            <p className="text-sm font-medium text-teal">Need different suggestions?</p>
+            <button
+              type="button"
+              onClick={() => setShowConfirm(true)}
+              disabled={regenerating}
+              className="rounded-md border border-teal/30 hover:border-teal/60 hover:bg-teal/5 px-3 py-1 text-xs font-medium text-teal disabled:opacity-60 disabled:cursor-not-allowed transition-colors"
+            >
+              {regenerating ? 'Regenerating…' : 'Regenerate'}
+            </button>
+          </div>
+          <div>
+            <label className="block text-xs text-teal/60 mb-1">
+              Focus on (optional):
+            </label>
+            <input
+              type="text"
+              value={focus}
+              onChange={e => setFocus(e.target.value)}
+              placeholder="e.g. students with adjustment plans, L2 learners, accessibility"
+              disabled={regenerating}
+              className="w-full rounded-md border border-sand px-3 py-1.5 text-sm bg-white focus:outline-none focus:ring-2 focus:ring-teal/40 disabled:opacity-60"
+            />
+          </div>
+          {showConfirm && (
+            <div className="rounded-lg bg-amber/10 border border-amber/40 p-3 text-xs text-teal/80 space-y-2">
+              <p>Regenerating replaces all current suggestions, including any you have marked as done or dismissed.</p>
+              <div className="flex gap-2">
+                <button
+                  type="button"
+                  onClick={async () => {
+                    setShowConfirm(false)
+                    await onRegenerate(focus)
+                  }}
+                  className="rounded-md bg-terracotta text-white px-3 py-1 text-xs font-medium hover:bg-terracotta-dark transition-colors"
+                >
+                  Yes, regenerate
+                </button>
+                <button
+                  type="button"
+                  onClick={() => setShowConfirm(false)}
+                  className="rounded-md border border-sand text-teal px-3 py-1 text-xs hover:bg-sand transition-colors"
+                >
+                  Cancel
+                </button>
+              </div>
+            </div>
+          )}
+        </div>
+      )}
       <Section
         title="Quick wins"
         items={suggestions.quickWins}

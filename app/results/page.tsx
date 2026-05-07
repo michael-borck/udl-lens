@@ -1,6 +1,6 @@
 'use client'
 
-import { useEffect, useState, useRef, type ComponentType } from 'react'
+import { useEffect, useState, useRef, useCallback, type ComponentType } from 'react'
 import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { ResetModal } from '@/components/ResetModal'
@@ -47,25 +47,37 @@ export default function ResultsPage() {
     if (assessments.length === 0) router.replace('/audit')
   }, [assessments, router])
 
+  const fetchSuggestions = useCallback(async (focus?: string) => {
+    setLoadingSuggestions(true)
+    setSuggestionsError(false)
+    try {
+      const res = await fetch('/api/suggestions', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ checkpoints, assessments, focus }),
+      })
+      if (!res.ok) throw new Error('failed')
+      const data = await res.json() as Suggestions
+      dispatch({ type: 'SET_SUGGESTIONS', suggestions: data })
+    } catch {
+      setSuggestionsError(true)
+    } finally {
+      setLoadingSuggestions(false)
+    }
+  }, [checkpoints, assessments, dispatch])
+
+  async function handleRegenerate(focus: string) {
+    await fetchSuggestions(focus.trim() || undefined)
+  }
+
   useEffect(() => {
     if (suggestions || checkpoints.length === 0) return
     if (fetchingSuggestions.current) return
     fetchingSuggestions.current = true
-    setLoadingSuggestions(true)
-    setSuggestionsError(false)
-    fetch('/api/suggestions', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ checkpoints, assessments }),
+    fetchSuggestions().finally(() => {
+      fetchingSuggestions.current = false
     })
-      .then(r => r.ok ? r.json() : Promise.reject())
-      .then((data: Suggestions) => dispatch({ type: 'SET_SUGGESTIONS', suggestions: data }))
-      .catch(() => setSuggestionsError(true))
-      .finally(() => {
-        setLoadingSuggestions(false)
-        fetchingSuggestions.current = false
-      })
-  }, [suggestions, checkpoints, assessments, dispatch])
+  }, [suggestions, checkpoints, assessments, fetchSuggestions])
 
   function handleReset() {
     dispatch({ type: 'RESET' })
@@ -162,7 +174,11 @@ export default function ResultsPage() {
               Suggestions are temporarily unavailable. The checkpoint data above is still accurate.
             </p>
           ) : suggestions ? (
-            <SuggestionsList suggestions={suggestions} />
+            <SuggestionsList
+              suggestions={suggestions}
+              onRegenerate={handleRegenerate}
+              regenerating={loadingSuggestions}
+            />
           ) : null}
         </div>
 
