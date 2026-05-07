@@ -43,9 +43,12 @@ interface ReportProps {
   overallScore: number
   gradeLabel: string
   suggestions: Suggestions | null
+  auditNotes: string
 }
 
-function UdlReport({ checkpoints, assessments, principleScores, overallScore, gradeLabel, suggestions }: ReportProps) {
+function UdlReport({ checkpoints, assessments, principleScores, overallScore, gradeLabel, suggestions, auditNotes }: ReportProps) {
+  const visibleQuickWins = suggestions?.quickWins.filter(s => !s.dismissed) ?? []
+  const visibleLongerTerm = suggestions?.longerTerm.filter(s => !s.dismissed) ?? []
   const unitName = assessments.map(a => a.name).join(', ')
   return (
     <Document title="UDL Lens Report" author="UDL Lens - Curtin University">
@@ -68,6 +71,16 @@ function UdlReport({ checkpoints, assessments, principleScores, overallScore, gr
           </View>
         </View>
 
+        {/* Audit notes */}
+        {auditNotes.trim() && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>Audit notes</Text>
+            <Text style={{ fontSize: 10, color: '#1B3A4B', lineHeight: 1.5 }}>
+              {auditNotes}
+            </Text>
+          </View>
+        )}
+
         {/* Principle scores */}
         <View style={styles.section}>
           <Text style={styles.sectionTitle}>UDL Principle Scores</Text>
@@ -89,42 +102,50 @@ function UdlReport({ checkpoints, assessments, principleScores, overallScore, gr
         </View>
 
         {/* Suggestions */}
-        {suggestions && (
+        {suggestions && (visibleQuickWins.length > 0 || visibleLongerTerm.length > 0) && (
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Quick wins</Text>
-            {suggestions.quickWins.map((s, i) => (
-              <View key={i} style={styles.suggestionItem}>
-                <Text style={styles.bullet}>{i + 1}.</Text>
-                <View style={{ flex: 1 }}>
-                  <Text style={styles.suggestionText}>{s.text}</Text>
-                  {s.why && (
-                    <Text style={{ fontSize: 9, color: '#5A7589', marginTop: 2, lineHeight: 1.4 }}>
-                      Why: {s.why}
-                    </Text>
-                  )}
-                  {s.udlCodes.length > 0 && (
-                    <Text style={{ fontSize: 8, color: '#1B3A4B', marginTop: 2 }}>
-                      UDL {s.udlCodes.join(', ')}
-                    </Text>
-                  )}
-                </View>
-              </View>
-            ))}
-
-            {suggestions.longerTerm.length > 0 && (
+            {visibleQuickWins.length > 0 && (
               <>
-                <Text style={[styles.sectionTitle, { marginTop: 16 }]}>Longer-term improvements</Text>
-                {suggestions.longerTerm.map((s, i) => (
-                  <View key={i} style={styles.suggestionItem}>
+                <Text style={styles.sectionTitle}>Quick wins</Text>
+                {visibleQuickWins.map((s, i) => (
+                  <View key={s.id} style={styles.suggestionItem}>
                     <Text style={styles.bullet}>{i + 1}.</Text>
                     <View style={{ flex: 1 }}>
-                      <Text style={styles.suggestionText}>{s.text}</Text>
+                      <Text style={[styles.suggestionText, s.done ? { textDecoration: 'line-through' as const } : {}]}>
+                        {s.text}{s.done ? ' (done)' : ''}{s.userAuthored ? ' (your suggestion)' : ''}
+                      </Text>
                       {s.why && (
                         <Text style={{ fontSize: 9, color: '#5A7589', marginTop: 2, lineHeight: 1.4 }}>
                           Why: {s.why}
                         </Text>
                       )}
-                      {s.udlCodes.length > 0 && (
+                      {s.udlCodes.length > 0 && !s.userAuthored && (
+                        <Text style={{ fontSize: 8, color: '#1B3A4B', marginTop: 2 }}>
+                          UDL {s.udlCodes.join(', ')}
+                        </Text>
+                      )}
+                    </View>
+                  </View>
+                ))}
+              </>
+            )}
+
+            {visibleLongerTerm.length > 0 && (
+              <>
+                <Text style={[styles.sectionTitle, visibleQuickWins.length > 0 ? { marginTop: 16 } : {}]}>Longer-term improvements</Text>
+                {visibleLongerTerm.map((s, i) => (
+                  <View key={s.id} style={styles.suggestionItem}>
+                    <Text style={styles.bullet}>{i + 1}.</Text>
+                    <View style={{ flex: 1 }}>
+                      <Text style={[styles.suggestionText, s.done ? { textDecoration: 'line-through' as const } : {}]}>
+                        {s.text}{s.done ? ' (done)' : ''}{s.userAuthored ? ' (your suggestion)' : ''}
+                      </Text>
+                      {s.why && (
+                        <Text style={{ fontSize: 9, color: '#5A7589', marginTop: 2, lineHeight: 1.4 }}>
+                          Why: {s.why}
+                        </Text>
+                      )}
+                      {s.udlCodes.length > 0 && !s.userAuthored && (
                         <Text style={{ fontSize: 8, color: '#1B3A4B', marginTop: 2 }}>
                           UDL {s.udlCodes.join(', ')}
                         </Text>
