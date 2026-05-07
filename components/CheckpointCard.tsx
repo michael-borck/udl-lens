@@ -66,9 +66,9 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
       )}
 
       {/* AI pre-fill */}
-      <div className="rounded-lg bg-teal/5 border border-teal/10 p-3">
-        <p className="text-xs font-semibold text-teal/70 uppercase tracking-wide mb-1">
-          AI suggestion {!result.acceptedAI && result.userRating !== null && <span className="text-terracotta">(you set this)</span>}
+      <div className="rounded-lg bg-teal/5 border border-teal/10 p-3 space-y-1.5">
+        <p className="text-xs font-semibold text-teal/70 uppercase tracking-wide">
+          AI suggestion
         </p>
         <p className="text-sm text-teal">
           <span className={`inline-block rounded px-2 py-0.5 text-xs font-bold mr-2 ${
@@ -80,6 +80,22 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
           </span>
           {result.aiReasoning}
         </p>
+        {result.userRating !== null && (
+          <p className="text-xs text-teal/70 pt-1 border-t border-teal/10">
+            <span className="font-medium">
+              {result.acceptedAI ? 'You confirmed the AI suggestion.' : 'You changed it to'}
+            </span>
+            {!result.acceptedAI && (
+              <span className={`inline-block ml-1 rounded px-2 py-0.5 text-[11px] font-bold ${
+                result.userRating === 'met' ? 'bg-green-100 text-green-800' :
+                result.userRating === 'partial' ? 'bg-amber/30 text-teal' :
+                'bg-red-100 text-red-700'
+              }`}>
+                {result.userRating === 'met' ? 'Met' : result.userRating === 'partial' ? 'Partially' : 'Not yet'}
+              </span>
+            )}
+          </p>
+        )}
       </div>
 
       {/* Examples (collapsed) - generic patterns, NOT findings about the user's upload */}
