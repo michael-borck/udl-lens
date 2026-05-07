@@ -44,9 +44,13 @@ export interface CheckpointResult {
 }
 
 export interface Suggestion {
-  text: string         // The suggestion itself, written as an actionable statement.
-  why: string          // One short sentence on why this would help.
-  udlCodes: string[]   // Related UDL 3.0 consideration codes, e.g. ['8.3', '7.3'].
+  id: string                  // Stable UUID, assigned server-side
+  text: string
+  why: string
+  udlCodes: string[]
+  dismissed?: boolean         // User excluded this from active list and PDF
+  done?: boolean              // User marked "I do this / I'll do this"
+  userAuthored?: boolean      // User-added (no UDL chip rendered)
 }
 
 export interface Suggestions {
@@ -58,6 +62,7 @@ export interface SessionState {
   assessments: Assessment[]
   checkpoints: CheckpointResult[]
   suggestions: Suggestions | null
+  auditNotes: string
 }
 
 export type SessionAction =
@@ -65,6 +70,9 @@ export type SessionAction =
   | { type: 'SET_CHECKPOINTS'; checkpoints: CheckpointResult[] }
   | { type: 'UPDATE_CHECKPOINT'; checkpointId: string; assessmentId: string; userRating: Rating; acceptedAI: boolean }
   | { type: 'SET_SUGGESTIONS'; suggestions: Suggestions }
+  | { type: 'UPDATE_SUGGESTION'; id: string; patch: Partial<Pick<Suggestion, 'dismissed' | 'done'>> }
+  | { type: 'ADD_SUGGESTION'; bucket: 'quickWins' | 'longerTerm'; suggestion: Suggestion }
+  | { type: 'SET_AUDIT_NOTES'; notes: string }
   | { type: 'RESET' }
 
 export interface UdlData {

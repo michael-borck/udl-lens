@@ -9,6 +9,7 @@ const MODEL = process.env.SUGGESTIONS_MODEL ?? process.env.ANTHROPIC_MODEL ?? 'c
 interface SuggestionsRequest {
   checkpoints: CheckpointResult[]
   assessments: Assessment[]
+  focus?: string
 }
 
 function isSuggestion(s: unknown): s is Suggestion {
@@ -23,48 +24,31 @@ function isSuggestion(s: unknown): s is Suggestion {
 function sanitizeSuggestions(parsed: unknown): Suggestions {
   if (!parsed || typeof parsed !== 'object') return { quickWins: [], longerTerm: [] }
   const obj = parsed as Record<string, unknown>
-  const quickWins = Array.isArray(obj.quickWins) ? obj.quickWins.filter(isSuggestion) : []
-  const longerTerm = Array.isArray(obj.longerTerm) ? obj.longerTerm.filter(isSuggestion) : []
+  const withIds = (raw: unknown[]): Suggestion[] =>
+    raw.filter(isSuggestion).map(s => ({ ...s, id: crypto.randomUUID() }))
+  const quickWins = Array.isArray(obj.quickWins) ? withIds(obj.quickWins) : []
+  const longerTerm = Array.isArray(obj.longerTerm) ? withIds(obj.longerTerm) : []
   return { quickWins, longerTerm }
 }
 
 export async function POST(req: Request) {
   try {
     const body = await req.json() as SuggestionsRequest
-    const { checkpoints, assessments } = body
+    const { checkpoints, assessments, focus } = body
 
     const allMet = checkpoints.every(c => (c.userRating ?? c.aiRating) === 'met')
 
     if (allMet) {
+      const id = () => crypto.randomUUID()
       return NextResponse.json({
         quickWins: [
-          {
-            text: 'All checkpoints are rated Met - outstanding UDL alignment across your unit.',
-            why: 'Your design already supports the full breadth of audited UDL principles.',
-            udlCodes: [],
-          },
-          {
-            text: 'Consider sharing your assessment design as an exemplar with colleagues.',
-            why: 'Strong UDL practice spreads when others can see what good looks like in context.',
-            udlCodes: [],
-          },
-          {
-            text: 'Document your approach for your teaching portfolio as evidence of UDL practice.',
-            why: 'Captures your inclusive design choices for review, promotion, or accreditation.',
-            udlCodes: [],
-          },
+          { id: id(), text: 'All checkpoints are rated Met - outstanding UDL alignment across your unit.', why: 'Your design already supports the full breadth of audited UDL principles.', udlCodes: [] },
+          { id: id(), text: 'Consider sharing your assessment design as an exemplar with colleagues.', why: 'Strong UDL practice spreads when others can see what good looks like in context.', udlCodes: [] },
+          { id: id(), text: 'Document your approach for your teaching portfolio as evidence of UDL practice.', why: 'Captures your inclusive design choices for review, promotion, or accreditation.', udlCodes: [] },
         ],
         longerTerm: [
-          {
-            text: 'Explore UDL Guidelines 3.0 checkpoints beyond the ones audited here to deepen your practice.',
-            why: 'The audited checkpoints are a curated subset; the full framework offers more dimensions to explore.',
-            udlCodes: [],
-          },
-          {
-            text: 'Consider mentoring colleagues in UDL-aligned assessment design.',
-            why: 'Your demonstrated practice is a teaching resource for the wider unit team.',
-            udlCodes: [],
-          },
+          { id: id(), text: 'Explore UDL Guidelines 3.0 checkpoints beyond the ones audited here to deepen your practice.', why: 'The audited checkpoints are a curated subset; the full framework offers more dimensions to explore.', udlCodes: [] },
+          { id: id(), text: 'Consider mentoring colleagues in UDL-aligned assessment design.', why: 'Your demonstrated practice is a teaching resource for the wider unit team.', udlCodes: [] },
         ],
       } satisfies Suggestions)
     }
@@ -79,7 +63,11 @@ export async function POST(req: Request) {
       })
       .join('\n')
 
-    const prompt = `You are a teaching support specialist at Curtin University, advising on UDL (Universal Design for Learning) assessment design in the context of Assessment 2030.
+    const focusInstruction = focus?.trim()
+      ? `\n\nFOCUS: The user wants suggestions especially relevant to: ${focus.trim()}. Weight your suggestions toward this focus area without ignoring the gap context entirely.\n\n`
+      : ''
+
+    const prompt = `You are a teaching support specialist at Curtin University, advising on UDL (Universal Design for Learning) assessment design in the context of Assessment 2030.${focusInstruction}
 
 The following UDL checkpoints have not been fully met in this unit's assessments:
 
