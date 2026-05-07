@@ -19,6 +19,7 @@ interface PdfDownloadButtonProps {
   overallScore: number
   gradeLabel: string
   suggestions: Suggestions | null
+  auditNotes: string
 }
 
 const PdfDownloadButton = dynamic<PdfDownloadButtonProps>(
@@ -161,6 +162,25 @@ export default function ResultsPage() {
           </div>
         </div>
 
+        {/* Audit notes */}
+        <div className="bg-white rounded-2xl border border-sand p-6">
+          <label htmlFor="audit-notes" className="block font-display text-xl text-teal mb-2">
+            Audit notes
+            <span className="ml-2 text-xs font-normal text-teal/50">(optional - included in the PDF)</span>
+          </label>
+          <p className="text-xs text-teal/60 mb-3 leading-relaxed">
+            Add any context the AI couldn&apos;t infer - context for teaching support, links to your unit outline, planned next steps, anything you want captured in the report.
+          </p>
+          <textarea
+            id="audit-notes"
+            value={state.auditNotes}
+            onChange={e => dispatch({ type: 'SET_AUDIT_NOTES', notes: e.target.value })}
+            placeholder="Notes for teaching support, your portfolio, or future-you…"
+            rows={4}
+            className="w-full rounded-lg border border-sand px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-teal/40 bg-cream/40 resize-none"
+          />
+        </div>
+
         {/* Suggestions */}
         <div>
           <h2 className="font-display text-2xl text-teal mb-6">Recommendations</h2>
@@ -198,6 +218,7 @@ export default function ResultsPage() {
             overallScore={overallScore}
             gradeLabel={gradeLabel}
             suggestions={suggestions}
+            auditNotes={state.auditNotes}
           />
           <p className="text-xs text-teal/40">
             PDF includes all checkpoints, ratings, and recommendations.
