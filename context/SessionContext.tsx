@@ -25,8 +25,21 @@ function sessionReducer(state: SessionState, action: SessionAction): SessionStat
             : c
         ),
       }
-    case 'SET_SUGGESTIONS':
-      return { ...state, suggestions: action.suggestions }
+    case 'SET_SUGGESTIONS': {
+      // Preserve user-authored suggestions across regenerate: a button
+      // labelled "Regenerate" should not silently destroy the user's
+      // own writing. AI items are replaced; userAuthored items survive.
+      const prior = state.suggestions
+      if (!prior) return { ...state, suggestions: action.suggestions }
+      const userAuthored = (list: Suggestion[]) => list.filter(s => s.userAuthored)
+      return {
+        ...state,
+        suggestions: {
+          quickWins: [...action.suggestions.quickWins, ...userAuthored(prior.quickWins)],
+          longerTerm: [...action.suggestions.longerTerm, ...userAuthored(prior.longerTerm)],
+        },
+      }
+    }
     case 'UPDATE_SUGGESTION': {
       if (!state.suggestions) return state
       const update = (list: Suggestion[]) =>

@@ -136,8 +136,9 @@ export function SuggestionsList({ suggestions, onRegenerate, regenerating }: Pro
               </div>
             </div>
             <div>
-              <label className="block text-xs text-teal/60 mb-1">Action:</label>
+              <label htmlFor="add-action" className="block text-xs text-teal/60 mb-1">Action:</label>
               <input
+                id="add-action"
                 type="text"
                 value={addText}
                 onChange={e => setAddText(e.target.value)}
@@ -146,8 +147,9 @@ export function SuggestionsList({ suggestions, onRegenerate, regenerating }: Pro
               />
             </div>
             <div>
-              <label className="block text-xs text-teal/60 mb-1">Why (optional):</label>
+              <label htmlFor="add-why" className="block text-xs text-teal/60 mb-1">Why (optional):</label>
               <input
+                id="add-why"
                 type="text"
                 value={addWhy}
                 onChange={e => setAddWhy(e.target.value)}
