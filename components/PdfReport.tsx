@@ -36,6 +36,21 @@ const styles = StyleSheet.create({
 
 const RATING_LABEL: Record<string, string> = { met: 'Met', partial: 'Partial', not_yet: 'Not yet' }
 
+// @react-pdf <Text> has no Markdown support, so model output like **bold**,
+// `code`, or "- " bullets renders as literal characters. Strip the common
+// artifacts and normalise whitespace so report text reads cleanly.
+function clean(s: string): string {
+  return s
+    .replace(/\*\*(.*?)\*\*/g, '$1')
+    .replace(/\*(.*?)\*/g, '$1')
+    .replace(/`([^`]*)`/g, '$1')
+    .replace(/^#{1,6}\s+/gm, '')
+    .replace(/^\s*[-*+]\s+/gm, '')
+    .replace(/[ \t]+/g, ' ')
+    .replace(/\n{3,}/g, '\n\n')
+    .trim()
+}
+
 interface ReportProps {
   checkpoints: CheckpointResult[]
   assessments: Assessment[]
@@ -76,7 +91,7 @@ function UdlReport({ checkpoints, assessments, principleScores, overallScore, gr
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>Audit notes</Text>
             <Text style={{ fontSize: 10, color: '#1B3A4B', lineHeight: 1.5 }}>
-              {auditNotes}
+              {clean(auditNotes)}
             </Text>
           </View>
         )}
@@ -112,11 +127,11 @@ function UdlReport({ checkpoints, assessments, principleScores, overallScore, gr
                     <Text style={styles.bullet}>{i + 1}.</Text>
                     <View style={{ flex: 1 }}>
                       <Text style={[styles.suggestionText, s.done ? { textDecoration: 'line-through' as const } : {}]}>
-                        {s.text}{s.done ? ' (done)' : ''}{s.userAuthored ? ' (your suggestion)' : ''}
+                        {clean(s.text)}{s.done ? ' (planned)' : ''}{s.userAuthored ? ' (your suggestion)' : ''}
                       </Text>
                       {s.why && (
                         <Text style={{ fontSize: 9, color: '#5A7589', marginTop: 2, lineHeight: 1.4 }}>
-                          Why: {s.why}
+                          Why: {clean(s.why)}
                         </Text>
                       )}
                       {s.udlCodes.length > 0 && !s.userAuthored && (
@@ -138,11 +153,11 @@ function UdlReport({ checkpoints, assessments, principleScores, overallScore, gr
                     <Text style={styles.bullet}>{i + 1}.</Text>
                     <View style={{ flex: 1 }}>
                       <Text style={[styles.suggestionText, s.done ? { textDecoration: 'line-through' as const } : {}]}>
-                        {s.text}{s.done ? ' (done)' : ''}{s.userAuthored ? ' (your suggestion)' : ''}
+                        {clean(s.text)}{s.done ? ' (planned)' : ''}{s.userAuthored ? ' (your suggestion)' : ''}
                       </Text>
                       {s.why && (
                         <Text style={{ fontSize: 9, color: '#5A7589', marginTop: 2, lineHeight: 1.4 }}>
-                          Why: {s.why}
+                          Why: {clean(s.why)}
                         </Text>
                       )}
                       {s.udlCodes.length > 0 && !s.userAuthored && (

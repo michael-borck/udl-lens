@@ -18,6 +18,8 @@ export interface Assessment {
   lane: Lane
   description: string
   documents: AssessmentDocument[]
+  // User has no separate rubric file because the marking criteria are inside the brief.
+  rubricInBrief?: boolean
   responses: Record<string, string>
 }
 

@@ -202,12 +202,15 @@ export default function ReviewPage() {
                 </p>
               )}
               {/* Legend */}
-              <div className="flex gap-3 text-xs text-teal/50 pt-1">
+              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-teal/50 pt-1">
                 <span className="flex items-center gap-1">
-                  <span className="text-terracotta font-bold">✓</span> Your rating
+                  <span className="w-2 h-2 rounded-full border border-teal/30" /> Not reviewed
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="text-teal font-bold">✓</span> AI accepted
+                  <span className="text-teal font-bold">✓</span> You set this
+                </span>
+                <span className="flex items-center gap-1">
+                  <span className="text-teal/40 font-bold">✓</span> AI default kept
                 </span>
               </div>
               {/* Accept all remaining */}
@@ -251,6 +254,31 @@ export default function ReviewPage() {
           <div className="flex-1 overflow-y-auto p-6">
             {activeCheckpoint && activeDef && activeAssessment ? (
               <div className="max-w-2xl mx-auto">
+                {allComplete ? (
+                  <div className="mb-4 rounded-xl border border-teal/30 bg-teal/5 p-4 flex items-center justify-between gap-4">
+                    <p className="text-sm text-teal leading-relaxed">
+                      <strong className="font-semibold">All {checkpoints.length} checkpoints reviewed.</strong>{' '}
+                      You can still revisit any of them on the left, or move on.
+                    </p>
+                    <button
+                      onClick={() => router.push('/results')}
+                      className="shrink-0 rounded-lg bg-terracotta text-white px-5 py-2 text-sm font-medium hover:bg-terracotta-dark transition-colors"
+                    >
+                      See your results →
+                    </button>
+                  </div>
+                ) : (
+                  <div className="mb-4 rounded-xl border border-sand bg-white p-4">
+                    <p className="text-sm font-semibold text-teal mb-1">What to do on this screen</p>
+                    <p className="text-xs text-teal/70 leading-relaxed">
+                      The AI made a first guess at how well <em>this assessment</em> supports each UDL
+                      checkpoint. Your job is to read each one and confirm or change the rating. You
+                      are judging the level of support the assessment offers learners - not whether
+                      you have &ldquo;passed&rdquo; or met a standard. Work through every checkpoint;
+                      results unlock once they are all reviewed.
+                    </p>
+                  </div>
+                )}
                 <CheckpointCard
                   result={activeCheckpoint}
                   def={activeDef}
@@ -268,9 +296,10 @@ export default function ReviewPage() {
                   </button>
                   <button
                     onClick={handleAcceptAI}
-                    className="rounded-lg border border-blue-200 bg-blue-50 text-blue-600 hover:bg-blue-100 px-4 py-1.5 text-sm font-medium transition-colors"
+                    title="Keep the AI's suggested rating for this checkpoint as-is and move on"
+                    className="rounded-lg border border-teal/30 bg-teal/5 text-teal hover:bg-teal/10 px-4 py-1.5 text-sm font-medium transition-colors"
                   >
-                    ✓ Confirm suggestion
+                    Accept AI rating →
                   </button>
                   <button
                     onClick={() => setActiveIndex(i => Math.min(checkpoints.length - 1, i + 1))}

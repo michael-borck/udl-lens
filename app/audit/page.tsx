@@ -29,6 +29,7 @@ export default function SetupPage() {
                 lane: data.lane,
                 description: data.description,
                 documents: data.documents,
+                rubricInBrief: data.rubricInBrief,
                 responses: data.responses,
               }
             : a
@@ -42,6 +43,7 @@ export default function SetupPage() {
         lane: data.lane,
         description: data.description,
         documents: data.documents,
+        rubricInBrief: data.rubricInBrief,
         responses: data.responses,
       }
       dispatch({

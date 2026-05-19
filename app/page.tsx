@@ -5,8 +5,8 @@ export default function LandingPage() {
     <main className="min-h-screen bg-cream flex flex-col">
       <header className="px-8 py-6 flex items-center justify-between">
         <span className="font-display text-2xl text-teal">UDL Lens</span>
-        <Link href="/about" className="text-sm text-teal/60 hover:text-teal transition-colors">
-          About
+        <Link href="/about" className="text-sm text-teal/80 hover:text-teal transition-colors">
+          Learn about UDL Lens
         </Link>
       </header>
 
@@ -15,9 +15,9 @@ export default function LandingPage() {
           Assessment 2030 · Curtin University
         </p>
         <h1 className="font-display text-5xl text-teal leading-tight mb-6 max-w-2xl">
-          How well do your assessments support all learners?
+          How well do your assessments support <em className="italic text-terracotta">all</em> learners?
         </h1>
-        <p className="text-teal/60 text-lg max-w-xl mb-10">
+        <p className="text-teal/80 text-lg max-w-xl mb-10">
           UDL Lens helps you audit your unit assessments against the Universal Design for Learning
           Guidelines 3.0 - with AI-assisted ratings and a downloadable report.
         </p>
@@ -29,8 +29,8 @@ export default function LandingPage() {
           Start audit →
         </Link>
 
-        <p className="mt-6 text-sm text-teal/40">
-          No login required. Your data never leaves your session.
+        <p className="mt-6 text-sm text-teal/60">
+          No login. Nothing is stored - your files and ratings stay in this browser session only.
         </p>
 
         {/* How it works - three-step preview */}
@@ -39,17 +39,17 @@ export default function LandingPage() {
             {
               n: 1,
               title: 'Add your assessments',
-              body: 'Describe each one and optionally upload the brief. The AI reads it for context.',
+              body: 'Describe each one and optionally upload the brief, rubric, or exemplar. The AI reads them for context. Nothing is stored.',
             },
             {
               n: 2,
               title: 'Verify AI ratings',
-              body: 'For each UDL checkpoint the AI suggests Not yet / Partially / Met with reasoning. You confirm or change it.',
+              body: 'For each UDL checkpoint the AI suggests a rating (Not yet / Partially / Met) and explains why. This is a starting point, not a verdict - you stay the expert and set the final rating yourself.',
             },
             {
               n: 3,
               title: 'Get your report',
-              body: 'A radar across the three UDL principles, recommendations, and a PDF you can share with teaching support.',
+              body: 'A radar across the three UDL principles - Representation, Engagement, and Action & Expression - plus recommendations and a PDF you can share with teaching support.',
             },
           ].map(s => (
             <div key={s.n} className="rounded-xl bg-white border border-sand p-5">
@@ -57,21 +57,21 @@ export default function LandingPage() {
                 {s.n}
               </div>
               <h3 className="font-display text-base text-teal mb-1">{s.title}</h3>
-              <p className="text-sm text-teal/60 leading-relaxed">{s.body}</p>
+              <p className="text-sm text-teal/75 leading-relaxed">{s.body}</p>
             </div>
           ))}
         </div>
 
-        <p className="mt-8 text-xs text-teal/40 max-w-2xl">
+        <p className="mt-8 text-xs text-teal/65 max-w-2xl">
           UDL is read across the whole unit, not single assessments. The audit is most useful when you include
-          the assessments in a unit together. <Link href="/about" className="underline hover:text-teal/70">Read more about the approach →</Link>
+          the assessments in a unit together. <Link href="/about" className="underline hover:text-teal">Learn about UDL Lens →</Link>
         </p>
       </div>
 
-      <footer className="px-8 py-6 flex items-center justify-between text-xs text-teal/30">
+      <footer className="px-8 py-6 flex items-center justify-between text-xs text-teal/50">
         <span>UDL Guidelines 3.0 · CAST</span>
-        <Link href="/about" className="hover:text-teal/60 transition-colors">
-          How it works
+        <Link href="/about" className="hover:text-teal transition-colors">
+          Learn about UDL Lens
         </Link>
       </footer>
     </main>

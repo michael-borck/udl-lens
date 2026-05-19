@@ -18,6 +18,7 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
   const [lane, setLane] = useState<'lane1' | 'lane2'>(initial?.lane ?? 'lane1')
   const [description, setDescription] = useState(initial?.description ?? '')
   const [documents, setDocuments] = useState<AssessmentDocument[]>(initial?.documents ?? [])
+  const [rubricInBrief, setRubricInBrief] = useState<boolean>(initial?.rubricInBrief ?? false)
   const [responses, setResponses] = useState<Record<string, string>>(initial?.responses ?? {})
 
   const selectedTypeOption = ASSESSMENT_TYPE_OPTIONS.find(o => o.value === type)
@@ -32,7 +33,7 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
     if (!name.trim()) return
-    onSave({ id: initial?.id, name: name.trim(), type, lane, description, documents, responses })
+    onSave({ id: initial?.id, name: name.trim(), type, lane, description, documents, rubricInBrief, responses })
   }
 
   return (
@@ -89,11 +90,27 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
       </div>
 
       <div>
-        <label className="block text-sm font-medium text-teal mb-2">
+        <label className="block text-sm font-medium text-teal mb-1">
           Documents
           <span className="ml-1 text-teal/50 font-normal">(optional - helps the AI)</span>
         </label>
+        <p className="text-xs text-teal/60 mb-2 leading-relaxed">
+          Files are read once to generate ratings and are never stored - nothing leaves this
+          browser session. Add only what you have; the AI works with whatever you give it.
+        </p>
         <TypedDocumentSlots documents={documents} onChange={setDocuments} />
+        <label className="mt-2 flex items-start gap-2 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={rubricInBrief}
+            onChange={e => setRubricInBrief(e.target.checked)}
+            className="accent-teal mt-0.5"
+          />
+          <span className="text-xs text-teal/70 leading-relaxed">
+            My rubric is inside the brief (no separate file). The AI will look for the marking
+            criteria within the brief instead of expecting a separate rubric.
+          </span>
+        </label>
       </div>
 
       <div>
@@ -113,8 +130,13 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
       <div>
         <label className="block text-sm font-medium text-teal mb-1">
           Quick self-report
-          <span className="ml-1 text-teal/50 font-normal">- some UDL practices live in delivery, not the brief</span>
         </label>
+        <p className="text-xs text-teal/60 mb-2 leading-relaxed">
+          Some UDL guidelines can&apos;t be judged from a brief or rubric alone - things like how
+          collaboration is set up, how you respond to language differences, or how students ask for
+          help happen in your teaching, not on paper. These few questions let the AI rate those
+          checkpoints honestly instead of guessing. Answer for how you usually run this assessment.
+        </p>
         <QuestionnaireForm
           assessmentType={type}
           responses={responses}

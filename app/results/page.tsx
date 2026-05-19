@@ -231,6 +231,44 @@ export default function ResultsPage() {
             PDF includes all checkpoints, ratings, and recommendations.
           </p>
         </div>
+
+        {/* End-of-flow close */}
+        <div className="rounded-2xl bg-teal text-white p-8 space-y-3">
+          <h2 className="font-display text-2xl">Nice work - that&apos;s your UDL audit done.</h2>
+          <p className="text-white/80 text-sm leading-relaxed">
+            You reviewed{' '}
+            {checkpoints.filter(c => c.userRating !== null).length} of {checkpoints.length}{' '}
+            UDL 3.0 checkpoints across{' '}
+            {assessments.length} assessment{assessments.length !== 1 ? 's' : ''}, kept the final
+            call on every rating, and produced a shareable record of where{' '}
+            {assessments.length > 1 ? 'this unit' : 'this assessment'} supports all learners and
+            where it can grow. That&apos;s real, evidenced UDL practice.
+          </p>
+          <div className="text-white/80 text-sm leading-relaxed">
+            <p className="font-semibold text-white mb-1">Good next steps:</p>
+            <ul className="list-disc pl-5 space-y-1">
+              <li>Take the PDF to a Teaching Support conversation, or keep it as professional-development evidence.</li>
+              <li>Action a quick win or two before the next study period, then re-run the audit to see the shift.</li>
+              {assessments.length === 1 && (
+                <li>Add the rest of your unit&apos;s assessments - UDL reads best across the whole unit.</li>
+              )}
+            </ul>
+          </div>
+          <div className="flex flex-wrap gap-3 pt-1">
+            <button
+              onClick={() => router.push('/audit')}
+              className="rounded-lg bg-white text-teal px-5 py-2 text-sm font-medium hover:bg-cream transition-colors"
+            >
+              Add or edit assessments
+            </button>
+            <button
+              onClick={() => setShowResetModal(true)}
+              className="rounded-lg border border-white/40 text-white px-5 py-2 text-sm font-medium hover:bg-white/10 transition-colors"
+            >
+              Start a new audit
+            </button>
+          </div>
+        </div>
       </div>
 
       {showResetModal && (

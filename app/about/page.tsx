@@ -17,7 +17,16 @@ export default function AboutPage() {
             of their background, abilities, or learning preferences.
           </p>
           <p className="text-teal/70 leading-relaxed">
-            Developed by CAST, the UDL Guidelines 3.0 organise good practice across three principles:
+            Developed by{' '}
+            <a
+              href="https://www.cast.org/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-teal underline hover:text-terracotta transition-colors"
+            >
+              CAST
+            </a>
+            , the UDL Guidelines 3.0 organise good practice across three principles:
             providing multiple means of <strong className="text-teal">Representation</strong> (how
             content is presented), <strong className="text-teal">Engagement</strong> (how students
             are motivated and supported), and <strong className="text-teal">Action &amp; Expression</strong> (how
@@ -70,7 +79,8 @@ export default function AboutPage() {
               <div>
                 <p className="font-medium text-teal mb-1">Get your results</p>
                 <p className="text-teal/60 text-sm leading-relaxed">
-                  See a radar chart across the three UDL principles, a breakdown by checkpoint, and
+                  See a radar chart across the three UDL principles (Representation, Engagement,
+                  and Action &amp; Expression), a breakdown by checkpoint, and
                   concrete quick wins and longer-term suggestions. Download a PDF report suitable
                   for a teaching support conversation or professional development evidence.
                 </p>

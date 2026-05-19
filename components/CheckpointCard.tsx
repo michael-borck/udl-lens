@@ -36,10 +36,11 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
   }, [result.userRating])
 
   const rated = result.userRating !== null
-  // Terracotta = human agency (clicked a rating button directly)
-  // Teal = deferred to AI (Confirm suggestion or Accept all remaining)
-  const tickColor = result.acceptedAI ? 'text-teal' : 'text-terracotta'
-  const tickLabel = result.acceptedAI ? 'AI accepted' : 'Your rating'
+  // Neutral brand teal only - emphasis (not hue) signals agency, so it never
+  // reads as the red/green Met/Not-met rating palette.
+  // Faint = AI default kept; strong = you set it.
+  const tickColor = result.acceptedAI ? 'text-teal/40' : 'text-teal'
+  const tickLabel = result.acceptedAI ? 'AI default kept' : 'You set this'
 
   return (
     <div className="bg-white rounded-2xl border border-sand p-5 space-y-4">
@@ -133,7 +134,7 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
       {/* Rating buttons */}
       <div>
         <p className="text-sm font-semibold text-teal">Select your rating</p>
-        <p className="text-xs text-teal/50 mb-2">Confirm the AI suggestion or choose a different level</p>
+        <p className="text-xs text-teal/50 mb-2">Click a level to set your rating, or use &ldquo;Accept AI rating&rdquo; below to keep the suggestion</p>
         <div className="flex gap-2">
           {RATING_OPTIONS.map(opt => (
             <button
@@ -152,8 +153,8 @@ export function CheckpointCard({ result, def, assessment, onRate }: Props) {
         {/* Confirmation flash */}
         <p className={`text-xs text-center mt-1.5 transition-opacity duration-300 ${
           flash ? 'opacity-100' : 'opacity-0'
-        } ${result.acceptedAI ? 'text-teal' : 'text-terracotta'}`}>
-          ✓ {result.acceptedAI ? 'AI suggestion confirmed' : 'Your rating saved'}
+        } ${result.acceptedAI ? 'text-teal/50' : 'text-teal'}`}>
+          ✓ {result.acceptedAI ? 'AI suggestion accepted' : 'Your rating saved'}
         </p>
       </div>
     </div>

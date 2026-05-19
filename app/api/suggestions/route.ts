@@ -75,6 +75,17 @@ export async function POST(req: Request) {
       })
       .join('\n')
 
+    const docsContext = assessments
+      .map(a => {
+        const have = a.documents.map(d => d.type)
+        const provided = have.length ? have.join(', ') : 'none'
+        const rubricNote = a.rubricInBrief
+          ? ' (rubric criteria are embedded in the brief, not a separate file)'
+          : ''
+        return `- "${a.name}": provided ${provided}${rubricNote}`
+      })
+      .join('\n')
+
     const focusInstruction = focus?.trim()
       ? `\n\nFOCUS: The user wants suggestions especially relevant to: ${focus.trim()}. Weight your suggestions toward this focus area without ignoring the gap context entirely.\n\n`
       : ''
@@ -84,6 +95,10 @@ export async function POST(req: Request) {
 The following UDL checkpoints have not been fully met in this unit's assessments:
 
 ${gapContext}
+
+Documents the coordinator actually provided for each assessment:
+
+${docsContext}
 
 Return JSON in EXACTLY this structure (no extra fields, no prose around the JSON):
 
@@ -103,6 +118,8 @@ Field guidance:
 
 QUICK WINS: 2-4 specific, immediately actionable suggestions the unit coordinator could make before the next study period - concrete edits to briefs, rubrics, or policies.
 LONGER TERM: 2-3 deeper structural suggestions that would require more planning or curriculum redesign. Frame as aspirational next steps.
+
+IMPORTANT - do not invent artifacts: Only recommend edits to a rubric or exemplar if one was actually provided for that assessment (see the documents list above), or if the rubric is noted as embedded in the brief. If no rubric was provided, do not claim its contents or recommend specific rubric wording changes; instead suggest creating/adding rubric criteria, or focus the advice on the brief and delivery. Never reference a document the coordinator did not provide as though you have read it.
 
 Be direct and specific. Reference the actual assessment names and checkpoints. No generic advice.`
 

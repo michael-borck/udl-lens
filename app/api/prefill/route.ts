@@ -60,11 +60,14 @@ Helpful practices: ${def.helpful.join('; ')}`
               .map(([id, ans]) => `  ${id}: ${ans}`)
               .join('\n')
         const extraNotes = a.description ? `Extra notes: ${a.description}\n` : ''
+        const rubricNote = a.rubricInBrief
+          ? 'Rubric note: There is no separate rubric file. The marking criteria are embedded within the Brief - parse the brief text for rubric criteria, performance descriptors, and standards, and do not treat the rubric as missing.\n'
+          : ''
         return `Assessment ID: ${a.id}
 Name: ${a.name}
 Type: ${a.type}
 Lane: ${a.lane}
-${extraNotes}Documents:
+${extraNotes}${rubricNote}Documents:
 ${docs}
 
 Teacher's self-report (per checkpoint ID):

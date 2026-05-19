@@ -3,7 +3,10 @@
 import type { AssessmentType } from '@/lib/types'
 import { getQuestionsForAssessmentType } from '@/lib/udl'
 
-const ANSWER_OPTIONS = ['Yes', 'Sometimes', 'Not yet', 'Not sure'] as const
+// 5-point scale: a graded gradient (Yes → Sometimes → Rarely → Not yet) plus
+// "Not sure" as a non-graded escape. The answer string is passed verbatim to the
+// AI prefill as self-report context; it is not used in scoring.ts.
+const ANSWER_OPTIONS = ['Yes', 'Sometimes', 'Rarely', 'Not yet', 'Not sure'] as const
 
 interface Props {
   assessmentType: AssessmentType

@@ -8,17 +8,21 @@ interface Props {
   filterAssessmentId: string | null
 }
 
-function StatusIcon({ result }: { result: CheckpointResult }) {
+// Completion indicators use only neutral brand teal (never the red/amber/green
+// rating palette, which would imply good/bad). Agency is shown by emphasis:
+// a strong tick = you set it, a faint tick = AI default kept, hollow = not reviewed.
+function StatusIcon({ result, active }: { result: CheckpointResult; active: boolean }) {
+  const ring = active ? 'border-white/60' : 'border-teal/30'
   if (result.userRating === null) {
-    // Pending - grey dot
-    return <span className="w-2.5 h-2.5 rounded-full shrink-0 bg-teal/20" />
+    // Not reviewed - hollow ring
+    return <span className={`w-2.5 h-2.5 rounded-full border shrink-0 ${ring}`} aria-label="Not reviewed" />
   }
   if (result.acceptedAI) {
-    // Deferred to AI - teal checkmark
-    return <span className="text-sm leading-none shrink-0 text-teal font-bold">✓</span>
+    // AI default kept - faint tick
+    return <span className={`text-sm leading-none shrink-0 ${active ? 'text-white/60' : 'text-teal/40'}`} aria-label="AI default kept">✓</span>
   }
-  // Human agency - terracotta checkmark
-  return <span className="text-sm leading-none shrink-0 text-terracotta font-bold">✓</span>
+  // You set this - strong tick
+  return <span className={`text-sm leading-none shrink-0 font-bold ${active ? 'text-white' : 'text-teal'}`} aria-label="You set this">✓</span>
 }
 
 export function CheckpointNav({ checkpoints, activeIndex, onSelect, filterAssessmentId }: Props) {
@@ -42,7 +46,7 @@ export function CheckpointNav({ checkpoints, activeIndex, onSelect, filterAssess
               isActive ? 'bg-teal text-white' : 'text-teal/70 hover:bg-sand'
             }`}
           >
-            <StatusIcon result={result} />
+            <StatusIcon result={result} active={isActive} />
             <span className="truncate">{def?.code} {def?.title}</span>
           </button>
         )

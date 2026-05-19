@@ -9,12 +9,19 @@ interface SlotConfig {
   label: string
   hint: string
   required: boolean
+  note?: string
 }
 
 const SLOTS: SlotConfig[] = [
   { type: 'brief', label: 'Brief', hint: 'The assignment task instructions students see', required: true },
   { type: 'rubric', label: 'Rubric', hint: 'Marking criteria, performance descriptors', required: false },
-  { type: 'exemplar', label: 'Exemplar', hint: 'Sample student work or worked example', required: false },
+  {
+    type: 'exemplar',
+    label: 'Exemplar',
+    hint: 'Sample student work or worked example',
+    required: false,
+    note: 'Rough, partial, or imperfect examples are fine - it is read only as a signal of what you expect, never graded or judged. Remove any student names first; nothing is stored.',
+  },
 ]
 
 interface Props {
@@ -59,6 +66,13 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
       if (candidates.length === 0) {
         if (type === 'brief' && fallback) {
           finishUpload(type, file.name, fallback)
+        } else if (type === 'brief') {
+          setUploadError(
+            'No readable text could be extracted from this brief. The AI cannot rate this ' +
+            'assessment from the brief - ratings would be generic guesses based only on the ' +
+            'assessment type. Upload a text-based PDF or DOCX (not a scan/image), or paste the ' +
+            'task details into the Description box below.'
+          )
         } else {
           setUploadError(`Could not find ${type === 'exemplar' ? 'an' : 'a'} ${type} in that document. Try uploading a different file.`)
         }
@@ -73,7 +87,13 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
       pendingFilename.current[type] = file.name
       setPickerState({ type, candidates })
     } catch {
-      setUploadError(`Could not extract text from the ${type}. You can still continue without it.`)
+      setUploadError(
+        type === 'brief'
+          ? 'Extraction failed for this brief. Without the brief text the AI rates this ' +
+            'assessment only from its type, so the results will be generic. Try a different ' +
+            'file, or paste the task details into the Description box below before continuing.'
+          : `Could not extract text from the ${type}. You can continue without it - the AI will note it was not provided.`
+      )
     } finally {
       setUploadingType(null)
       const input = fileInputs.current[type]
@@ -134,6 +154,9 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
                 className="hidden"
               />
             </div>
+            {slot.note && !doc && (
+              <p className="px-3 pb-2 text-xs text-teal/55 leading-relaxed">{slot.note}</p>
+            )}
           </div>
         )
       })}
@@ -152,7 +175,15 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
           onClose={() => setPickerState(null)}
         />
       )}
-      {uploadError && <p className="text-sm text-terracotta">{uploadError}</p>}
+      {uploadError && (
+        <div
+          role="alert"
+          className="rounded-lg border border-terracotta/50 bg-terracotta/10 px-3 py-2 text-sm text-terracotta-dark leading-relaxed flex gap-2"
+        >
+          <span aria-hidden="true" className="font-bold shrink-0">!</span>
+          <span>{uploadError}</span>
+        </div>
+      )}
     </div>
   )
 }
