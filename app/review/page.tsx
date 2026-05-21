@@ -11,7 +11,7 @@ import type { Rating, CheckpointResult } from '@/lib/types'
 
 export default function ReviewPage() {
   const router = useRouter()
-  const { state, dispatch } = useSession()
+  const { state, dispatch, hydrated } = useSession()
   const [activeIndex, setActiveIndex] = useState(0)
   const [filterAssessmentId, setFilterAssessmentId] = useState<string | null>(
     () => state.assessments[0]?.id ?? null
@@ -22,10 +22,18 @@ export default function ReviewPage() {
   const { assessments, checkpoints } = state
 
   useEffect(() => {
-    if (assessments.length === 0) {
+    if (hydrated && assessments.length === 0) {
       router.replace('/audit')
     }
-  }, [assessments, router])
+  }, [hydrated, assessments, router])
+
+  // After a refresh the filter initialises to null (assessments load post-hydration);
+  // default it to the first assessment so the view matches in-session navigation.
+  useEffect(() => {
+    if (hydrated && filterAssessmentId === null && assessments[0]) {
+      setFilterAssessmentId(assessments[0].id)
+    }
+  }, [hydrated, assessments, filterAssessmentId])
 
   const prefilling = useRef(false)
 
@@ -90,8 +98,9 @@ export default function ReviewPage() {
   }
 
   useEffect(() => {
+    if (!hydrated) return
     runPrefill()
-  }, [runPrefill])
+  }, [hydrated, runPrefill])
 
   const completedCount = checkpoints.filter(c => c.userRating !== null).length
   const remainingCount = checkpoints.length - completedCount
@@ -146,7 +155,7 @@ export default function ReviewPage() {
     ? assessments.find(a => a.id === activeCheckpoint.assessmentId)
     : null
 
-  if (assessments.length === 0) return null
+  if (!hydrated || assessments.length === 0) return null
 
   return (
     <main className="min-h-screen bg-cream">

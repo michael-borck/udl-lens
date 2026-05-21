@@ -1,9 +1,11 @@
 import { NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
 import mammoth from 'mammoth'
+import { getClient, resolveModel, parseJsonResponse, getResponseText } from '@/lib/llm'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
-const client = new Anthropic()
-const MODEL = process.env.EXTRACT_MODEL ?? process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
+// Files are read fully into memory (arrayBuffer) before going to the model, so
+// cap the size to protect server RAM and token cost. Briefs are well under this.
+const MAX_UPLOAD_BYTES = 10 * 1024 * 1024 // 10 MB
 
 interface Candidate {
   title: string
@@ -39,10 +41,7 @@ function isCandidate(c: unknown): c is Candidate {
 }
 
 function parseCandidates(raw: string): Candidate[] {
-  const json = raw.trim()
-    .replace(/^```(?:json)?\n?/, '')
-    .replace(/\n?```$/, '')
-  const parsed = JSON.parse(json) as unknown
+  const parsed = parseJsonResponse(raw)
   if (!parsed || typeof parsed !== 'object') return []
   const list = (parsed as Record<string, unknown>).candidates
   if (!Array.isArray(list)) return []
@@ -51,17 +50,16 @@ function parseCandidates(raw: string): Candidate[] {
 
 async function extractWithAI(text: string, documentType: string | null): Promise<Candidate[]> {
   const prompt = buildPrompt(documentType)
-  const response = await client.messages.create({
-    model: MODEL,
+  const response = await getClient().messages.create({
+    model: resolveModel('extract'),
     max_tokens: 2048,
     messages: [{ role: 'user', content: `${prompt}\n\nDOCUMENT:\n${text}` }],
   })
-  const textBlock = response.content.find(b => b.type === 'text')
-  if (!textBlock || textBlock.type !== 'text') throw new Error('No text response')
-  return parseCandidates(textBlock.text)
+  return parseCandidates(getResponseText(response.content))
 }
 
 async function extractPdfWithAI(base64: string, documentType: string | null): Promise<Candidate[]> {
+  const client = getClient()
   const prompt = buildPrompt(documentType)
   type MessageParam = Parameters<typeof client.messages.create>[0]['messages'][0]
   const message: MessageParam = {
@@ -76,21 +74,33 @@ async function extractPdfWithAI(base64: string, documentType: string | null): Pr
     ] as any,
   }
   const response = await client.messages.create({
-    model: MODEL,
+    model: resolveModel('extract'),
     max_tokens: 2048,
     messages: [message],
   })
-  const textBlock = response.content.find(b => b.type === 'text')
-  if (!textBlock || textBlock.type !== 'text') throw new Error('No text response')
-  return parseCandidates(textBlock.text)
+  return parseCandidates(getResponseText(response.content))
 }
 
 export async function POST(req: Request) {
+  const rl = checkRateLimit(getClientIp(req))
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please wait a moment and try again.' },
+      { status: 429, headers: { 'Retry-After': String(rl.retryAfterSeconds) } },
+    )
+  }
   try {
     const formData = await req.formData()
     const file = formData.get('file') as File | null
     if (!file) {
       return NextResponse.json({ error: 'No file provided' }, { status: 400 })
+    }
+
+    if (file.size > MAX_UPLOAD_BYTES) {
+      return NextResponse.json(
+        { error: `File is too large. Maximum size is ${MAX_UPLOAD_BYTES / (1024 * 1024)} MB.` },
+        { status: 413 },
+      )
     }
 
     const arrayBuffer = await file.arrayBuffer()

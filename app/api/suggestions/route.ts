@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
-import type { CheckpointResult, Assessment, Suggestions, Suggestion } from '@/lib/types'
+import type { CheckpointResult, Assessment, Suggestions } from '@/lib/types'
 import { getCheckpointDef } from '@/lib/udl'
-
-const client = new Anthropic()
-const MODEL = process.env.SUGGESTIONS_MODEL ?? process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
+import { getClient, resolveModel, parseJsonResponse, getResponseText, sanitizeSuggestions } from '@/lib/llm'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 interface SuggestionsRequest {
   checkpoints: CheckpointResult[]
@@ -12,38 +10,14 @@ interface SuggestionsRequest {
   focus?: string
 }
 
-// Narrows to the shape the LLM is allowed to return - id is added by the
-// server so it's intentionally excluded here. Curation flags (dismissed,
-// done, userAuthored) are never accepted from the LLM.
-type RawSuggestion = { text: string; why: string; udlCodes: string[] }
-
-function isRawSuggestion(s: unknown): s is RawSuggestion {
-  if (!s || typeof s !== 'object') return false
-  const obj = s as Record<string, unknown>
-  return typeof obj.text === 'string'
-    && typeof obj.why === 'string'
-    && Array.isArray(obj.udlCodes)
-    && obj.udlCodes.every(c => typeof c === 'string')
-}
-
-function sanitizeSuggestions(parsed: unknown): Suggestions {
-  if (!parsed || typeof parsed !== 'object') return { quickWins: [], longerTerm: [] }
-  const obj = parsed as Record<string, unknown>
-  // Explicit field pick prevents the LLM from injecting curation flags
-  // (e.g. dismissed: true) by hallucinating them in its JSON output.
-  const withIds = (raw: unknown[]): Suggestion[] =>
-    raw.filter(isRawSuggestion).map(s => ({
-      id: crypto.randomUUID(),
-      text: s.text,
-      why: s.why,
-      udlCodes: s.udlCodes,
-    }))
-  const quickWins = Array.isArray(obj.quickWins) ? withIds(obj.quickWins) : []
-  const longerTerm = Array.isArray(obj.longerTerm) ? withIds(obj.longerTerm) : []
-  return { quickWins, longerTerm }
-}
-
 export async function POST(req: Request) {
+  const rl = checkRateLimit(getClientIp(req))
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please wait a moment and try again.' },
+      { status: 429, headers: { 'Retry-After': String(rl.retryAfterSeconds) } },
+    )
+  }
   try {
     const body = await req.json() as SuggestionsRequest
     const { checkpoints, assessments, focus } = body
@@ -127,17 +101,12 @@ Be direct and specific. Reference the actual assessment names and checkpoints. N
     let lastError: unknown
     while (attempts < 2) {
       try {
-        const response = await client.messages.create({
-          model: MODEL,
+        const response = await getClient().messages.create({
+          model: resolveModel('suggestions'),
           max_tokens: 1024,
           messages: [{ role: 'user', content: prompt }],
         })
-        const textBlock = response.content.find(b => b.type === 'text')
-        if (!textBlock || textBlock.type !== 'text') throw new Error('No text response')
-        const jsonText = textBlock.text.trim()
-          .replace(/^```(?:json)?\n?/, '')
-          .replace(/\n?```$/, '')
-        const suggestions = sanitizeSuggestions(JSON.parse(jsonText))
+        const suggestions = sanitizeSuggestions(parseJsonResponse(getResponseText(response.content)))
         return NextResponse.json(suggestions)
       } catch (err) {
         lastError = err

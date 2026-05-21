@@ -92,9 +92,11 @@ export default function AboutPage() {
         <section className="mb-12">
           <h3 className="font-display text-xl text-teal mb-3">Privacy</h3>
           <p className="text-teal/70 leading-relaxed">
-            Nothing is stored. Your assessment data and uploaded briefs exist only in your browser
-            session and are sent to the AI solely to generate ratings - they are not retained. There
-            are no user accounts, no cookies, and no analytics.
+            Nothing is stored on our servers. Uploaded files are sent to the configured AI provider
+            for analysis, processed in memory, and discarded right after - never written to disk or a
+            database. Your assessment data, ratings, and any extracted text live only in this browser
+            session, and clear when you choose &ldquo;Start over&rdquo; or close the tab. There are no
+            user accounts, no cookies, and no analytics.
           </p>
         </section>
 

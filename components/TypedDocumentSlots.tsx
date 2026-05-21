@@ -58,7 +58,16 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
       fd.append('file', file)
       fd.append('documentType', type)
       const res = await fetch('/api/extract', { method: 'POST', body: fd })
-      if (!res.ok) throw new Error('Upload failed')
+      if (!res.ok) {
+        // Surface actionable server errors (file too large, rate limited) verbatim;
+        // fall through to the generic message for everything else.
+        if (res.status === 413 || res.status === 429) {
+          const serverError = await res.json().then(d => d?.error).catch(() => null)
+          setUploadError(serverError ?? 'Upload could not be processed. Please try again.')
+          return
+        }
+        throw new Error('Upload failed')
+      }
       const data = await res.json() as { extractedText?: string; candidates?: Candidate[] }
       const candidates = data.candidates ?? []
       const fallback = data.extractedText ?? ''

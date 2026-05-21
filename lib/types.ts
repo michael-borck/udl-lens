@@ -68,6 +68,7 @@ export interface SessionState {
 }
 
 export type SessionAction =
+  | { type: 'HYDRATE'; state: SessionState }
   | { type: 'SET_ASSESSMENTS'; assessments: Assessment[] }
   | { type: 'SET_CHECKPOINTS'; checkpoints: CheckpointResult[] }
   | { type: 'UPDATE_CHECKPOINT'; checkpointId: string; assessmentId: string; userRating: Rating; acceptedAI: boolean }

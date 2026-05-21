@@ -1,7 +1,9 @@
 'use client'
 
-import { createContext, useContext, useReducer, type ReactNode } from 'react'
+import { createContext, useContext, useReducer, useEffect, useState, type ReactNode } from 'react'
 import type { SessionState, SessionAction, Suggestion } from '@/lib/types'
+
+const STORAGE_KEY = 'udl-lens-session'
 
 const initialState: SessionState = {
   assessments: [],
@@ -12,6 +14,8 @@ const initialState: SessionState = {
 
 function sessionReducer(state: SessionState, action: SessionAction): SessionState {
   switch (action.type) {
+    case 'HYDRATE':
+      return action.state
     case 'SET_ASSESSMENTS':
       return { ...state, assessments: action.assessments }
     case 'SET_CHECKPOINTS':
@@ -82,14 +86,41 @@ function sessionReducer(state: SessionState, action: SessionAction): SessionStat
 interface SessionContextValue {
   state: SessionState
   dispatch: React.Dispatch<SessionAction>
+  hydrated: boolean
 }
 
 const SessionContext = createContext<SessionContextValue | null>(null)
 
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [state, dispatch] = useReducer(sessionReducer, initialState)
+  const [hydrated, setHydrated] = useState(false)
+
+  // Restore any saved session once on mount. Client-side only, so the server and
+  // the first client render both start from initialState (no hydration mismatch).
+  useEffect(() => {
+    try {
+      const saved = sessionStorage.getItem(STORAGE_KEY)
+      if (saved) dispatch({ type: 'HYDRATE', state: JSON.parse(saved) as SessionState })
+    } catch {
+      // Unavailable or corrupt storage: start fresh.
+    }
+    setHydrated(true)
+  }, [])
+
+  // Persist on every change, but only after hydration so we never clobber saved
+  // data with the empty initial state on the first pass. RESET stores the empty
+  // state, which effectively clears it.
+  useEffect(() => {
+    if (!hydrated) return
+    try {
+      sessionStorage.setItem(STORAGE_KEY, JSON.stringify(state))
+    } catch {
+      // Quota exceeded or unavailable: degrade to in-memory only.
+    }
+  }, [state, hydrated])
+
   return (
-    <SessionContext.Provider value={{ state, dispatch }}>
+    <SessionContext.Provider value={{ state, dispatch, hydrated }}>
       {children}
     </SessionContext.Provider>
   )

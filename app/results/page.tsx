@@ -36,7 +36,7 @@ const PdfDownloadButton = dynamic<PdfDownloadButtonProps>(
 
 export default function ResultsPage() {
   const router = useRouter()
-  const { state, dispatch } = useSession()
+  const { state, dispatch, hydrated } = useSession()
   const [showResetModal, setShowResetModal] = useState(false)
   const [loadingSuggestions, setLoadingSuggestions] = useState(false)
   const [suggestionsError, setSuggestionsError] = useState(false)
@@ -45,8 +45,8 @@ export default function ResultsPage() {
   const { assessments, checkpoints, suggestions } = state
 
   useEffect(() => {
-    if (assessments.length === 0) router.replace('/audit')
-  }, [assessments, router])
+    if (hydrated && assessments.length === 0) router.replace('/audit')
+  }, [hydrated, assessments, router])
 
   const fetchSuggestions = useCallback(async (focus?: string) => {
     setLoadingSuggestions(true)
@@ -72,20 +72,21 @@ export default function ResultsPage() {
   }
 
   useEffect(() => {
+    if (!hydrated) return
     if (suggestions || checkpoints.length === 0) return
     if (fetchingSuggestions.current) return
     fetchingSuggestions.current = true
     fetchSuggestions().finally(() => {
       fetchingSuggestions.current = false
     })
-  }, [suggestions, checkpoints, assessments, fetchSuggestions])
+  }, [hydrated, suggestions, checkpoints, assessments, fetchSuggestions])
 
   function handleReset() {
     dispatch({ type: 'RESET' })
     router.push('/audit')
   }
 
-  if (assessments.length === 0) return null
+  if (!hydrated || assessments.length === 0) return null
 
   const principleScores = computePrincipleScores(checkpoints)
   const overallScore = computeOverallScore(checkpoints)

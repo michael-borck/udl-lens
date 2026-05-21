@@ -10,7 +10,7 @@ export function ResetModal({ onConfirm, onCancel }: Props) {
       <div className="relative bg-white rounded-2xl border border-sand shadow-xl p-8 max-w-sm w-full mx-4">
         <h2 className="font-display text-xl text-teal mb-2">Start over?</h2>
         <p className="text-sm text-teal/60 mb-6">
-          This will clear all assessments and checkpoint responses. Your data is not saved anywhere, so this cannot be undone.
+          This will clear all assessments and checkpoint responses from this browser session. This cannot be undone.
         </p>
         <div className="flex gap-3">
           <button

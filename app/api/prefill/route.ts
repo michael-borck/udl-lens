@@ -1,10 +1,8 @@
 import { NextResponse } from 'next/server'
-import Anthropic from '@anthropic-ai/sdk'
 import type { Assessment, CheckpointResult, Rating } from '@/lib/types'
 import { getCheckpointDef } from '@/lib/udl'
-
-const client = new Anthropic()
-const MODEL = process.env.PREFILL_MODEL ?? process.env.ANTHROPIC_MODEL ?? 'claude-sonnet-4-6'
+import { getClient, resolveModel, parseJsonResponse, getResponseText } from '@/lib/llm'
+import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 interface PrefillRequest {
   assessments: Assessment[]
@@ -19,6 +17,13 @@ interface PrefillItem {
 }
 
 export async function POST(req: Request) {
+  const rl = checkRateLimit(getClientIp(req))
+  if (!rl.ok) {
+    return NextResponse.json(
+      { error: 'Too many requests. Please wait a moment and try again.' },
+      { status: 429, headers: { 'Retry-After': String(rl.retryAfterSeconds) } },
+    )
+  }
   try {
     const body = await req.json() as PrefillRequest
     const { assessments, checkpointIds } = body
@@ -108,23 +113,16 @@ Important:
 - Keep reasoning to one sentence.
 - Return ONLY the JSON array, no other text.`
 
-    const response = await client.messages.create({
-      model: MODEL,
+    const response = await getClient().messages.create({
+      model: resolveModel('prefill'),
       max_tokens: 8192,
       messages: [{ role: 'user', content: prompt }],
     })
 
-    const textBlock = response.content.find(b => b.type === 'text')
-    if (!textBlock || textBlock.type !== 'text') {
-      throw new Error('No text response from Claude')
-    }
-
+    const responseText = getResponseText(response.content)
     let items: PrefillItem[]
     try {
-      const jsonText = textBlock.text.trim()
-        .replace(/^```(?:json)?\n?/, '')
-        .replace(/\n?```$/, '')
-      items = JSON.parse(jsonText) as PrefillItem[]
+      items = parseJsonResponse<PrefillItem[]>(responseText)
     } catch {
       throw new Error('Failed to parse Claude response as JSON')
     }

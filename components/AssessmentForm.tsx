@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import type { Assessment, AssessmentType, AssessmentDocument } from '@/lib/types'
+import type { Assessment, AssessmentType, AssessmentDocument, Lane } from '@/lib/types'
 import { ASSESSMENT_TYPE_OPTIONS } from '@/lib/udl'
 import { TypedDocumentSlots } from '@/components/TypedDocumentSlots'
 import { QuestionnaireForm } from '@/components/QuestionnaireForm'
@@ -15,7 +15,7 @@ interface Props {
 export function AssessmentForm({ initial, onSave, onCancel }: Props) {
   const [name, setName] = useState(initial?.name ?? '')
   const [type, setType] = useState<AssessmentType>(initial?.type ?? 'interactive_oral')
-  const [lane, setLane] = useState<'lane1' | 'lane2'>(initial?.lane ?? 'lane1')
+  const [lane, setLane] = useState<Lane>(initial?.lane ?? 'lane1')
   const [description, setDescription] = useState(initial?.description ?? '')
   const [documents, setDocuments] = useState<AssessmentDocument[]>(initial?.documents ?? [])
   const [rubricInBrief, setRubricInBrief] = useState<boolean>(initial?.rubricInBrief ?? false)
@@ -95,8 +95,9 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
           <span className="ml-1 text-teal/50 font-normal">(optional - helps the AI)</span>
         </label>
         <p className="text-xs text-teal/60 mb-2 leading-relaxed">
-          Files are read once to generate ratings and are never stored - nothing leaves this
-          browser session. Add only what you have; the AI works with whatever you give it.
+          Files are sent for AI analysis, then discarded - we never store them on our servers.
+          Only the extracted text and your ratings stay in this browser session. Add only what
+          you have; the AI works with whatever you give it.
         </p>
         <TypedDocumentSlots documents={documents} onChange={setDocuments} />
         <label className="mt-2 flex items-start gap-2 cursor-pointer">

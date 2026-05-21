@@ -30,7 +30,7 @@ export default function LandingPage() {
         </Link>
 
         <p className="mt-6 text-sm text-teal/60">
-          No login. Nothing is stored - your files and ratings stay in this browser session only.
+          No login, no database. Files are sent for AI analysis and never stored on our servers; your ratings stay in this browser session only.
         </p>
 
         {/* How it works - three-step preview */}
@@ -39,7 +39,7 @@ export default function LandingPage() {
             {
               n: 1,
               title: 'Add your assessments',
-              body: 'Describe each one and optionally upload the brief, rubric, or exemplar. The AI reads them for context. Nothing is stored.',
+              body: 'Describe each one and optionally upload the brief, rubric, or exemplar. The AI reads them for context, then they are discarded - nothing is stored on our servers.',
             },
             {
               n: 2,

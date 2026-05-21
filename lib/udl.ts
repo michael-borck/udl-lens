@@ -8,10 +8,6 @@ export function getCheckpointDef(id: string): CheckpointDef | undefined {
   return data.checkpoints[id]
 }
 
-export function getAllCheckpointIds(): string[] {
-  return Object.keys(data.checkpoints)
-}
-
 export function getCheckpointIdsForAssessments(assessments: Assessment[]): string[] {
   const ids = new Set<string>()
   for (const a of assessments) {
@@ -19,12 +15,6 @@ export function getCheckpointIdsForAssessments(assessments: Assessment[]): strin
     for (const id of mapped) ids.add(id)
   }
   return Array.from(ids)
-}
-
-export function getCheckpointDefsForAssessments(assessments: Assessment[]): CheckpointDef[] {
-  return getCheckpointIdsForAssessments(assessments)
-    .map(id => data.checkpoints[id])
-    .filter((c): c is CheckpointDef => c !== undefined)
 }
 
 export function getAssessmentTypeLabel(type: string): string {
