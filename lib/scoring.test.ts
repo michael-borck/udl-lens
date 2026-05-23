@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { computeOverallScore, computePrincipleScores, getGradeLabel } from '@/lib/scoring'
+import { computeOverallScore, computePrincipleScores, getGradeLabel, scoreBand } from '@/lib/scoring'
 import type { CheckpointResult, Rating } from '@/lib/types'
 
 // Real checkpoint IDs from data/udl-checkpoints.json, grouped by principle:
@@ -89,5 +89,18 @@ describe('getGradeLabel', () => {
     [0, 'UDL Alignment Needs Attention'],
   ])('maps %i%% to "%s"', (pct, label) => {
     expect(getGradeLabel(pct)).toBe(label)
+  })
+})
+
+describe('scoreBand', () => {
+  it.each([
+    [100, 'strong'],
+    [75, 'strong'],
+    [74, 'developing'],
+    [45, 'developing'],
+    [44, 'attention'],
+    [0, 'attention'],
+  ] as const)('maps %i%% to %s', (pct, band) => {
+    expect(scoreBand(pct)).toBe(band)
   })
 })

@@ -42,3 +42,16 @@ export function getGradeLabel(percentage: number): string {
   if (percentage >= 40) return 'Emerging UDL Alignment'
   return 'UDL Alignment Needs Attention'
 }
+
+export type ScoreBand = 'strong' | 'developing' | 'attention'
+
+// The per-principle colour band for a percentage - used by both the breakdown
+// bars and the PDF, so the thresholds live in one place. Distinct from
+// getGradeLabel, which bands the OVERALL score into grade text on a different
+// scale (85/65/40); these are separate product judgements and are deliberately
+// not unified here. Views map the band to their own colour vocabulary.
+export function scoreBand(percentage: number): ScoreBand {
+  if (percentage >= 75) return 'strong'
+  if (percentage >= 45) return 'developing'
+  return 'attention'
+}
