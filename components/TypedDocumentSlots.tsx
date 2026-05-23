@@ -2,6 +2,7 @@
 
 import { useRef, useState } from 'react'
 import type { AssessmentDocument, DocumentType } from '@/lib/types'
+import { extractDocument, AuditClientError } from '@/lib/audit-client'
 import { AssessmentPickerModal, type Candidate } from '@/components/AssessmentPickerModal'
 
 interface SlotConfig {
@@ -54,23 +55,9 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
     setUploadingType(type)
     setUploadError(null)
     try {
-      const fd = new FormData()
-      fd.append('file', file)
-      fd.append('documentType', type)
-      const res = await fetch('/api/extract', { method: 'POST', body: fd })
-      if (!res.ok) {
-        // Surface actionable server errors (file too large, rate limited) verbatim;
-        // fall through to the generic message for everything else.
-        if (res.status === 413 || res.status === 429) {
-          const serverError = await res.json().then(d => d?.error).catch(() => null)
-          setUploadError(serverError ?? 'Upload could not be processed. Please try again.')
-          return
-        }
-        throw new Error('Upload failed')
-      }
-      const data = await res.json() as { extractedText?: string; candidates?: Candidate[] }
-      const candidates = data.candidates ?? []
-      const fallback = data.extractedText ?? ''
+      const data = await extractDocument(file, type)
+      const candidates = data.candidates
+      const fallback = data.extractedText
 
       if (candidates.length === 0) {
         if (type === 'brief' && fallback) {
@@ -95,7 +82,13 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
 
       pendingFilename.current[type] = file.name
       setPickerState({ type, candidates })
-    } catch {
+    } catch (err) {
+      // Surface actionable server errors (file too large, rate limited) verbatim;
+      // fall through to the generic message for everything else.
+      if (err instanceof AuditClientError && (err.status === 413 || err.status === 429)) {
+        setUploadError(err.serverMessage ?? 'Upload could not be processed. Please try again.')
+        return
+      }
       setUploadError(
         type === 'brief'
           ? 'Extraction failed for this brief. Without the brief text the AI rates this ' +

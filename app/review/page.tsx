@@ -4,6 +4,7 @@ import { useEffect, useState, useCallback, useRef } from 'react'
 import { useRouter } from 'next/navigation'
 import { useSession } from '@/context/SessionContext'
 import { getCheckpointIdsForAssessments, getCheckpointDef } from '@/lib/udl'
+import { prefill } from '@/lib/audit-client'
 import { ProgressBar } from '@/components/ProgressBar'
 import { CheckpointNav } from '@/components/CheckpointNav'
 import { CheckpointCard } from '@/components/CheckpointCard'
@@ -55,13 +56,7 @@ export default function ReviewPage() {
       const checkpointIds = getCheckpointIdsForAssessments([assessment])
       if (checkpointIds.length === 0) continue
       try {
-        const res = await fetch('/api/prefill', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ assessments: [assessment], checkpointIds }),
-        })
-        if (!res.ok) throw new Error('Prefill request failed')
-        const data = await res.json() as CheckpointResult[]
+        const data = await prefill({ assessments: [assessment], checkpointIds })
         allResults.push(...data)
       } catch {
         failedAssessments.push(assessment.name)

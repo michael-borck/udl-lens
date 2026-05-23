@@ -98,3 +98,25 @@ export interface PrincipleScore {
   total: number
   percentage: number
 }
+
+// ── API wire contracts ─────────────────────────────────────────────────────
+// Shared by the route handlers and the browser audit-client (lib/audit-client),
+// so the two ends of each request can't drift. Responses: prefill -> CheckpointResult[],
+// suggestions -> Suggestions, extract -> ExtractResponse.
+
+export interface PrefillRequest {
+  assessments: Assessment[]
+  checkpointIds: string[]
+}
+
+export interface SuggestionsRequest {
+  checkpoints: CheckpointResult[]
+  assessments: Assessment[]
+  focus?: string
+}
+
+export interface ExtractResponse {
+  extractedText: string
+  documentType: string | null
+  candidates: Candidate[]
+}
