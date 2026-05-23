@@ -1,85 +1,12 @@
 import { NextResponse } from 'next/server'
 import mammoth from 'mammoth'
-import { getClient, resolveModel, parseJsonResponse, getResponseText } from '@/lib/llm'
+import type { Candidate } from '@/lib/types'
+import { runExtract } from '@/lib/audit'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
 // Files are read fully into memory (arrayBuffer) before going to the model, so
 // cap the size to protect server RAM and token cost. Briefs are well under this.
 const MAX_UPLOAD_BYTES = 10 * 1024 * 1024 // 10 MB
-
-interface Candidate {
-  title: string
-  content: string
-}
-
-function promptForDocumentType(docType: string | null): string {
-  if (docType === 'rubric') {
-    return `You are extracting marking rubrics from a document. Find every rubric or marking-criteria block in the document. For each, return a "title" (e.g. "Rubric for Final Report" or the assessment name if labelled) and "content" (the rubric text itself: criteria, performance descriptors, weights). If the document does not appear to contain a rubric, return an empty array.`
-  }
-  if (docType === 'exemplar') {
-    return `You are extracting student-work exemplars from a document. Find every exemplar, sample student response, or worked example. For each, return a "title" (e.g. "High Distinction example" or the assessment name) and "content" (the exemplar text or annotated commentary). If the document does not appear to contain an exemplar, return an empty array.`
-  }
-  // Default: brief
-  return `You are extracting assessment briefs from a document. Find every distinct assessment task in the document. For each, return a "title" (the assessment name) and "content" (the brief: task description, requirements, deliverables, due dates - everything a student would need). If the document only contains one assessment, return an array with one entry. If the document is itself an assessment brief (not a unit outline), return one entry with the document treated as a single brief. If the document contains no assessment information at all, return an empty array - do not invent one.`
-}
-
-function buildPrompt(docType: string | null): string {
-  return `${promptForDocumentType(docType)}
-
-Return JSON only, no other text:
-{
-  "candidates": [
-    {"title": "...", "content": "..."}
-  ]
-}`
-}
-
-function isCandidate(c: unknown): c is Candidate {
-  if (!c || typeof c !== 'object') return false
-  const obj = c as Record<string, unknown>
-  return typeof obj.title === 'string' && typeof obj.content === 'string'
-}
-
-function parseCandidates(raw: string): Candidate[] {
-  const parsed = parseJsonResponse(raw)
-  if (!parsed || typeof parsed !== 'object') return []
-  const list = (parsed as Record<string, unknown>).candidates
-  if (!Array.isArray(list)) return []
-  return list.filter(isCandidate)
-}
-
-async function extractWithAI(text: string, documentType: string | null): Promise<Candidate[]> {
-  const prompt = buildPrompt(documentType)
-  const response = await getClient().messages.create({
-    model: resolveModel('extract'),
-    max_tokens: 2048,
-    messages: [{ role: 'user', content: `${prompt}\n\nDOCUMENT:\n${text}` }],
-  })
-  return parseCandidates(getResponseText(response.content))
-}
-
-async function extractPdfWithAI(base64: string, documentType: string | null): Promise<Candidate[]> {
-  const client = getClient()
-  const prompt = buildPrompt(documentType)
-  type MessageParam = Parameters<typeof client.messages.create>[0]['messages'][0]
-  const message: MessageParam = {
-    role: 'user',
-    content: [
-      {
-        type: 'document',
-        source: { type: 'base64', media_type: 'application/pdf', data: base64 },
-      },
-      { type: 'text', text: prompt },
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    ] as any,
-  }
-  const response = await client.messages.create({
-    model: resolveModel('extract'),
-    max_tokens: 2048,
-    messages: [message],
-  })
-  return parseCandidates(getResponseText(response.content))
-}
 
 export async function POST(req: Request) {
   const rl = checkRateLimit(getClientIp(req))
@@ -103,8 +30,7 @@ export async function POST(req: Request) {
       )
     }
 
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
+    const buffer = Buffer.from(await file.arrayBuffer())
     const fileName = file.name.toLowerCase()
 
     const documentTypeRaw = formData.get('documentType')
@@ -115,26 +41,26 @@ export async function POST(req: Request) {
     let extractedText = ''
 
     if (fileName.endsWith('.pdf')) {
-      // PDFs are sent to Claude as a binary document; there is no plain-text
-      // source the assessment detection runs against. Leave extractedText
-      // empty so the client can fall back to candidates[0].content.
-      candidates = await extractPdfWithAI(buffer.toString('base64'), documentType)
+      // PDFs go to the model as a binary document; there is no plain-text source
+      // the assessment detection runs against. Leave extractedText empty so the
+      // client can fall back to candidates[0].content.
+      candidates = await runExtract({ base64: buffer.toString('base64') }, documentType)
     } else if (fileName.endsWith('.docx')) {
-      const result = await mammoth.extractRawText({ buffer })
-      extractedText = result.value
-      candidates = await extractWithAI(extractedText, documentType)
+      extractedText = (await mammoth.extractRawText({ buffer })).value
+      candidates = await runExtract({ text: extractedText }, documentType)
     } else if (fileName.endsWith('.txt') || fileName.endsWith('.md')) {
       extractedText = buffer.toString('utf-8')
-      candidates = await extractWithAI(extractedText, documentType)
+      candidates = await runExtract({ text: extractedText }, documentType)
     } else {
       return NextResponse.json(
         { error: 'Unsupported file type. Please upload PDF, DOCX, TXT, or MD.' },
-        { status: 400 }
+        { status: 400 },
       )
     }
 
     return NextResponse.json({ extractedText, documentType, candidates })
   } catch (err) {
+    // ModelCallError (retries exhausted) or file parsing failure -> 500.
     console.error('/api/extract error:', err)
     return NextResponse.json({ error: 'Extraction failed' }, { status: 500 })
   }

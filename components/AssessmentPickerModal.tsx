@@ -1,11 +1,10 @@
 'use client'
 
 import { useEffect, useRef } from 'react'
+import type { Candidate } from '@/lib/types'
 
-export interface Candidate {
-  title: string
-  content: string
-}
+// Re-exported so existing importers (TypedDocumentSlots) keep their import path.
+export type { Candidate }
 
 interface Props {
   candidates: Candidate[]

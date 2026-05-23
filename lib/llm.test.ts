@@ -1,5 +1,14 @@
-import { describe, it, expect } from 'vitest'
-import { parseJsonResponse, getResponseText, sanitizeSuggestions } from '@/lib/llm'
+import { describe, it, expect, afterEach } from 'vitest'
+import {
+  parseJsonResponse,
+  getResponseText,
+  completeJson,
+  ModelCallError,
+  _setTransport,
+  _resetTransport,
+} from '@/lib/llm'
+
+afterEach(() => _resetTransport())
 
 describe('parseJsonResponse', () => {
   it('parses plain JSON', () => {
@@ -41,50 +50,97 @@ describe('getResponseText', () => {
   })
 })
 
-describe('sanitizeSuggestions', () => {
-  it('keeps valid suggestions and assigns a server-side id', () => {
-    const result = sanitizeSuggestions({
-      quickWins: [{ text: 'do x', why: 'because', udlCodes: ['8.3'] }],
-      longerTerm: [],
+describe('completeJson', () => {
+  const passthrough = (raw: unknown) => raw
+
+  it('parses and returns a validated response', async () => {
+    _setTransport(async () => '{"ok":true}')
+    const result = await completeJson({ kind: 'prefill', prompt: 'p', maxTokens: 10, validate: passthrough })
+    expect(result).toEqual({ ok: true })
+  })
+
+  it('strips a JSON fence before validating', async () => {
+    _setTransport(async () => '```json\n{"a":1}\n```')
+    const result = await completeJson({ kind: 'prefill', prompt: 'p', maxTokens: 10, validate: passthrough })
+    expect(result).toEqual({ a: 1 })
+  })
+
+  it('runs the validator strictly until the final (lenient) attempt', async () => {
+    let calls = 0
+    const seenStrict: boolean[] = []
+    _setTransport(async () => { calls++; return '{"x":1}' })
+    const result = await completeJson({
+      kind: 'prefill',
+      prompt: 'p',
+      maxTokens: 10,
+      maxAttempts: 2,
+      validate: (_raw, { strict }) => {
+        seenStrict.push(strict)
+        if (strict) throw new Error('strict reject')
+        return 'salvaged'
+      },
     })
-    expect(result.quickWins).toHaveLength(1)
-    expect(result.quickWins[0]).toMatchObject({ text: 'do x', why: 'because', udlCodes: ['8.3'] })
-    expect(typeof result.quickWins[0].id).toBe('string')
-    expect(result.quickWins[0].id.length).toBeGreaterThan(0)
+    expect(result).toBe('salvaged')
+    expect(calls).toBe(2)                // one transport call per attempt
+    expect(seenStrict).toEqual([true, false]) // strict, then lenient
   })
 
-  it('strips curation flags the model tries to inject', () => {
-    const result = sanitizeSuggestions({
-      quickWins: [{ text: 't', why: 'w', udlCodes: [], dismissed: true, done: true, userAuthored: true }],
-      longerTerm: [],
+  it('gives the model two strict tries when maxAttempts is 3', async () => {
+    let calls = 0
+    _setTransport(async () => { calls++; return '{"x":1}' })
+    const seenStrict: boolean[] = []
+    const result = await completeJson({
+      kind: 'suggestions',
+      prompt: 'p',
+      maxTokens: 10,
+      maxAttempts: 3,
+      validate: (_raw, { strict }) => {
+        seenStrict.push(strict)
+        if (strict) throw new Error('reject')
+        return 'ok'
+      },
     })
-    const s = result.quickWins[0] as unknown as Record<string, unknown>
-    expect(s.dismissed).toBeUndefined()
-    expect(s.done).toBeUndefined()
-    expect(s.userAuthored).toBeUndefined()
+    expect(result).toBe('ok')
+    expect(seenStrict).toEqual([true, true, false])
+    expect(calls).toBe(3)
   })
 
-  it('drops malformed entries', () => {
-    const result = sanitizeSuggestions({
-      quickWins: [
-        { text: 'ok', why: 'w', udlCodes: [] },
-        { text: 'missing why', udlCodes: [] },
-        { text: 'bad codes', why: 'w', udlCodes: [1] },
-        'not an object',
-      ],
-      longerTerm: [],
+  it('throws ModelCallError carrying attempts and lastRaw when validation never succeeds', async () => {
+    _setTransport(async () => '{"x":1}')
+    let thrown: unknown
+    try {
+      await completeJson({
+        kind: 'extract',
+        prompt: 'p',
+        maxTokens: 10,
+        maxAttempts: 2,
+        validate: () => { throw new Error('always reject') },
+      })
+    } catch (e) {
+      thrown = e
+    }
+    expect(thrown).toBeInstanceOf(ModelCallError)
+    const err = thrown as ModelCallError
+    expect(err.attempts).toBe(2)
+    expect(err.lastRaw).toBe('{"x":1}')
+  })
+
+  it('retries a transport failure, then succeeds', async () => {
+    let calls = 0
+    _setTransport(async () => {
+      calls++
+      if (calls < 2) throw new Error('network')
+      return '{"ok":1}'
     })
-    expect(result.quickWins).toHaveLength(1)
-    expect(result.quickWins[0].text).toBe('ok')
+    const result = await completeJson({ kind: 'prefill', prompt: 'p', maxTokens: 10, maxAttempts: 2, validate: passthrough })
+    expect(result).toEqual({ ok: 1 })
+    expect(calls).toBe(2)
   })
 
-  it('returns empty buckets for non-object input', () => {
-    expect(sanitizeSuggestions(null)).toEqual({ quickWins: [], longerTerm: [] })
-    expect(sanitizeSuggestions('nope')).toEqual({ quickWins: [], longerTerm: [] })
-  })
-
-  it('defaults a missing bucket to an empty array', () => {
-    expect(sanitizeSuggestions({ quickWins: [{ text: 'a', why: 'b', udlCodes: [] }] }))
-      .toMatchObject({ longerTerm: [] })
+  it('throws ModelCallError when the response is never valid JSON', async () => {
+    _setTransport(async () => 'not json')
+    await expect(
+      completeJson({ kind: 'prefill', prompt: 'p', maxTokens: 10, maxAttempts: 2, validate: passthrough }),
+    ).rejects.toBeInstanceOf(ModelCallError)
   })
 })
