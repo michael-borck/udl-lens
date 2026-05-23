@@ -1,4 +1,11 @@
 import type { PrincipleScore } from '@/lib/types'
+import { scoreBand, type ScoreBand } from '@/lib/scoring'
+
+const BAND_CLASS: Record<ScoreBand, string> = {
+  strong: 'bg-green-500',
+  developing: 'bg-amber',
+  attention: 'bg-terracotta',
+}
 
 interface Props {
   scores: PrincipleScore[]
@@ -15,11 +22,7 @@ export function DimensionBars({ scores }: Props) {
           </div>
           <div className="h-2.5 rounded-full bg-sand overflow-hidden">
             <div
-              className={`h-full rounded-full transition-all duration-500 ${
-                s.percentage >= 75 ? 'bg-green-500' :
-                s.percentage >= 45 ? 'bg-amber' :
-                'bg-terracotta'
-              }`}
+              className={`h-full rounded-full transition-all duration-500 ${BAND_CLASS[scoreBand(s.percentage)]}`}
               style={{ width: `${s.percentage}%` }}
             />
           </div>

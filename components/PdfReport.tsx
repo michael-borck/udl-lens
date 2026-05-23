@@ -10,6 +10,13 @@ import {
 } from '@react-pdf/renderer'
 import type { CheckpointResult, Assessment, PrincipleScore, Suggestions } from '@/lib/types'
 import { getCheckpointDef } from '@/lib/udl'
+import { scoreBand, type ScoreBand } from '@/lib/scoring'
+
+const BAND_HEX: Record<ScoreBand, string> = {
+  strong: '#22c55e',
+  developing: '#D4A017',
+  attention: '#C96B2F',
+}
 
 const styles = StyleSheet.create({
   page: { padding: 48, backgroundColor: '#FFFFFF', fontFamily: 'Helvetica' },
@@ -108,7 +115,7 @@ function UdlReport({ checkpoints, assessments, principleScores, overallScore, gr
               <View style={[styles.bar, styles.barBg]}>
                 <View style={[styles.bar, {
                   width: `${s.percentage}%` as unknown as number,
-                  backgroundColor: s.percentage >= 75 ? '#22c55e' : s.percentage >= 45 ? '#D4A017' : '#C96B2F',
+                  backgroundColor: BAND_HEX[scoreBand(s.percentage)],
                   marginBottom: 0,
                 }]} />
               </View>
