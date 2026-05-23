@@ -11,6 +11,14 @@ export interface AssessmentDocument {
   extractedText: string
 }
 
+// One extracted item (brief/rubric/exemplar) the model found in an uploaded
+// document. Wire shape shared by the extract route, the audit wrapper, and the
+// picker modal - a single source of truth so it isn't redeclared per consumer.
+export interface Candidate {
+  title: string
+  content: string
+}
+
 export interface Assessment {
   id: string
   name: string
