@@ -37,3 +37,11 @@ next-env.d.ts
 
 # Stray local git worktrees (excluded from tsconfig too)
 .worktrees/
+
+# Local working docs (drafts/notes, not part of the project)
+/docs/festival-of-ai-eoi.md
+/docs/festival-of-ai-eoi-presentation.md
+/docs/luke-email-draft.md
+/docs/luke-feedback-status.md
+/docs/luke-feedback-status.pdf
+/docs/udl-lens-update-report.md
