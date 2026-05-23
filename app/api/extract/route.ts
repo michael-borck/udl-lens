@@ -1,6 +1,6 @@
 import { NextResponse } from 'next/server'
 import mammoth from 'mammoth'
-import type { Candidate } from '@/lib/types'
+import type { Candidate, ExtractResponse } from '@/lib/types'
 import { runExtract } from '@/lib/audit'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
 
@@ -58,7 +58,8 @@ export async function POST(req: Request) {
       )
     }
 
-    return NextResponse.json({ extractedText, documentType, candidates })
+    const body: ExtractResponse = { extractedText, documentType, candidates }
+    return NextResponse.json(body)
   } catch (err) {
     // ModelCallError (retries exhausted) or file parsing failure -> 500.
     console.error('/api/extract error:', err)

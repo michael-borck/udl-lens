@@ -1,14 +1,9 @@
 import { NextResponse } from 'next/server'
-import type { Assessment, CheckpointResult } from '@/lib/types'
+import type { CheckpointResult, PrefillRequest } from '@/lib/types'
 import { getCheckpointDef } from '@/lib/udl'
 import type { CheckpointForPrompt } from '@/lib/prompts'
 import { runPrefill } from '@/lib/audit'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
-
-interface PrefillRequest {
-  assessments: Assessment[]
-  checkpointIds: string[]
-}
 
 export async function POST(req: Request) {
   const rl = checkRateLimit(getClientIp(req))

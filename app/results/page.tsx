@@ -5,6 +5,7 @@ import { useRouter } from 'next/navigation'
 import dynamic from 'next/dynamic'
 import { ResetModal } from '@/components/ResetModal'
 import { useSession } from '@/context/SessionContext'
+import { suggestions as requestSuggestions } from '@/lib/audit-client'
 import { computePrincipleScores, computeOverallScore, getGradeLabel } from '@/lib/scoring'
 import { ResultsRadarChart } from '@/components/ResultsRadarChart'
 import { DimensionBars } from '@/components/DimensionBars'
@@ -52,13 +53,7 @@ export default function ResultsPage() {
     setLoadingSuggestions(true)
     setSuggestionsError(false)
     try {
-      const res = await fetch('/api/suggestions', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ checkpoints, assessments, focus }),
-      })
-      if (!res.ok) throw new Error('failed')
-      const data = await res.json() as Suggestions
+      const data = await requestSuggestions({ checkpoints, assessments, focus })
       dispatch({ type: 'SET_SUGGESTIONS', suggestions: data })
     } catch {
       setSuggestionsError(true)

@@ -1,14 +1,8 @@
 import { NextResponse } from 'next/server'
-import type { Assessment, CheckpointResult } from '@/lib/types'
+import type { SuggestionsRequest } from '@/lib/types'
 import { runSuggestions } from '@/lib/audit'
 import { ModelCallError } from '@/lib/llm'
 import { checkRateLimit, getClientIp } from '@/lib/rate-limit'
-
-interface SuggestionsRequest {
-  checkpoints: CheckpointResult[]
-  assessments: Assessment[]
-  focus?: string
-}
 
 export async function POST(req: Request) {
   const rl = checkRateLimit(getClientIp(req))
