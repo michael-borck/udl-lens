@@ -99,6 +99,15 @@ export interface PrincipleScore {
   percentage: number
 }
 
+export interface GuidelineScore {
+  principle: Principle
+  guideline: string        // UDL guideline name, e.g. "Interaction"
+  label: string            // display label (guideline name)
+  score: number
+  total: number
+  percentage: number
+}
+
 // ── API wire contracts ─────────────────────────────────────────────────────
 // Shared by the route handlers and the browser audit-client (lib/audit-client),
 // so the two ends of each request can't drift. Responses: prefill -> CheckpointResult[],

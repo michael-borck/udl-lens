@@ -1,4 +1,4 @@
-import type { CheckpointResult, PrincipleScore, Principle } from '@/lib/types'
+import type { CheckpointResult, PrincipleScore, GuidelineScore, Principle } from '@/lib/types'
 import { getCheckpointDef } from '@/lib/udl'
 
 const PRINCIPLES: Principle[] = ['Engagement', 'Representation', 'Action & Expression']
@@ -25,6 +25,40 @@ export function computePrincipleScores(checkpoints: CheckpointResult[]): Princip
     const percentage = Math.round((score / relevant.length) * 100)
     return { principle, label: principle, score, total: relevant.length, percentage }
   })
+}
+
+// Per-guideline scores for the results radar. UDL has 9 guidelines (3 per
+// principle); plotting at this level - not the 3 principles - is what lets the
+// radar shape vary instead of always being a triangle. Only guidelines that
+// have assessed checkpoints are returned, in stable principle->guideline order,
+// so the radar axes stay consistent across runs.
+export function computeGuidelineScores(checkpoints: CheckpointResult[]): GuidelineScore[] {
+  const groups = new Map<string, { principle: Principle; items: CheckpointResult[] }>()
+  for (const c of checkpoints) {
+    const def = getCheckpointDef(c.checkpointId)
+    if (!def) continue
+    const g = groups.get(def.guideline)
+    if (g) g.items.push(c)
+    else groups.set(def.guideline, { principle: def.principle, items: [c] })
+  }
+  return [...groups.entries()]
+    .map(([guideline, g]) => {
+      const score = g.items.reduce((sum, c) => sum + ratingValue(c.userRating ?? c.aiRating), 0)
+      const total = g.items.length
+      return {
+        principle: g.principle,
+        guideline,
+        label: guideline,
+        score,
+        total,
+        percentage: total ? Math.round((score / total) * 100) : 0,
+      }
+    })
+    .sort((a, b) => {
+      const pa = PRINCIPLES.indexOf(a.principle)
+      const pb = PRINCIPLES.indexOf(b.principle)
+      return pa - pb || a.guideline.localeCompare(b.guideline)
+    })
 }
 
 export function computeOverallScore(checkpoints: CheckpointResult[]): number {

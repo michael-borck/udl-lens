@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { computeOverallScore, computePrincipleScores, getGradeLabel, scoreBand } from '@/lib/scoring'
+import { computeOverallScore, computePrincipleScores, computeGuidelineScores, getGradeLabel, scoreBand } from '@/lib/scoring'
 import type { CheckpointResult, Rating } from '@/lib/types'
 
 // Real checkpoint IDs from data/udl-checkpoints.json, grouped by principle:
@@ -74,6 +74,39 @@ describe('computePrincipleScores', () => {
     const scores = computePrincipleScores([cp('io-8-3', 'not_yet', 'met')])
     const eng = scores.find(s => s.principle === 'Engagement')!
     expect(eng.percentage).toBe(100)
+  })
+})
+
+describe('computeGuidelineScores', () => {
+  it('returns one entry per assessed guideline, not just the 3 principles', () => {
+    const all = [
+      cp('io-8-3', 'met'), cp('fj-7-3', 'partial'),   // Engagement x2 guidelines
+      cp('io-2-4', 'not_yet'), cp('fj-3-3', 'met'),   // Representation x2 guidelines
+      cp('io-4-1', 'partial'), cp('fj-5-2', 'met'),   // Action & Expression x2 guidelines
+    ]
+    const gs = computeGuidelineScores(all)
+    expect(gs).toHaveLength(6)
+    expect(gs.every(g => g.total === 1)).toBe(true)
+  })
+
+  it('aggregates multiple checkpoints that share a guideline', () => {
+    // Same checkpoint id => same guideline => one group of two.
+    const gs = computeGuidelineScores([cp('io-2-4', 'met'), cp('io-2-4', 'partial')])
+    expect(gs).toHaveLength(1)
+    expect(gs[0].total).toBe(2)
+    expect(gs[0].percentage).toBe(75) // (1 + 0.5) / 2
+  })
+
+  it('orders guidelines by principle then guideline name', () => {
+    const gs = computeGuidelineScores([cp('io-4-1', 'met'), cp('io-8-3', 'met'), cp('io-2-4', 'met')])
+    expect(gs.map(g => g.principle)).toEqual(['Engagement', 'Representation', 'Action & Expression'])
+  })
+
+  it('maps each guideline axis to its assessed percentage', () => {
+    const gs = computeGuidelineScores([cp('io-8-3', 'met'), cp('io-2-4', 'not_yet')])
+    const byGuideline = Object.fromEntries(gs.map(g => [g.guideline, g.percentage]))
+    expect(byGuideline['Sustaining Effort & Persistence']).toBe(100)
+    expect(byGuideline['Language & Symbols']).toBe(0)
   })
 })
 

@@ -8,17 +8,37 @@ import {
   ResponsiveContainer,
   Tooltip,
 } from 'recharts'
-import type { PrincipleScore } from '@/lib/types'
+import type { GuidelineScore } from '@/lib/types'
 
 interface Props {
-  scores: PrincipleScore[]
+  scores: GuidelineScore[]
 }
 
 interface TickProps {
   x?: number | string
   y?: number | string
+  cx?: number | string
   cy?: number | string
   payload?: { value: string }
+}
+
+// UDL guideline names vary a lot in length ("Interaction" vs "Sustaining Effort
+// & Persistence"); split long ones across two lines so they fit the axis ends
+// without clipping.
+function wrapLabel(s: string): string[] {
+  if (s.length <= 16) return [s]
+  const amp = s.match(/^(.+?)\s+(?:&|and)\s+(.+)$/)
+  if (amp) return [`${amp[1]} &`, amp[2]]
+  const mid = Math.floor(s.length / 2)
+  let best = s.length
+  let splitAt = -1
+  for (let i = 0; i < s.length; i++) {
+    if (s[i] === ' ' && Math.abs(i - mid) < best) {
+      best = Math.abs(i - mid)
+      splitAt = i
+    }
+  }
+  return splitAt > 0 ? [s.slice(0, splitAt), s.slice(splitAt + 1)] : [s]
 }
 
 export function ResultsRadarChart({ scores }: Props) {
@@ -28,40 +48,46 @@ export function ResultsRadarChart({ scores }: Props) {
     fullMark: 100,
   }))
 
-  // Recharts plots clockwise from 12 o'clock; PRINCIPLES order from scoring.ts
-  // gives: top=Engagement, bottom-right=Representation, bottom-left=Action & Expression.
-  // We render long bottom labels outside the SVG so they can fit and be justified
-  // to the card edges instead of getting clipped at the polygon vertex.
-  const bottomRight = scores.find(s => s.principle === 'Representation')
-  const bottomLeft = scores.find(s => s.principle === 'Action & Expression')
-
   const renderTick = (props: TickProps) => {
     const { payload } = props
     if (!payload) return <g />
     const x = Number(props.x ?? 0)
     const y = Number(props.y ?? 0)
+    const cx = Number(props.cx ?? 0)
     const cy = Number(props.cy ?? 0)
-    if (y < cy - 10) {
-      return (
-        <text
-          x={x}
-          y={y - 6}
-          textAnchor="middle"
-          fontSize={12}
-          fill="#1B3A4B"
-          style={{ fontFamily: 'var(--font-plus-jakarta)' }}
-        >
-          {payload.value}
-        </text>
-      )
-    }
-    return <g />
+    const lines = wrapLabel(payload.value)
+
+    // Anchor by position relative to the radar centre so labels read outward.
+    let anchor: 'start' | 'middle' | 'end' = 'middle'
+    let dx = 0
+    let dy = 0
+    if (y < cy - 8) dy = -6 - (lines.length - 1) * 6
+    else if (y > cy + 8) dy = 12
+    if (x < cx - 8) { anchor = 'end'; dx = -4 }
+    else if (x > cx + 8) { anchor = 'start'; dx = 4 }
+
+    return (
+      <text
+        x={x + dx}
+        y={y + dy}
+        textAnchor={anchor}
+        fontSize={10}
+        fill="#1B3A4B"
+        style={{ fontFamily: 'var(--font-plus-jakarta)' }}
+      >
+        {lines.map((ln, i) => (
+          <tspan key={i} x={x + dx} dy={i === 0 ? 0 : 12}>
+            {ln}
+          </tspan>
+        ))}
+      </text>
+    )
   }
 
   return (
-    <div className="relative h-[320px]">
+    <div className="relative h-[340px]">
       <ResponsiveContainer width="100%" height="100%">
-        <RadarChart data={data} margin={{ top: 20, right: 20, bottom: 32, left: 20 }}>
+        <RadarChart data={data} margin={{ top: 24, right: 30, bottom: 28, left: 30 }}>
           <PolarGrid stroke="#E8E0D0" />
           <PolarAngleAxis dataKey="subject" tick={renderTick} />
           <Radar
@@ -83,10 +109,6 @@ export function ResultsRadarChart({ scores }: Props) {
           />
         </RadarChart>
       </ResponsiveContainer>
-      <div className="absolute left-0 right-0 bottom-1 flex justify-between px-1 text-xs font-medium text-teal pointer-events-none">
-        <span>{bottomLeft?.label}</span>
-        <span>{bottomRight?.label}</span>
-      </div>
     </div>
   )
 }

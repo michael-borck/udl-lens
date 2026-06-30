@@ -6,7 +6,7 @@ import dynamic from 'next/dynamic'
 import { ResetModal } from '@/components/ResetModal'
 import { useSession } from '@/context/SessionContext'
 import { suggestions as requestSuggestions } from '@/lib/audit-client'
-import { computePrincipleScores, computeOverallScore, getGradeLabel } from '@/lib/scoring'
+import { computeGuidelineScores, computePrincipleScores, computeOverallScore, getGradeLabel } from '@/lib/scoring'
 import { ResultsRadarChart } from '@/components/ResultsRadarChart'
 import { DimensionBars } from '@/components/DimensionBars'
 import { SuggestionsList } from '@/components/SuggestionsList'
@@ -84,6 +84,7 @@ export default function ResultsPage() {
   if (!hydrated || assessments.length === 0) return null
 
   const principleScores = computePrincipleScores(checkpoints)
+  const guidelineScores = computeGuidelineScores(checkpoints)
   const overallScore = computeOverallScore(checkpoints)
   const gradeLabel = getGradeLabel(overallScore)
   const unitName = assessments.map(a => a.name).join(', ')
@@ -148,11 +149,11 @@ export default function ResultsPage() {
         {/* Radar + principle bars */}
         <div className="grid grid-cols-2 gap-8">
           <div className="bg-white rounded-2xl border border-sand p-6">
-            <h3 className="font-display text-xl text-teal mb-4">UDL Principles</h3>
-            <ResultsRadarChart scores={principleScores} />
+            <h3 className="font-display text-xl text-teal mb-4">UDL Guidelines</h3>
+            <ResultsRadarChart scores={guidelineScores} />
           </div>
           <div className="bg-white rounded-2xl border border-sand p-6">
-            <h3 className="font-display text-xl text-teal mb-4">Breakdown</h3>
+            <h3 className="font-display text-xl text-teal mb-4">UDL Principles</h3>
             <DimensionBars scores={principleScores} />
           </div>
         </div>
