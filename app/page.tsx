@@ -1,4 +1,5 @@
 import Link from 'next/link'
+import { UdlPrimerModal } from '@/components/UdlPrimerModal'
 
 export default function LandingPage() {
   return (
@@ -31,6 +32,10 @@ export default function LandingPage() {
 
         <p className="mt-6 text-sm text-teal/70">
           No login, no database. Files are sent for AI analysis and never stored on our servers; your ratings stay in this browser session only.
+        </p>
+
+        <p className="mt-4 text-sm text-teal/70">
+          New to UDL? <UdlPrimerModal />
         </p>
 
         {/* How it works - three-step preview */}
