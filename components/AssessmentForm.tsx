@@ -83,7 +83,7 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
           ))}
         </div>
         {selectedTypeOption && (
-          <p className="text-xs text-teal/50 mt-1">
+          <p className="text-xs text-teal/70 mt-1">
             Default for {selectedTypeOption.label}: {selectedTypeOption.lane === 'lane1' ? 'Lane 1' : 'Lane 2'}
           </p>
         )}
@@ -92,32 +92,37 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
       <div>
         <label className="block text-sm font-medium text-teal mb-1">
           Documents
-          <span className="ml-1 text-teal/50 font-normal">(optional - helps the AI)</span>
+          <span className="ml-1 text-teal/70 font-normal">(optional - helps the AI)</span>
         </label>
-        <p className="text-xs text-teal/60 mb-2 leading-relaxed">
+        <p className="text-xs text-teal/70 mb-2 leading-relaxed">
           Files are sent for AI analysis, then discarded - we never store them on our servers.
           Only the extracted text and your ratings stay in this browser session. Add only what
           you have; the AI works with whatever you give it.
         </p>
-        <TypedDocumentSlots documents={documents} onChange={setDocuments} />
-        <label className="mt-2 flex items-start gap-2 cursor-pointer">
-          <input
-            type="checkbox"
-            checked={rubricInBrief}
-            onChange={e => setRubricInBrief(e.target.checked)}
-            className="accent-teal mt-0.5"
-          />
-          <span className="text-xs text-teal/70 leading-relaxed">
-            My rubric is inside the brief (no separate file). The AI will look for the marking
-            criteria within the brief instead of expecting a separate rubric.
-          </span>
-        </label>
+        <TypedDocumentSlots
+          documents={documents}
+          onChange={setDocuments}
+          betweenRubricAndExemplar={
+            <label className="flex items-start gap-2 cursor-pointer">
+              <input
+                type="checkbox"
+                checked={rubricInBrief}
+                onChange={e => setRubricInBrief(e.target.checked)}
+                className="accent-teal mt-0.5"
+              />
+              <span className="text-xs text-teal/70 leading-relaxed">
+                <strong className="font-semibold text-teal">My rubric is inside the brief (no separate file).</strong>{' '}
+                The AI will look for the marking criteria within the brief instead of expecting a separate rubric.
+              </span>
+            </label>
+          }
+        />
       </div>
 
       <div>
         <label className="block text-sm font-medium text-teal mb-1">
           Description (optional)
-          <span className="ml-1 text-teal/50 font-normal">- extra context not captured by uploads</span>
+          <span className="ml-1 text-teal/70 font-normal">- extra context not captured by uploads</span>
         </label>
         <textarea
           value={description}
@@ -132,7 +137,7 @@ export function AssessmentForm({ initial, onSave, onCancel }: Props) {
         <label className="block text-sm font-medium text-teal mb-1">
           Quick self-report
         </label>
-        <p className="text-xs text-teal/60 mb-2 leading-relaxed">
+        <p className="text-xs text-teal/70 mb-2 leading-relaxed">
           Some UDL guidelines can&apos;t be judged from a brief or rubric alone - things like how
           collaboration is set up, how you respond to language differences, or how students ask for
           help happen in your teaching, not on paper. These few questions let the AI rate those

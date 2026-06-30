@@ -22,7 +22,7 @@ export default function AboutPage() {
               href="https://www.cast.org/"
               target="_blank"
               rel="noopener noreferrer"
-              className="text-teal underline hover:text-terracotta transition-colors"
+              className="text-teal underline hover:text-terracotta-dark transition-colors"
             >
               CAST
             </a>
@@ -44,6 +44,14 @@ export default function AboutPage() {
             prototype focuses on these two assessment types, with UDL 3.0 checkpoints curated by
             Curtin Teaching Support for each.
           </p>
+          <a
+            href="https://www.curtin.edu.au/assessment2030/assessment-design-studio/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-block mt-3 text-sm text-terracotta-dark underline hover:text-terracotta-dark transition-colors"
+          >
+            Explore the A2030 Assessment Design Studio →
+          </a>
         </section>
 
         <section className="mb-10">
@@ -53,7 +61,7 @@ export default function AboutPage() {
               <span className="rounded-full bg-teal text-white w-7 h-7 flex items-center justify-center text-sm font-bold shrink-0 mt-0.5">1</span>
               <div>
                 <p className="font-medium text-teal mb-1">Add your assessments</p>
-                <p className="text-teal/60 text-sm leading-relaxed">
+                <p className="text-teal/70 text-sm leading-relaxed">
                   Describe each assessment in your unit - name, type, and A2030 lane. You can
                   optionally upload up to three documents (brief, rubric, exemplar) and answer
                   a short self-report about classroom delivery. Several UDL 3.0 practices live
@@ -66,11 +74,12 @@ export default function AboutPage() {
               <span className="rounded-full bg-teal text-white w-7 h-7 flex items-center justify-center text-sm font-bold shrink-0 mt-0.5">2</span>
               <div>
                 <p className="font-medium text-teal mb-1">Review AI-assisted checkpoint ratings</p>
-                <p className="text-teal/60 text-sm leading-relaxed">
-                  An AI reads your brief and pre-fills a UDL rating (Not yet / Partially / Met)
-                  for each relevant checkpoint, with a brief explanation. You verify each rating and
-                  can override it. The goal is to reduce blank-slate fatigue while keeping you in
-                  control - and ensuring you engage with what each checkpoint actually means.
+                <p className="text-teal/70 text-sm leading-relaxed">
+                  The AI reads your documents and gives each checkpoint a first-pass rating
+                  (Not yet / Partially / Met) with a short justification - an evaluation to react
+                  to, not a verdict. Your job is to agree or change each one. You are judging how
+                  well the assessment supports learners, not whether it has passed or failed a
+                  standard - and you keep the final call on every rating.
                 </p>
               </div>
             </li>
@@ -78,7 +87,7 @@ export default function AboutPage() {
               <span className="rounded-full bg-teal text-white w-7 h-7 flex items-center justify-center text-sm font-bold shrink-0 mt-0.5">3</span>
               <div>
                 <p className="font-medium text-teal mb-1">Get your results</p>
-                <p className="text-teal/60 text-sm leading-relaxed">
+                <p className="text-teal/70 text-sm leading-relaxed">
                   See a radar chart across the three UDL principles (Representation, Engagement,
                   and Action &amp; Expression), a breakdown by checkpoint, and
                   concrete quick wins and longer-term suggestions. Download a PDF report suitable

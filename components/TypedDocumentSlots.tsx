@@ -1,6 +1,6 @@
 'use client'
 
-import { useRef, useState } from 'react'
+import { Fragment, useRef, useState, type ReactNode } from 'react'
 import type { AssessmentDocument, DocumentType } from '@/lib/types'
 import { extractDocument, AuditClientError } from '@/lib/audit-client'
 import { AssessmentPickerModal, type Candidate } from '@/components/AssessmentPickerModal'
@@ -21,16 +21,18 @@ const SLOTS: SlotConfig[] = [
     label: 'Exemplar',
     hint: 'Sample student work or worked example',
     required: false,
-    note: 'Rough, partial, or imperfect examples are fine - it is read only as a signal of what you expect, never graded or judged. Remove any student names first; nothing is stored.',
+    note: 'Rough, partial, or imperfect examples are fine - the AI reads them only as a signal of what you expect, never graded or judged. Remove any student names first; nothing is stored.',
   },
 ]
 
 interface Props {
   documents: AssessmentDocument[]
   onChange: (documents: AssessmentDocument[]) => void
+  /** Rendered between the Rubric and Exemplar slots (e.g. the rubric-in-brief toggle). */
+  betweenRubricAndExemplar?: ReactNode
 }
 
-export function TypedDocumentSlots({ documents, onChange }: Props) {
+export function TypedDocumentSlots({ documents, onChange, betweenRubricAndExemplar }: Props) {
   const [uploadingType, setUploadingType] = useState<DocumentType | null>(null)
   const [uploadError, setUploadError] = useState<string | null>(null)
   const [pickerState, setPickerState] = useState<{ type: DocumentType; candidates: Candidate[] } | null>(null)
@@ -114,20 +116,21 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
         const isUploading = uploadingType === slot.type
         const isBusy = uploadingType !== null || pickerState !== null
         return (
-          <div key={slot.type} className="rounded-lg border border-sand bg-white">
+          <Fragment key={slot.type}>
+          <div className="rounded-lg border border-sand bg-white">
             <div className="flex items-center justify-between gap-3 px-3 py-2">
               <div className="min-w-0">
                 <div className="flex items-baseline gap-2">
                   <span className="text-sm font-medium text-teal">{slot.label}</span>
-                  {slot.required && <span className="text-xs text-terracotta">recommended</span>}
+                  {slot.required && <span className="text-xs text-terracotta-dark">recommended</span>}
                 </div>
-                <p className="text-xs text-teal/50 truncate">{doc ? doc.filename : slot.hint}</p>
+                <p className="text-xs text-teal/70 truncate">{doc ? doc.filename : slot.hint}</p>
               </div>
               {doc ? (
                 <button
                   type="button"
                   onClick={() => handleRemove(slot.type)}
-                  className="text-xs text-teal/60 hover:text-terracotta underline"
+                  className="text-xs text-teal/70 hover:text-terracotta-dark underline"
                 >
                   Remove
                 </button>
@@ -157,9 +160,11 @@ export function TypedDocumentSlots({ documents, onChange }: Props) {
               />
             </div>
             {slot.note && !doc && (
-              <p className="px-3 pb-2 text-xs text-teal/55 leading-relaxed">{slot.note}</p>
+              <p className="px-3 pb-2 text-xs text-teal/70 leading-relaxed">{slot.note}</p>
             )}
           </div>
+          {slot.type === 'rubric' && betweenRubricAndExemplar}
+          </Fragment>
         )
       })}
       {pickerState && (

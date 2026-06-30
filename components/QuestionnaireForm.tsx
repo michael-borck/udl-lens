@@ -27,7 +27,7 @@ export function QuestionnaireForm({ assessmentType, responses, onChange }: Props
       {questions.map((q, idx) => (
         <div key={q.checkpointId} className="rounded-lg border border-sand bg-white p-3">
           <p id={`q-${q.checkpointId}`} className="text-sm text-teal mb-2 leading-relaxed">
-            <span className="text-teal/40 mr-1">{idx + 1}.</span>
+            <span className="text-teal/70 mr-1">{idx + 1}.</span>
             {q.question}
           </p>
           <div className="flex flex-wrap gap-2" role="radiogroup" aria-labelledby={`q-${q.checkpointId}`}>

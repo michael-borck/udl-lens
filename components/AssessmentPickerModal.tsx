@@ -43,7 +43,7 @@ export function AssessmentPickerModal({ candidates, onSelect, onClose, title = '
             ref={closeButtonRef}
             type="button"
             onClick={onClose}
-            className="text-teal/50 hover:text-teal text-xl leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/60 rounded"
+            className="text-teal/70 hover:text-teal text-xl leading-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/60 rounded"
             aria-label="Close picker"
           >
             ×
@@ -58,7 +58,7 @@ export function AssessmentPickerModal({ candidates, onSelect, onClose, title = '
               className="w-full text-left rounded-lg border border-sand hover:border-teal/40 hover:bg-teal/5 px-4 py-3 transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-teal/60"
             >
               <p className="font-medium text-teal">{c.title}</p>
-              <p className="text-xs text-teal/60 mt-1">
+              <p className="text-xs text-teal/70 mt-1">
                 {c.content.length > 200 ? `${c.content.slice(0, 200)}…` : c.content}
               </p>
             </button>

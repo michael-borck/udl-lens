@@ -17,19 +17,19 @@ export function AssessmentCard({ assessment, onEdit, onRemove }: Props) {
           {getAssessmentTypeLabel(assessment.type)} · {laneLabel}
         </p>
         {assessment.description && (
-          <p className="text-sm text-teal/60 mt-2 line-clamp-2">{assessment.description}</p>
+          <p className="text-sm text-teal/70 mt-2 line-clamp-2">{assessment.description}</p>
         )}
       </div>
       <div className="flex gap-2 shrink-0">
         <button
           onClick={onEdit}
-          className="text-sm text-teal/60 hover:text-teal underline"
+          className="text-sm text-teal/70 hover:text-teal underline"
         >
           Edit
         </button>
         <button
           onClick={onRemove}
-          className="text-sm text-terracotta hover:text-terracotta-dark underline"
+          className="text-sm text-terracotta-dark hover:text-terracotta-dark underline"
         >
           Remove
         </button>

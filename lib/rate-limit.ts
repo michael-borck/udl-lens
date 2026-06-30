@@ -53,12 +53,42 @@ function pruneExpired(now: number): void {
   }
 }
 
-// Best-effort client IP from common proxy headers. Behind a reverse proxy or
-// container network this is the closest thing to a stable per-client key.
-export function getClientIp(req: Request): string {
-  const xff = req.headers.get('x-forwarded-for')
-  if (xff) return xff.split(',')[0].trim()
-  return req.headers.get('x-real-ip') ?? 'unknown'
+// Spoof-resistant client IP from X-Forwarded-For, given a trusted-proxy hop
+// count. XFF is `<client>, <proxy1>, ...`; each trusted proxy APPENDS the IP it
+// saw on its own socket, so the real client sits `hops` entries from the END of
+// the list. A client can inject values at the front but cannot move its real IP
+// out of that trusted position - which is what defeats the trivial "set
+// X-Forwarded-For and get a fresh rate-limit bucket" attack that the naive
+// `xff.split(',')[0]` reading allowed.
+//
+// `hops` defaults to TRUSTED_PROXY_HOPS (default 1: one reverse proxy - nginx,
+// caddy, cloudflare - in front of this container). Set 0 only if you expose the
+// port directly: XFF is then client-controlled and ignored, so every caller
+// shares one bucket (fail-closed) and the global limit still holds.
+function trustedHops(): number {
+  const n = Number(process.env.TRUSTED_PROXY_HOPS ?? '1')
+  return Number.isFinite(n) && n > 0 ? Math.floor(n) : 0
+}
+
+export function getClientIp(req: Request, hops: number = trustedHops()): string {
+  if (hops > 0) {
+    const xff = req.headers.get('x-forwarded-for')
+    if (xff) {
+      const parts = xff.split(',').map(s => s.trim()).filter(Boolean)
+      // Real client = `hops` from the end. A shorter-than-expected chain is
+      // malformed/odd - fall through to x-real-ip or the shared bucket rather
+      // than trust a client-controlled position.
+      const idx = parts.length - hops
+      if (idx >= 0 && idx < parts.length) return parts[idx]
+    }
+    // x-real-ip is written by some proxies from their own socket ($remote_addr),
+    // overwriting anything the client sent - safe only behind a trusted proxy.
+    const xreal = req.headers.get('x-real-ip')
+    if (xreal) return xreal.trim()
+  }
+  // Unproxied, or no trustworthy header: no reliable per-client key. A shared
+  // bucket keeps the global limit enforced (fail-closed).
+  return 'unknown'
 }
 
 // Test-only: reset internal state between cases.

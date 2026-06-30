@@ -11,9 +11,10 @@ import {
 import type { CheckpointResult, Assessment, PrincipleScore, Suggestions } from '@/lib/types'
 import { getCheckpointDef } from '@/lib/udl'
 import { scoreBand, type ScoreBand } from '@/lib/scoring'
+import { cleanMarkdown as clean } from '@/lib/pdf-clean'
 
 const BAND_HEX: Record<ScoreBand, string> = {
-  strong: '#22c55e',
+  strong: '#1B3A4B',
   developing: '#D4A017',
   attention: '#C96B2F',
 }
@@ -43,21 +44,6 @@ const styles = StyleSheet.create({
 
 const RATING_LABEL: Record<string, string> = { met: 'Met', partial: 'Partial', not_yet: 'Not yet' }
 
-// @react-pdf <Text> has no Markdown support, so model output like **bold**,
-// `code`, or "- " bullets renders as literal characters. Strip the common
-// artifacts and normalise whitespace so report text reads cleanly.
-function clean(s: string): string {
-  return s
-    .replace(/\*\*(.*?)\*\*/g, '$1')
-    .replace(/\*(.*?)\*/g, '$1')
-    .replace(/`([^`]*)`/g, '$1')
-    .replace(/^#{1,6}\s+/gm, '')
-    .replace(/^\s*[-*+]\s+/gm, '')
-    .replace(/[ \t]+/g, ' ')
-    .replace(/\n{3,}/g, '\n\n')
-    .trim()
-}
-
 interface ReportProps {
   checkpoints: CheckpointResult[]
   assessments: Assessment[]
@@ -68,7 +54,7 @@ interface ReportProps {
   auditNotes: string
 }
 
-function UdlReport({ checkpoints, assessments, principleScores, overallScore, gradeLabel, suggestions, auditNotes }: ReportProps) {
+export function UdlReport({ checkpoints, assessments, principleScores, overallScore, gradeLabel, suggestions, auditNotes }: ReportProps) {
   const visibleQuickWins = suggestions?.quickWins.filter(s => !s.dismissed) ?? []
   const visibleLongerTerm = suggestions?.longerTerm.filter(s => !s.dismissed) ?? []
   const unitName = assessments.map(a => a.name).join(', ')

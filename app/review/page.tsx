@@ -158,11 +158,11 @@ export default function ReviewPage() {
         <div className="flex items-baseline gap-4">
           <h1 className="font-display text-lg text-teal">UDL Lens</h1>
           <div className="flex items-center gap-1.5 text-xs">
-            <span className="text-teal/40">Select</span>
+            <span className="text-teal/70">Select</span>
             <span className="text-teal/30">›</span>
             <span className="font-medium text-teal">Review</span>
             <span className="text-teal/30">›</span>
-            <span className="text-teal/40">Results</span>
+            <span className="text-teal/70">Results</span>
           </div>
         </div>
         {allComplete && (
@@ -191,7 +191,7 @@ export default function ReviewPage() {
         <div className="flex items-center justify-center h-64">
           <div className="text-center">
             <div className="w-8 h-8 border-4 border-teal/20 border-t-teal rounded-full animate-spin mx-auto mb-3" />
-            <p className="text-sm text-teal/60">AI is pre-filling checkpoint ratings…</p>
+            <p className="text-sm text-teal/70">AI is pre-filling checkpoint ratings…</p>
           </div>
         </div>
       ) : (
@@ -201,12 +201,12 @@ export default function ReviewPage() {
             <div className="p-4 border-b border-sand space-y-2">
               <ProgressBar completed={completedCount} total={checkpoints.length} />
               {!allComplete && (
-                <p className="text-xs text-teal/50">
+                <p className="text-xs text-teal/70">
                   Rate all checkpoints to view your results
                 </p>
               )}
               {/* Legend */}
-              <div className="flex flex-wrap gap-x-3 gap-y-1 text-xs text-teal/50 pt-1">
+              <div className="flex flex-col gap-1 text-xs text-teal/70 pt-1">
                 <span className="flex items-center gap-1">
                   <span className="w-2 h-2 rounded-full border border-teal/30" /> Not reviewed
                 </span>
@@ -214,14 +214,14 @@ export default function ReviewPage() {
                   <span className="text-teal font-bold">✓</span> You set this
                 </span>
                 <span className="flex items-center gap-1">
-                  <span className="text-teal/40 font-bold">✓</span> AI default kept
+                  <span className="text-teal/70 font-bold">✓</span> AI default kept
                 </span>
               </div>
               {/* Accept all remaining */}
               {remainingCount > 0 && (
                 <button
                   onClick={handleAcceptAllRemaining}
-                  className="w-full text-xs text-teal/60 hover:text-teal border border-teal/20 hover:border-teal/40 rounded-lg py-1.5 transition-colors"
+                  className="w-full text-xs text-teal/70 hover:text-teal border border-teal/20 hover:border-teal/40 rounded-lg py-1.5 transition-colors"
                 >
                   Accept AI for {remainingCount} remaining
                 </button>
@@ -236,7 +236,7 @@ export default function ReviewPage() {
                     key={a.id}
                     onClick={() => setFilterAssessmentId(a.id)}
                     className={`rounded-full px-3 py-1 text-xs whitespace-nowrap transition-colors ${
-                      filterAssessmentId === a.id ? 'bg-teal text-white' : 'text-teal/60 hover:bg-sand'
+                      filterAssessmentId === a.id ? 'bg-teal text-white' : 'text-teal/70 hover:bg-sand'
                     }`}
                   >
                     {a.name}
@@ -294,7 +294,7 @@ export default function ReviewPage() {
                   <button
                     onClick={() => setActiveIndex(i => Math.max(0, i - 1))}
                     disabled={activeIndex === 0}
-                    className="rounded-lg border border-sand px-4 py-1.5 text-sm text-teal/60 hover:text-teal hover:border-teal/30 disabled:opacity-30 transition-colors"
+                    className="rounded-lg border border-sand px-4 py-1.5 text-sm text-teal/70 hover:text-teal hover:border-teal/30 disabled:opacity-30 transition-colors"
                   >
                     ← Previous
                   </button>
@@ -308,14 +308,14 @@ export default function ReviewPage() {
                   <button
                     onClick={() => setActiveIndex(i => Math.min(checkpoints.length - 1, i + 1))}
                     disabled={activeIndex === checkpoints.length - 1}
-                    className="rounded-lg border border-sand px-4 py-1.5 text-sm text-teal/60 hover:text-teal hover:border-teal/30 disabled:opacity-30 transition-colors"
+                    className="rounded-lg border border-sand px-4 py-1.5 text-sm text-teal/70 hover:text-teal hover:border-teal/30 disabled:opacity-30 transition-colors"
                   >
                     Next →
                   </button>
                 </div>
               </div>
             ) : (
-              <div className="flex items-center justify-center h-full text-teal/40">
+              <div className="flex items-center justify-center h-full text-teal/70">
                 No checkpoints to show
               </div>
             )}

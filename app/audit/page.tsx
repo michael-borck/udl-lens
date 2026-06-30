@@ -75,13 +75,13 @@ export default function SetupPage() {
           <span className="rounded-full bg-teal text-white w-6 h-6 flex items-center justify-center text-xs font-bold">1</span>
           <span className="font-medium text-teal">Select Assessments</span>
           <span className="text-teal/30 mx-1">›</span>
-          <span className="text-teal/40">Review Checkpoints</span>
+          <span className="text-teal/70">Review Checkpoints</span>
           <span className="text-teal/30 mx-1">›</span>
-          <span className="text-teal/40">Your Results</span>
+          <span className="text-teal/70">Your Results</span>
         </div>
 
         <h2 className="font-display text-3xl text-teal mb-2">What assessments are in your unit?</h2>
-        <p className="text-teal/60 mb-6">
+        <p className="text-teal/70 mb-6">
           Add each assessment separately. For each one, you can upload the assignment brief and the AI will pre-fill the UDL checkpoint ratings for you to verify.
         </p>
 
@@ -119,7 +119,7 @@ export default function SetupPage() {
         ) : (
           <button
             onClick={() => setFormMode({ mode: 'add' })}
-            className="w-full rounded-xl border-2 border-dashed border-teal/20 text-teal/60 hover:border-teal/40 hover:text-teal py-4 text-sm transition-colors"
+            className="w-full rounded-xl border-2 border-dashed border-teal/20 text-teal/70 hover:border-teal/40 hover:text-teal py-4 text-sm transition-colors"
           >
             + Add another assessment
           </button>
@@ -128,7 +128,7 @@ export default function SetupPage() {
         {/* Proceed */}
         {state.assessments.length > 0 && !formMode && (
           <div className="mt-8 pt-8 border-t border-sand">
-            <p className="text-sm text-teal/60 mb-4">
+            <p className="text-sm text-teal/70 mb-4">
               {state.assessments.length} assessment{state.assessments.length !== 1 ? 's' : ''} added.
               The AI will pre-fill UDL ratings for each one &mdash; you&apos;ll verify and adjust them in the next step.
             </p>

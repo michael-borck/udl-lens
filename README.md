@@ -40,6 +40,7 @@ Open [http://localhost:3000](http://localhost:3000).
 | `EXTRACT_MODEL` | No | Model for brief extraction - Haiku is fine and cheaper |
 | `PREFILL_MODEL` | No | Model for checkpoint pre-fill - test Haiku vs Sonnet |
 | `SUGGESTIONS_MODEL` | No | Model for suggestions - Sonnet recommended |
+| `TRUSTED_PROXY_HOPS` | No | Trusted reverse-proxy hops (default `1`). Rate limit reads the X-Forwarded-For entry `hops` from the end so it can't be spoofed. Set `0` if you expose the port directly. |
 
 Per-route vars take precedence over `ANTHROPIC_MODEL`. Omit them to use the default.
 

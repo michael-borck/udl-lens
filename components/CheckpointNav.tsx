@@ -19,7 +19,7 @@ function StatusIcon({ result, active }: { result: CheckpointResult; active: bool
   }
   if (result.acceptedAI) {
     // AI default kept - faint tick
-    return <span className={`text-sm leading-none shrink-0 ${active ? 'text-white/60' : 'text-teal/40'}`} aria-label="AI default kept">✓</span>
+    return <span className={`text-sm leading-none shrink-0 ${active ? 'text-white/60' : 'text-teal/70'}`} aria-label="AI default kept">✓</span>
   }
   // You set this - strong tick
   return <span className={`text-sm leading-none shrink-0 font-bold ${active ? 'text-white' : 'text-teal'}`} aria-label="You set this">✓</span>

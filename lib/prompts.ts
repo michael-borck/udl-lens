@@ -104,13 +104,13 @@ Rate EVERY checkpoint listed. Return a JSON array with this exact structure:
     "checkpointId": "r1",
     "assessmentId": "assessment-uuid-here",
     "rating": "not_yet" | "partial" | "met",
-    "reasoning": "One sentence explaining the rating citing the documents, self-report, or assessment type as appropriate."
+    "reasoning": "One sentence explaining the rating, citing the specific document text or self-report answer that supports it, or noting where evidence was absent."
   }
 ]
 
 Important:
-- Base ratings on the documents, self-report answers, and any extra notes. If none of these are present, use the assessment type as context.
-- Be realistic - most assessments will have a mix of "not_yet" and "partial" with a few "met".
+- Rate strictly against the evidence actually provided in the documents, self-report answers, and extra notes. A checkpoint is "met" ONLY where that evidence clearly demonstrates the practice; "partial" where there is some evidence; "not_yet" where the evidence is silent or absent.
+- Do NOT infer "met" from the assessment type or name alone - e.g. an interactive oral does not automatically satisfy collaboration or language-access checkpoints. When evidence is missing, rate down ("not_yet" or "partial"), never up.
 - Keep reasoning to one sentence.
 - Return ONLY the JSON array, no other text.`
 

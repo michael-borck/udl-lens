@@ -13,7 +13,7 @@ export function ProgressBar({ completed, total }: Props) {
           style={{ width: `${pct}%` }}
         />
       </div>
-      <span className="text-sm text-teal/60 tabular-nums shrink-0">
+      <span className="text-sm text-teal/70 tabular-nums shrink-0">
         {completed}/{total}
       </span>
     </div>

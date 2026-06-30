@@ -78,7 +78,7 @@ export function SuggestionsList({ suggestions, onRegenerate, regenerating }: Pro
           <div className="space-y-3">
             <p className="text-sm font-medium text-teal">Add your own suggestion</p>
             <div>
-              <label className="block text-xs text-teal/60 mb-1">Add to:</label>
+              <label className="block text-xs text-teal/70 mb-1">Add to:</label>
               <div className="flex gap-3 text-sm">
                 {(['quickWins', 'longerTerm'] as const).map(b => (
                   <label key={b} className="flex items-center gap-1.5 cursor-pointer">
@@ -96,7 +96,7 @@ export function SuggestionsList({ suggestions, onRegenerate, regenerating }: Pro
               </div>
             </div>
             <div>
-              <label htmlFor="add-action" className="block text-xs text-teal/60 mb-1">Action:</label>
+              <label htmlFor="add-action" className="block text-xs text-teal/70 mb-1">Action:</label>
               <input
                 id="add-action"
                 type="text"
@@ -107,7 +107,7 @@ export function SuggestionsList({ suggestions, onRegenerate, regenerating }: Pro
               />
             </div>
             <div>
-              <label htmlFor="add-why" className="block text-xs text-teal/60 mb-1">Why (optional):</label>
+              <label htmlFor="add-why" className="block text-xs text-teal/70 mb-1">Why (optional):</label>
               <input
                 id="add-why"
                 type="text"
@@ -139,10 +139,10 @@ export function SuggestionsList({ suggestions, onRegenerate, regenerating }: Pro
           <button
             type="button"
             onClick={() => setAddOpen(true)}
-            className="w-full flex flex-col items-center gap-0.5 py-1 text-teal hover:text-terracotta transition-colors"
+            className="w-full flex flex-col items-center gap-0.5 py-1 text-teal hover:text-terracotta-dark transition-colors"
           >
             <span className="text-sm font-medium">+ Add your own suggestion</span>
-            <span className="text-xs text-teal/55">
+            <span className="text-xs text-teal/70">
               Your additions are kept through regenerate and included in the PDF
             </span>
           </button>
@@ -161,14 +161,14 @@ export function SuggestionsList({ suggestions, onRegenerate, regenerating }: Pro
               {regenerating ? 'Regenerating…' : 'Regenerate AI suggestions'}
             </button>
           </div>
-          <p className="text-xs text-teal/60 leading-relaxed">
+          <p className="text-xs text-teal/70 leading-relaxed">
             This asks the AI for a fresh set of recommendations based on your ratings. The AI
             suggestions above are replaced - anything you added yourself, and your audit notes,
             are kept. It does not change your scores. Do this <em>after</em> downloading if you
             want to keep the current set.
           </p>
           <div>
-            <label htmlFor="regen-focus" className="block text-xs text-teal/60 mb-1">
+            <label htmlFor="regen-focus" className="block text-xs text-teal/70 mb-1">
               Prioritise a group or theme (optional):
             </label>
             <input
@@ -207,7 +207,7 @@ export function SuggestionsList({ suggestions, onRegenerate, regenerating }: Pro
           )}
         </div>
       )}
-      <p className="text-xs text-teal/50">
+      <p className="text-xs text-teal/70">
         Codes refer to UDL Guidelines 3.0 considerations.{' '}
         <a
           href={CAST_URL}
@@ -249,7 +249,7 @@ function Section({
               key={item.id}
               className={`flex gap-3 bg-white rounded-xl border p-4 transition-colors ${
                 isDismissed ? 'border-sand opacity-50' :
-                isDone ? 'border-green-300 bg-green-50/40' :
+                isDone ? 'border-teal/30 bg-teal/5' :
                 item.userAuthored ? 'border-sand border-l-4 border-l-terracotta bg-terracotta/[0.04]' :
                 'border-sand'
               }`}
@@ -258,11 +258,11 @@ function Section({
                 {i + 1}
               </span>
               <div className="flex-1 space-y-2">
-                <p className={`text-sm leading-relaxed ${isDismissed ? 'text-teal/50 line-through' : 'text-teal'}`}>
+                <p className={`text-sm leading-relaxed ${isDismissed ? 'text-teal/70 line-through' : 'text-teal'}`}>
                   {item.text}
                 </p>
                 {item.why && !isDismissed && (
-                  <p className="text-xs text-teal/60 leading-relaxed">
+                  <p className="text-xs text-teal/70 leading-relaxed">
                     <span className="font-medium text-teal/70">Why: </span>{item.why}
                   </p>
                 )}
@@ -292,8 +292,8 @@ function Section({
                   title={isDone ? 'Unmark - treat as an open recommendation again' : 'I already do this or plan to - keep it in the report, flagged as planned'}
                   className={`text-xs rounded px-2 py-1 border transition-colors ${
                     isDone
-                      ? 'border-green-400 bg-green-100 text-green-800'
-                      : 'border-sand text-teal/60 hover:border-teal/40 hover:text-teal'
+                      ? 'border-teal bg-teal/15 text-teal'
+                      : 'border-sand text-teal/70 hover:border-teal/40 hover:text-teal'
                   }`}
                 >
                   {isDone ? '✓ Planned' : 'Planned'}
@@ -306,7 +306,7 @@ function Section({
                   className={`text-xs rounded px-2 py-1 border transition-colors ${
                     isDismissed
                       ? 'border-teal/40 bg-teal/10 text-teal'
-                      : 'border-sand text-teal/60 hover:border-terracotta/40 hover:text-terracotta'
+                      : 'border-sand text-teal/70 hover:border-terracotta/40 hover:text-terracotta-dark'
                   }`}
                 >
                   {isDismissed ? 'Restore' : 'Dismiss'}

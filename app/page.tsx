@@ -11,11 +11,11 @@ export default function LandingPage() {
       </header>
 
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-10 text-center">
-        <p className="text-sm font-medium text-terracotta uppercase tracking-widest mb-4">
+        <p className="text-sm font-medium text-terracotta-dark uppercase tracking-widest mb-4">
           Assessment 2030 · Curtin University
         </p>
         <h1 className="font-display text-5xl text-teal leading-tight mb-6 max-w-2xl">
-          How well do your assessments support <em className="italic text-terracotta">all</em> learners?
+          How well do your assessments support <em className="italic text-terracotta-dark">all</em> learners?
         </h1>
         <p className="text-teal/80 text-lg max-w-xl mb-10">
           UDL Lens helps you audit your unit assessments against the Universal Design for Learning
@@ -29,7 +29,7 @@ export default function LandingPage() {
           Start audit →
         </Link>
 
-        <p className="mt-6 text-sm text-teal/60">
+        <p className="mt-6 text-sm text-teal/70">
           No login, no database. Files are sent for AI analysis and never stored on our servers; your ratings stay in this browser session only.
         </p>
 
@@ -62,13 +62,13 @@ export default function LandingPage() {
           ))}
         </div>
 
-        <p className="mt-8 text-xs text-teal/65 max-w-2xl">
+        <p className="mt-8 text-xs text-teal/70 max-w-2xl">
           UDL is read across the whole unit, not single assessments. The audit is most useful when you include
           the assessments in a unit together. <Link href="/about" className="underline hover:text-teal">Learn about UDL Lens →</Link>
         </p>
       </div>
 
-      <footer className="px-8 py-6 flex items-center justify-between text-xs text-teal/50">
+      <footer className="px-8 py-6 flex items-center justify-between text-xs text-teal/70">
         <span>UDL Guidelines 3.0 · CAST</span>
         <Link href="/about" className="hover:text-teal transition-colors">
           Learn about UDL Lens
