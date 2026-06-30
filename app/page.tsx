@@ -1,14 +1,12 @@
 import Link from 'next/link'
-import { UdlPrimerModal } from '@/components/UdlPrimerModal'
+import { InfoModals } from '@/components/InfoModals'
 
 export default function LandingPage() {
   return (
     <main className="min-h-screen bg-cream flex flex-col">
       <header className="px-8 py-6 flex items-center justify-between">
         <span className="font-display text-2xl text-teal">UDL Lens</span>
-        <Link href="/about" className="text-sm text-teal/80 hover:text-teal transition-colors">
-          Learn about UDL Lens
-        </Link>
+        <InfoModals variant="cream" />
       </header>
 
       <div className="flex-1 flex flex-col items-center justify-center px-6 py-10 text-center">
@@ -34,10 +32,6 @@ export default function LandingPage() {
           No login, no database. Files are sent for AI analysis and never stored on our servers; your ratings stay in this browser session only.
         </p>
 
-        <p className="mt-4 text-sm text-teal/70">
-          New to UDL? <UdlPrimerModal />
-        </p>
-
         {/* How it works - three-step preview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mt-14 max-w-3xl w-full text-left">
           {[
@@ -54,7 +48,7 @@ export default function LandingPage() {
             {
               n: 3,
               title: 'Get your report',
-              body: 'A radar across the three UDL principles - Representation, Engagement, and Action & Expression - plus recommendations and a PDF you can share with teaching support.',
+              body: 'A radar across the UDL guidelines, plus recommendations and a PDF you can share with teaching support.',
             },
           ].map(s => (
             <div key={s.n} className="rounded-xl bg-white border border-sand p-5">
@@ -69,15 +63,12 @@ export default function LandingPage() {
 
         <p className="mt-8 text-xs text-teal/70 max-w-2xl">
           UDL is read across the whole unit, not single assessments. The audit is most useful when you include
-          the assessments in a unit together. <Link href="/about" className="underline hover:text-teal">Learn about UDL Lens →</Link>
+          the assessments in a unit together.
         </p>
       </div>
 
       <footer className="px-8 py-6 flex items-center justify-between text-xs text-teal/70">
         <span>UDL Guidelines 3.0 · CAST</span>
-        <Link href="/about" className="hover:text-teal transition-colors">
-          Learn about UDL Lens
-        </Link>
       </footer>
     </main>
   )
