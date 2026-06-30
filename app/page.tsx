@@ -2,6 +2,8 @@ import Link from 'next/link'
 import { InfoModals } from '@/components/InfoModals'
 
 export default function LandingPage() {
+  const version = process.env.NEXT_PUBLIC_APP_VERSION ?? '?'
+  const sha = process.env.NEXT_PUBLIC_BUILD_SHA ?? 'dev'
   return (
     <main className="min-h-screen bg-cream flex flex-col">
       <header className="px-8 py-6 flex items-center justify-between">
@@ -69,6 +71,7 @@ export default function LandingPage() {
 
       <footer className="px-8 py-6 flex items-center justify-between text-xs text-teal/70">
         <span>UDL Guidelines 3.0 · CAST</span>
+        <span className="text-teal/50">v{version} · {sha}</span>
       </footer>
     </main>
   )
