@@ -17,4 +17,7 @@
   .status-dot-partial  { @apply w-2.5 h-2.5 rounded-full bg-amber; }
   .status-dot-met      { @apply w-2.5 h-2.5 rounded-full bg-teal; }
   .status-dot-gap      { @apply w-2.5 h-2.5 rounded-full bg-red-400; }
+  /* Decorative radar polygon on the landing hero: invisible until the
+     animate-radar-draw class scales it in, so re-triggering never flashes. */
+  .radar-shape { transform-box: fill-box; transform-origin: center; opacity: 0; }
 }
